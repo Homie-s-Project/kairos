@@ -80,12 +80,12 @@ Utilisation du backend
 
 ## Color Reference
 
-| Couleur                              | Hex                                                              |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| Couleur avec propriété non définie\* | ![#eff7f7](https://via.placeholder.com/10/eff7f7?text=+) #eff7f7 |
-| Couleur avec propriété non définie\* | ![#d7e6eb](https://via.placeholder.com/10/d7e6eb?text=+) #d7e6eb |
-| Couleur avec propriété non définie\* | ![#33576c](https://via.placeholder.com/10/33576c?text=+) #33576c |
-| Couleur avec propriété non définie\* | ![#162741](https://via.placeholder.com/10/162741?text=+) #162741 |
+| Couleur             | Hex                                                                |
+| ----------------- | ------------------------------------------------------------------ |
+| Couleur avec propriété non définie* | ![#eff7f7](https://via.placeholder.com/15/eff7f7/eff7f7.png) #eff7f7 |
+| Couleur avec propriété non définie* | ![#d7e6eb](https://via.placeholder.com/15/d7e6eb/d7e6eb.png) #d7e6eb |
+| Couleur avec propriété non définie* | ![#33576c](https://via.placeholder.com/15/33576c/33576c.png) #33576c |
+| Couleur avec propriété non définie* | ![#162741](https://via.placeholder.com/15/162741/162741.png) #162741 |
 
 \* Les couleurs n'ont pas une utilisation précise définie.
 
