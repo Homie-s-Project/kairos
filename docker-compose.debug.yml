@@ -1,6 +1,4 @@
-# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
-
-version: '3.4'
+version: '3.7'
 
 services:
   kairos-db:
@@ -9,20 +7,22 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-      - pgconf:/etc/postgresql
-      - pglog:/var/log/postgresql
     environment:
       - POSTGRES_DB=kairos
       - POSTGRES_USER=kairos_user
       - POSTGRES_PASSWORD=kairos_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - pgconf:/etc/postgresql
+      - pglog:/var/log/postgresql
 
 
   karios-pgadmin:
     image: dpage/pgadmin4
     container_name: kairos-pgadmin4
     restart: always
+    depends_on:
+      - kairos-db
     ports:
       - "5050:80"
     environment:
@@ -34,6 +34,8 @@ services:
   kairos-api:
     image: kairos-api:dev
     container_name: kairos-api
+    depends_on:
+      - kairos-db
     build:
       context: kairos-api
       dockerfile: ./Dockerfile
@@ -46,17 +48,21 @@ services:
   kairos-web:
     image: kairos-web:dev
     container_name: kairos-web
+    restart: unless-stopped
     build:
       context: kairos-web
       dockerfile: ./Dockerfile
     environment:
       NODE_ENV: development
+    volumes:
+      - ./kairos-web:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - 4200:4200
+      - 49153:49153
 
 volumes:
   pgdata:
   pgconf:
   pglog:
   pgadmin-data:
-
