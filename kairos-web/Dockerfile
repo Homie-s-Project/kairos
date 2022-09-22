@@ -1,11 +1,14 @@
-FROM node:lts-alpine
+FROM node:lts
+
+RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
+
+COPY package.json package-lock.json /usr/src/app/
+RUN npm install
 RUN npm install -g @angular/cli@14.2.2
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install && mv node_modules ../
-COPY . .
-RUN chown -R node /usr/src/app
-USER node
+
+COPY  . .
 RUN ng analytics off
-EXPOSE 4200
-CMD ["ng", "serve", "--host", "0.0.0.0"]
+
+EXPOSE 4200 49153
+CMD ["npm", "start"]
