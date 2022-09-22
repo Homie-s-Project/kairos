@@ -1,3 +1,4 @@
+
 # Kairos
 
 kairos est une application WEB principalement qui pourrait être aussi développé plus tard pour devenir disponible sur les mobiles.
@@ -50,13 +51,31 @@ Vous pouvez le lancer en mode de production
 $ docker compose -f "docker-compose.yml" up -d --build
 ```
 
+## Image Docker
+Notre projet utilise  [Docker](https://www.docker.com), pour des questions de simplicité et de temps. Grâce à Docker, nous pouvons transférer un environnement simplement et l'installer sur une autre machine grâce à une commande.
+
+Nous utilisons **4** images dans notre projet avec chacune des images une particularité.
+
+| Image Docker   	| Description         |  URL |
+| ------------------    | --------------- | ----------------|
+| `kairos-api`*         | Cette image contient le code utile pour notre API. |[http://localhost:5001/swagger/index.html](http://localhost:5001/swagger/index.html) |
+| `kairos-web`*     	  | Dans cette image, il se trouve tout notre code nécessaire pour avoir l'interface frontend avec Angular. | [http://localhost:4200/](http://localhost:4200/)
+| [postgres](https://hub.docker.com/_/postgres)| Postgres est l'image docker de notre base de données. | -** |
+| [dpage/pgadmin4](https://hub.docker.com/r/dpage/pgadmin4) 	| Cette image permet d'avoir une interface d'utilisation de notre base de données.|  [http://localhost:5050/](http://localhost:5050/) |
+
+\* C'est des images non-publiques nous appartenant.
+
+\**Aucun lien URL pour notre base de données.
+
+*Les connexions pour la base de données, si elles n'ont pas été modifiées dans les variables d'environnement reste celle par défaut.*
+
 ## Environment Variables
 
 Pour exécuter ce projet, vous devrez ajouter les variables d'environnement suivantes à votre fichier .env\*
 
 \*Le fichier avec les variables d'environnement est déjà prévu n'est pas encore utilisé par notre code.
 
-Utilisation de la base de données
+**Postgres**
 
 | Environement name   | default         |
 | ------------------- | --------------- |
@@ -64,19 +83,25 @@ Utilisation de la base de données
 | `POSTGRES_USER`     | kairos_user     |
 | `POSTGRES_PASSWORD` | kairos_password |
 
-Utilisation de pgAdmin4 (Site local qui permet de gérer la postgres)
+**pgAdmin4** *(Site local qui permet de gérer la postgres)*
 
 | Environement name          | default     |
 | -------------------------- | ----------- |
 | `PGADMIN_DEFAULT_EMAIL`    | user@kairos.com |
 | `PGADMIN_DEFAULT_PASSWORD` | kairos      |
 
-Utilisation du backend
+**Kairos-api**
 
 | Environement name        | default       |
 | ------------------------ | ------------- |
 | `ASPNETCORE_ENVIRONMENT` | Development   |
 | `ASPNETCORE_URLS`        | http://+:5001 |
+
+**Kairos-web**
+
+| Environement name        | default       |
+| ------------------------ | ------------- |
+| `NODE_ENV` | development   |
 
 ## Color Reference
 
