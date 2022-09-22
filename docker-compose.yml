@@ -1,0 +1,22 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+services:
+  kairos-api:
+    image: kairos-api
+    build:
+      context: kairos-api
+      dockerfile: ./Dockerfile
+    ports:
+      - 5001:5001
+      
+  kairos-web:
+    image: kairos-web
+    build:
+      context: kairos-web
+      dockerfile: ./Dockerfile
+    environment:
+      NODE_ENV: production
+    ports:
+      - 4200:4200

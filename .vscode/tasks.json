@@ -1,0 +1,107 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/kairos-api/kairos-api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "publish",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "publish",
+                "${workspaceFolder}/kairos-api/kairos-api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "watch",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "watch",
+                "run",
+                "--project",
+                "${workspaceFolder}/kairos-api/kairos-api.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "kairos:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/kairos-api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/kairos-api/kairos-api.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": ["build"],
+            "dockerBuild": {
+                "tag": "kairos:latest",
+                "dockerfile": "${workspaceFolder}/kairos-api/Dockerfile",
+                "context": "${workspaceFolder}",
+                "pull": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/kairos-api/kairos-api.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": ["docker-build"],
+            "dockerRun": {
+                "env": {
+                    "DEBUG": "*",
+                    "NODE_ENV": "development"
+                }
+            },
+            "node": {
+                "package": "${workspaceFolder}/kairos-web/package.json",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": ["docker-build"],
+            "platform": "node",
+            "node": {
+                "package": "${workspaceFolder}/kairos-web/package.json"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build",
+            "platform": "node",
+            "dockerBuild": {
+                "dockerfile": "${workspaceFolder}/kairos-web/Dockerfile",
+                "context": "${workspaceFolder}/kairos-web",
+                "pull": true
+            },
+            "node": {
+                "package": "${workspaceFolder}/kairos-web/package.json"
+            }
+        }
+    ]
+}
