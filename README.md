@@ -68,7 +68,7 @@ Utilisation de pgAdmin4 (Site local qui permet de gérer la postgres)
 
 | Environement name          | default     |
 | -------------------------- | ----------- |
-| `PGADMIN_DEFAULT_EMAIL`    | Development |
+| `PGADMIN_DEFAULT_EMAIL`    | user@kairos.com |
 | `PGADMIN_DEFAULT_PASSWORD` | kairos      |
 
 Utilisation du backend
