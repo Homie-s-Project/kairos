@@ -1,6 +1,6 @@
 ---
 name: 'Ajout '
-about: Describe this issue template's purpose here.
+about: Ajout d'une feature
 title: "[WORK]"
 labels: feature
 assignees: ''
