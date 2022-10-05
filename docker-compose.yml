@@ -40,10 +40,11 @@ services:
       context: kairos-api
       dockerfile: ./Dockerfile
     ports:
-      - 5001:5001
+      - 5000:5000
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:5001
+      - ASPNETCORE_URLS=http://+:5000
+    command:  dotnet run --project Kairos.API
       
   kairos-web:
     image: kairos-web:prod
