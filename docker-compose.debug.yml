@@ -40,10 +40,13 @@ services:
       context: kairos-api
       dockerfile: ./Dockerfile
     ports:
-      - 5001:5001
+      - 5000:5000
     environment:
+      - DOTNET_WATCH_SUPPRESS_EMOJIS=1  
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_URLS=http://+:5001
+    volumes:
+      - ./kairos-api:/app
+    command: dotnet watch run --project Kairos.API
       
   kairos-web:
     image: kairos-web:dev
