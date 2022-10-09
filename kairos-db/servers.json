@@ -1,0 +1,14 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Kairos",
+            "Group": "Kairos",
+            "Host": "kairos-db",
+            "Port": 5432,
+            "MaintenanceDB": "kairos",
+            "Username": "kairos_user",
+            "PassFile": "/pgpass",
+            "SSLMode": "prefer"
+        }
+    }
+}
