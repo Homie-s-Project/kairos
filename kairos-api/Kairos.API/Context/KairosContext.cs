@@ -32,4 +32,5 @@ public class KairosContext: DbContext
     }
     
     public DbSet<User> Users { get; set; }
+    public DbSet<OAuth2Credentials> OAuth2Credentials { get; set; }
 }

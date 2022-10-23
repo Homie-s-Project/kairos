@@ -9,7 +9,8 @@ public class User
     
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Id { get; set; }
+    public int UserId { get; set; }
+    public string MicrosoftId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public DateTime BirthDate { get; set; }
@@ -17,9 +18,9 @@ public class User
     public DateTime CreatedAt { get; set; }
     public DateTime LastUpdatedAt { get; set; }
 
-    public User(int id, string lastName, string firstName, DateTime birthDate, string email, DateTime lastUpdatedAt)
+    public User(string microsoftId, string lastName, string firstName, DateTime birthDate, string email, DateTime lastUpdatedAt)
     {
-        Id = id;
+        MicrosoftId = microsoftId;
         LastName = lastName;
         FirstName = firstName;
         BirthDate = birthDate;
