@@ -51,6 +51,10 @@ Vous pouvez le lancer en mode de production
 $ docker compose -f "docker-compose.yml" up -d --build
 ```
 
+## Routes
+
+Toutes les informations concernant les routes sont disponibles sur ce fichier : [ROUTER.md](ROUTER.md)
+
 ## Image Docker
 Notre projet utilise  [Docker](https://www.docker.com), pour des questions de simplicité et de temps. Grâce à Docker, nous pouvons transférer un environnement simplement et l'installer sur une autre machine grâce à une commande.
 
