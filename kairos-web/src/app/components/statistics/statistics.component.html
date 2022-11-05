@@ -1,0 +1,48 @@
+<div class="statistics-container">
+    <h1>Tableau de bord</h1>
+    <div class="statistics-grid">
+        <div class="stat-grid-div weekly-statistics">
+            <h2 class="weekly-title">Durée des sessions (semaine 31.10.2022 au 06.11.2022)</h2>
+            <div class="chart-container">
+                <canvas id="weekly-chart"
+                baseChart width="1000" height="400"
+                [type]="'line'"
+                [data]="weeklyLineChartData"
+                [options]="weeklyLineChartOptions"
+                [legend]="weeklyLineChartLegend">
+                </canvas>
+            </div>
+        </div>
+        <div class="stat-grid-div work-rate">
+            <h2 class="work-rate-title">Taux de travail</h2>
+            <p class="work-rate-text">{{ workRateTxt }}<fa-icon class="chart-icon" [icon]="faArrowTrendUp"></fa-icon></p>
+        </div>
+        <div class="stat-grid-div session-time">
+            <h2 class="session-time-title">Temps de travail par session</h2>
+            <div class="chart-container">
+                <canvas id="session-time-bar"
+                baseChart width="800" height="250"
+                [type]="'bar'"
+                [data]="timeBarChartData"
+                [options]="timeBarChartOptions"
+                [plugins]="timeBarChartPlugins"
+                [legend]="timeBarChartLegend"
+                >
+                </canvas>
+            </div>
+        </div>
+        <div class="stat-grid-div session-type">
+            <h2 class="session-type-title">Types de sessions de travail</h2>
+            <div class="chart-container">
+                <canvas id="session-type-doughnut"
+                baseChart width="500" height="500"
+                [type]="'doughnut'"
+                [labels]="typeDoughnutChartLabels"
+                [datasets]="typeDoughnutChartDatasets"
+                [options]="typeDoughnutChartOptions"
+                [legend]="true">
+                </canvas>
+            </div>
+        </div>
+    </div>
+</div>

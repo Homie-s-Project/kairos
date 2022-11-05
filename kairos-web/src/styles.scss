@@ -1,1 +1,46 @@
-/* You can add global styles to this file, and also import other style files */
+@use '/src/styles/variables.scss' as vars;
+
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {
+    height: 100%;
+    body {
+        height: 100%;
+        background-color: vars.$second-color;
+    }
+}
+
+button {
+    width: 50%;
+    height: 100%;
+    font-size: 20px;
+    color: vars.$first-color;
+    border-style: none;
+    border-radius: 10px;
+    background-color: vars.$fourth-color;
+    &:active {
+        transform: scale(0.95);
+        background-color: darken(vars.$fourth-color, 7%);
+    }
+    &:disabled {
+        background-color: darken(vars.$fourth-color, 7%);
+    }
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.landing-background {
+    background-image: url('./assets/img/Mock-up_4K_V2.png');
+    background-size: cover;
+    background-repeat:no-repeat;
+    background-position:center center;
+}

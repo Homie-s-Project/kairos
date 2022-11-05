@@ -1,0 +1,18 @@
+<div class="timer-app-container">
+    <button class="down-time time-controler" [disabled]="isDisable == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
+    <div class="wrap">
+        <div class="timer-container">
+            <div class="timer">
+                <svg width="250" height="250">
+                    <circle id="circle-countdown" cx="125" cy="125" r="120" stroke="#162741" stroke-width="10" fill="none" stroke-linecap="round" />
+                    <circle class="background-countdown" cx="125" cy="125" r="120" stroke="#33576c" stroke-width="10" fill="none" stroke-linecap="round" />
+                </svg>
+                <span class="time">{{minString}} : {{secString}}</span>
+            </div>
+        </div>
+        <div class="control-container">
+            <button [disabled]="isDisable == true" (click)="startTimer()">Démarrer</button>
+        </div>
+    </div>
+    <button class="up-time time-controler" [disabled]="isDisable == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
+</div>
