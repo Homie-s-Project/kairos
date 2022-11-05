@@ -1,11 +1,6 @@
 @use '/src/styles/variables.scss' as vars;
 
 .statistics-container {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    // height: 100%;
-    // width: 100%;
     padding: 30px 240px 30px 240px;
     .statistics-grid {
         display: grid;
