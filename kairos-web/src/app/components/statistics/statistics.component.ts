@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import Chart from 'chart.js/auto';import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
+import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-statistics',
@@ -7,6 +8,11 @@ import Chart from 'chart.js/auto';import { ChartConfiguration, ChartOptions, Cha
   styleUrls: ['./statistics.component.scss']
 })
 export class StatisticsComponent implements OnInit {
+  workRateTxt: string = "Augmentation de 5% ";
+  faArrowTrendUp: any = faArrowTrendUp;
+  faArrowTrendDown: any = faArrowTrendDown;
+
+
   // Weekly session line chart
   public weeklyLineChartData: ChartConfiguration<'line'>['data'] = {
     labels: [
@@ -30,31 +36,63 @@ export class StatisticsComponent implements OnInit {
       },
     ],
   };
-  public weeklylineChartOptions: ChartOptions<'line'> = {
+  public weeklyLineChartOptions: ChartOptions<'line'> = {
     responsive: false,
   };
   public weeklyLineChartLegend = true;
 
 
-  // Session type doughnut
-  public typeDoughnutChartLabels: string[] = 
-  [
+  // Session type doughnut chart
+  public typeDoughnutChartLabels: string[] = [
     'Science / Math', 
     'Economie', 
     'Allemand de caca'
   ]
-  public typeDoughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = 
-  [
+
+  public typeDoughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
     {
       data: [5, 7, 9], 
-      label: "Serie A"
+      label: "Serie A",
+      borderColor: 'rgba(255, 255, 255, 1)',
+      backgroundColor: 'rgba(51, 87, 108, 0.85)',
     }
   ]
+
   public typeDoughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
     responsive: false,
   };
 
-  constructor() { }
+
+  //Session time bar chart
+  public timeBarChartData: ChartConfiguration<'bar'>['data'] = {
+    labels: [
+      'Science / Math', 
+      'Economie', 
+      'Allemand de caca',
+      'Science / Math', 
+      'Economie', 
+      'Allemand de caca'
+    ],
+    datasets: [
+      {
+        data: [145, 35, 65, 145, 35, 65],
+        label: 'Temps de travail / étude',
+        borderColor: 'rgba(22, 39, 65, 1)',
+        backgroundColor: 'rgba(51, 87, 108, 0.85)',
+      }
+    ]
+  }
+
+  public timeBarChartOptions: ChartConfiguration<'bar'>['options'] = {
+    responsive: false,
+  }
+
+  public timeBarChartLegend = true;
+  public timeBarChartPlugins = [];
+
+  constructor() { 
+
+  }
 
   ngOnInit(): void {
 

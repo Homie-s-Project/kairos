@@ -14,6 +14,7 @@ export class LandingComponent implements OnInit {
   constructor(private renderer: Renderer2) {
     this.subTitleDico = ["Contrôler votre temps", "Prenez contrôle de votre temps", "Etudier intelligemment"];
     this.renderer.addClass(document.body, 'landing-background');
+    this.renderer.addClass(document.body, 'centered');
    }
 
   ngOnInit(): void {

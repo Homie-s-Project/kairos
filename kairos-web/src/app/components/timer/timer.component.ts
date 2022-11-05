@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -20,14 +20,14 @@ export class TimerComponent implements OnInit {
   faCircleChevronLeft: any = faCircleChevronLeft;
   faCircleChevronRight: any = faCircleChevronRight;
 
-  constructor() {
+  constructor(private renderer: Renderer2) {
+    this.renderer.addClass(document.body, 'centered');
+  }
+
+  ngOnInit(): void {
     this.minString = this.updateTime(this.minute);
     this.secString = this.updateTime(this.second);
     this.animeState = 'paused';
-   }
-
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
   }
 
   startTimer = () => {
