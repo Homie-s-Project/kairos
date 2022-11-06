@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
 
@@ -90,8 +90,9 @@ export class StatisticsComponent implements OnInit {
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor() { 
-    
+  constructor(private renderer: Renderer2) { 
+    this.renderer.removeClass(document.body, 'landing-background');
+    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
   }
 
   ngOnInit(): void {

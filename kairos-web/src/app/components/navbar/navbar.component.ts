@@ -21,26 +21,19 @@ export class NavbarComponent implements OnInit {
   }
 
   goToTimer = () => {
-    this.renderer.removeClass(document.body, 'landing-background')
-    this.renderer.addClass(document.getElementById('app-container'), 'centered');
     this._router.navigate(['timer'])
   }
 
   goToCalendar = () => {
-    this.renderer.removeClass(document.body, 'landing-background');
-    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
     this._router.navigate(['calendar'])
   }
 
   goToStatistics = () => {
-    this.renderer.removeClass(document.body, 'landing-background');
-    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
+    
     this._router.navigate(['statistics'])
   }
 
   goToCompanion = () => {
-    this.renderer.removeClass(document.body, 'landing-background');
-    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
     throw new Error('Method not implemented.');
   }
 
