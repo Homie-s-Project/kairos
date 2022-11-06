@@ -1,5 +1,5 @@
 <div class="timer-app-container">
-    <button class="down-time time-controler" [disabled]="isDisable == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
+    <button class="kairos-button down-time time-controler" [disabled]="isDisable == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
     <div class="wrap">
         <div class="timer-container">
             <div class="timer">
@@ -11,8 +11,8 @@
             </div>
         </div>
         <div class="control-container">
-            <button [disabled]="isDisable == true" (click)="startTimer()">Démarrer</button>
+            <button class="kairos-button" [disabled]="isDisable == true" (click)="startTimer()">Démarrer</button>
         </div>
     </div>
-    <button class="up-time time-controler" [disabled]="isDisable == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
+    <button class="kairos-button up-time time-controler" [disabled]="isDisable == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
 </div>

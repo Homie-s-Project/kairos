@@ -21,7 +21,9 @@ export class TimerComponent implements OnInit {
   faCircleChevronRight: any = faCircleChevronRight;
 
   constructor(private renderer: Renderer2) {
-    this.renderer.addClass(document.body, 'centered');
+    this.minString = this.updateTime(this.minute);
+    this.secString = this.updateTime(this.second);
+    this.animeState = 'paused';
   }
 
   ngOnInit(): void {

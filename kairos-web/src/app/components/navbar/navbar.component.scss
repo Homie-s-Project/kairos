@@ -1,0 +1,38 @@
+@use '/src/styles/variables.scss' as vars;
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 45px 9px 45px;
+    background-color: vars.$fourth-color;
+    box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    .home-button {
+        width: auto;
+        font-size: 24px;
+        border-style: none;
+        background-color: transparent;
+        .app-title {
+            color: vars.$first-color;
+        }
+    }
+    .nav-button-container {
+        width: 210px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .nav-button {
+            font-size: 24px;
+            padding: 7px;
+            border-radius: 50%;
+            border-style: none;
+            color: vars.$first-color;
+            background-color: transparent;
+            .navbar-icon {
+                color: vars.$first-color;;
+            }
+        }
+    }
+}

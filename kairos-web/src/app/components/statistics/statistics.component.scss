@@ -27,6 +27,9 @@
                 padding-right: 5px;
                 color: vars.$up-rate-color;
                 font-size: 30px;
+                .chart-icon {
+                    color: vars.$up-rate-color;
+                }
             }
         }
         .session-time { 

@@ -9,6 +9,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
     CalendarComponent,
     LandingComponent,
     TimerComponent,
-    StatisticsComponent
+    StatisticsComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
