@@ -3,6 +3,7 @@ using System;
 using Kairos.API.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kairos.API.Migrations
 {
     [DbContext(typeof(KairosContext))]
-    partial class KairosContextModelSnapshot : ModelSnapshot
+    [Migration("20221106134924_AllNeededModelsForMVP")]
+    partial class AllNeededModelsForMVP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +62,12 @@ namespace Kairos.API.Migrations
                     b.Property<int>("OwnerType")
                         .HasColumnType("integer");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("EventId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Events");
                 });
@@ -229,6 +236,17 @@ namespace Kairos.API.Migrations
                         .HasForeignKey("UsersUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Kairos.API.Models.Event", b =>
+                {
+                    b.HasOne("Kairos.API.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Kairos.API.Models.Group", b =>
