@@ -1,6 +1,6 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCircleLeft, faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
 import { NavbarService } from 'src/app/service/navbar.service';
 
 @Component({
@@ -9,28 +9,34 @@ import { NavbarService } from 'src/app/service/navbar.service';
   styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent implements OnInit {
+  faCircleLeft: any = faCircleLeft;
   faCalendar: any = faCalendar;
   faChartLine: any = faChartLine;
   faPaw: any = faPaw;
   faUser: any = faUser;
 
-  constructor(public nav: NavbarService, private _router: Router, private renderer: Renderer2) { }
+  constructor(public nav: NavbarService, private _router: Router) { }
 
   ngOnInit(): void {
     throw new Error('Method not implemented.');
   }
 
   goToTimer = () => {
-    this._router.navigate(['timer'])
+    this.nav.hideBackButton;
+    console.log(this.nav.isBackVisible)
+    this._router.navigate(['timer']);
   }
 
   goToCalendar = () => {
-    this._router.navigate(['calendar'])
+    this.nav.showBackButton;
+    console.log(this.nav.isBackVisible)
+    this._router.navigate(['calendar']);
   }
 
   goToStatistics = () => {
-    
-    this._router.navigate(['statistics'])
+    this.nav.showBackButton;
+    console.log(this.nav.isBackVisible)
+    this._router.navigate(['statistics']);
   }
 
   goToCompanion = () => {

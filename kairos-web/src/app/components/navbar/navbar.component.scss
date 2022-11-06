@@ -18,6 +18,14 @@ nav {
             color: vars.$first-color;
         }
     }
+    .back-button {
+        font-size: 39px;
+        border-style: none;
+        background-color: transparent;
+        .back-icon {
+            color: vars.$first-color;
+        }
+    }
     .nav-button-container {
         width: 210px;
         display: flex;
