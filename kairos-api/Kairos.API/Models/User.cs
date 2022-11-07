@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,6 +19,7 @@ public class User
     public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime LastUpdatedAt { get; set; }
+    public ICollection<Group> Groups { get; set; }
 
     public User(string microsoftId, string lastName, string firstName, DateTime birthDate, string email, DateTime lastUpdatedAt)
     {

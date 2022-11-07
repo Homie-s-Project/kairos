@@ -149,7 +149,7 @@ public class Authentification : BaseController
         var client = await new MicrosoftClient(encryptedAccessToken).GetUserAsync();
 
         var newUser = new User(client.Id, client.GivenName, client.Surname, new DateTime(), client.Mail,
-            new DateTime());
+            DateTime.UtcNow);
         
         var tokenString = "";
 
