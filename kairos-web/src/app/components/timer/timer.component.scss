@@ -1,12 +1,14 @@
 @use '/src/styles/variables.scss' as vars;
 
 .timer-app-container {
+    width: 450px;
+    height: 450px;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 30px;
     border-radius: 5%;
     background-color: vars.$first-color;
-    padding: 30px;
     box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
     -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
     -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
@@ -49,6 +51,7 @@
                 .time {
                     margin: 10px;
                     font-size: 32px;
+                    color: vars.$fourth-color;
                 }
             }
         }

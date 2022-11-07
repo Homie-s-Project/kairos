@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
 
@@ -26,13 +26,13 @@ export class StatisticsComponent implements OnInit {
     ],
     datasets: [
       {
-        data: [15, 5, 45, 120, 35, 0, 0],
+        data: [35, 5, 45, 120, 35, 65, 10],
         label: 'Durée des sessions',
         fill: true,
         tension: 0.25,
         borderColor: 'rgba(22, 39, 65, 1)',
         backgroundColor: 'rgba(51, 87, 108, 0.85)',
-        pointBackgroundColor: 'rgba(51, 87, 108, 1)',
+        pointBackgroundColor: 'rgba(51, 87, 108, 1)'
       },
     ],
   };
@@ -53,8 +53,8 @@ export class StatisticsComponent implements OnInit {
     {
       data: [5, 7, 9], 
       label: "Serie A",
-      borderColor: 'rgba(255, 255, 255, 1)',
-      backgroundColor: 'rgba(51, 87, 108, 0.85)',
+      borderColor: 'rgba(239, 247, 247, 1)',
+      backgroundColor: 'rgba(51, 87, 108, 0.85)'
     }
   ]
 
@@ -77,8 +77,8 @@ export class StatisticsComponent implements OnInit {
       {
         data: [145, 35, 65, 145, 35, 65],
         label: 'Temps de travail / étude',
-        borderColor: 'rgba(22, 39, 65, 1)',
-        backgroundColor: 'rgba(51, 87, 108, 0.85)',
+        borderColor: 'rgba(239, 247, 247, 1)',
+        backgroundColor: 'rgba(51, 87, 108, 0.85)'
       }
     ]
   }
@@ -90,8 +90,9 @@ export class StatisticsComponent implements OnInit {
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor() { 
-
+  constructor(private renderer: Renderer2) { 
+    this.renderer.removeClass(document.body, 'landing-background');
+    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
   }
 
   ngOnInit(): void {
