@@ -11,8 +11,10 @@
             </div>
         </div>
         <div class="control-container">
-            <button class="kairos-button" (click)="startTimer()">Démarrer</button>
-            <button class="kairos-button" *ngIf="" (click)="startTimer()">Démarrer</button>
+            <button class="kairos-button" *ngIf="!isStarted; else cancelButton" (click)="startTimer()">Démarrer</button>
+            <ng-template #cancelButton>
+                <button class="kairos-button" (click)="stop()">Annuler</button>
+            </ng-template>
         </div>
     </div>
     <button class="kairos-button up-time time-controler" [disabled]="isStarted == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>

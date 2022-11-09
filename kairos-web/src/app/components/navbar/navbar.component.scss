@@ -1,6 +1,7 @@
 @use '/src/styles/variables.scss' as vars;
 
 nav {
+    height: 78px;
     display: flex;
     justify-content: space-between;
     align-items: center;

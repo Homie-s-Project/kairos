@@ -7,7 +7,6 @@ import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleCh
   styleUrls: ['./timer.component.scss']
 })
 export class TimerComponent implements OnInit {
-  isDisable: boolean = true;
   isStarted: boolean = false;
   minute: number = 0;
   second: number = 0;
@@ -84,8 +83,10 @@ export class TimerComponent implements OnInit {
     }
 
     clearInterval(this.base);
-    this.minString = this.updateTime(0);
-    this.secString = this.updateTime(0);
+    this.minute = 0;
+    this.second = 0;
+    this.minString = this.updateTime(this.minute);
+    this.secString = this.updateTime(this.second);
 
     this.isStarted = false;
   }

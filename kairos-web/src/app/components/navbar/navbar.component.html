@@ -1,6 +1,8 @@
 <nav *ngIf="nav.isVisible">
-    <button class="home-button" (click)="goToTimer()"><h1 class="app-title">KAIROS</h1></button>
-    <button class="back-button" (click)="goToTimer()"><fa-icon class="back-icon" [icon]="faCircleLeft"></fa-icon></button>
+    <button class="home-button" *ngIf="!nav.isBackVisible; else backButton" (click)="goToTimer()"><h1 class="app-title">KAIROS</h1></button>
+    <ng-template #backButton>
+        <button class="back-button" (click)="goToTimer()"><fa-icon class="back-icon" [icon]="faCircleLeft"></fa-icon></button>
+    </ng-template>
     <div class="nav-button-container">
         <button class="nav-button" (click)="goToCalendar()"><fa-icon class="navbar-icon" [icon]="faCalendar"></fa-icon></button>
         <button class="nav-button" (click)="goToStatistics()"><fa-icon class="navbar-icon" [icon]="faChartLine"></fa-icon></button>
