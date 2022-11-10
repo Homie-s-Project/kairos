@@ -10,6 +10,9 @@ import { LandingComponent } from './components/landing/landing.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { EventCardComponent } from './components/event-card/event-card.component';
+import { EventDetailsComponent } from './components/event-details/event-details.component';
+import { EventListComponent } from './components/event-list/event-list.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +21,10 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     LandingComponent,
     TimerComponent,
     StatisticsComponent,
-    NavbarComponent
+    NavbarComponent,
+    EventCardComponent,
+    EventDetailsComponent,
+    EventListComponent
   ],
   imports: [
     BrowserModule,
