@@ -68,14 +68,11 @@ export class StatisticsComponent implements OnInit {
     labels: [
       'Science / Math', 
       'Economie', 
-      'Allemand de caca',
-      'Science / Math', 
-      'Economie', 
       'Allemand de caca'
     ],
     datasets: [
       {
-        data: [145, 35, 65, 145, 35, 65],
+        data: [145, 35, 65],
         label: 'Temps de travail / étude',
         borderColor: 'rgba(239, 247, 247, 1)',
         backgroundColor: 'rgba(51, 87, 108, 0.85)'

@@ -1,5 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight, faEllipsis } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-timer',
@@ -19,6 +19,7 @@ export class TimerComponent implements OnInit {
   faCircleChevronDown: any = faCircleChevronDown;
   faCircleChevronLeft: any = faCircleChevronLeft;
   faCircleChevronRight: any = faCircleChevronRight;
+  faEllipsis: any = faEllipsis;
 
   constructor(private renderer: Renderer2) {
     this.renderer.removeClass(document.body, 'landing-background')

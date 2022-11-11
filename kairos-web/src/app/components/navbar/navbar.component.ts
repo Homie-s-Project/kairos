@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCircleLeft, faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCircleLeft, faCalendar, faChartLine, faPaw, faUser, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { NavbarService } from 'src/app/service/navbar.service';
 
 @Component({
@@ -14,6 +14,7 @@ export class NavbarComponent implements OnInit {
   faChartLine: any = faChartLine;
   faPaw: any = faPaw;
   faUser: any = faUser;
+  faEllipsis: any = faEllipsis;
 
   constructor(public nav: NavbarService, private _router: Router) { }
 
@@ -22,19 +23,19 @@ export class NavbarComponent implements OnInit {
   }
 
   goToTimer = () => {
-    this.nav.hideBackButton;
+    this.nav.hideBackButton();
     console.log(this.nav.isBackVisible)
     this._router.navigate(['timer']);
   }
 
   goToCalendar = () => {
-    this.nav.showBackButton;
+    this.nav.showBackButton();
     console.log(this.nav.isBackVisible)
     this._router.navigate(['calendar']);
   }
 
   goToStatistics = () => {
-    this.nav.showBackButton;
+    this.nav.showBackButton();
     console.log(this.nav.isBackVisible)
     this._router.navigate(['statistics']);
   }

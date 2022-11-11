@@ -5,11 +5,13 @@ import { Injectable } from '@angular/core';
 })
 export class NavbarService {
   isVisible: boolean;
-  isBackVisible: boolean
+  isBackVisible: boolean;
+  isStarted: boolean;
 
   constructor() {
     this.isVisible = true;
-    this.isBackVisible = false; 
+    this.isBackVisible = false;
+    this.isStarted = false;
   }
 
   hideNavbar = () => {
