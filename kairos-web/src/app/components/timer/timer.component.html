@@ -1,7 +1,8 @@
-<div id="timer">
-    <button class="timer-tongue" *ngIf="isStarted"><fa-icon [icon]="faEllipsis"></fa-icon></button>
+<div id="timer" @slideOutDown>
+<!-- <div id="timer"> -->
+    <button class="timer-tongue" *ngIf="nav.isStarted"><fa-icon [icon]="faEllipsis"></fa-icon></button>
     <div class="timer-countdown-container">
-        <button class="kairos-button down-time time-controler" [disabled]="isStarted == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
+        <button class="kairos-button down-time time-controler" [disabled]="nav.isStarted == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
         <div class="wrap">
             <div class="timer-container">
                 <div class="timer">
@@ -13,12 +14,12 @@
                 </div>
             </div>
             <div class="control-container">
-                <button class="kairos-button" *ngIf="!isStarted; else cancelButton" (click)="startTimer()">Démarrer</button>
+                <button class="kairos-button" *ngIf="!nav.isStarted; else cancelButton" (click)="startTimer()">Démarrer</button>
                 <ng-template #cancelButton>
                     <button class="kairos-button" (click)="stop()">Annuler</button>
                 </ng-template>
             </div>
         </div>
-        <button class="kairos-button up-time time-controler" [disabled]="isStarted == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
+        <button class="kairos-button up-time time-controler" [disabled]="nav.isStarted == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
     </div>
 </div>

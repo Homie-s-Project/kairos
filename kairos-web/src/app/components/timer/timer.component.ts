@@ -1,13 +1,23 @@
+import { animate, style, transition, trigger } from '@angular/animations';
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { NavbarService } from 'src/app/service/navbar.service';
+
+const leavingTransition = transition(':enter', [
+  style({transform: 'translateY(0%)'}),
+  animate('1000ms ease-out', style({transform: 'translateY(155%)'}))
+]);
+
+const slideOutDownAnimation = trigger('slideOutDown', 
+  [leavingTransition]);
 
 @Component({
   selector: 'app-timer',
   templateUrl: './timer.component.html',
-  styleUrls: ['./timer.component.scss']
+  styleUrls: ['./timer.component.scss'],
+  animations: [slideOutDownAnimation]
 })
 export class TimerComponent implements OnInit {
-  isStarted: boolean = false;
   minute: number = 0;
   second: number = 0;
   minString: string = "";
@@ -21,7 +31,7 @@ export class TimerComponent implements OnInit {
   faCircleChevronRight: any = faCircleChevronRight;
   faEllipsis: any = faEllipsis;
 
-  constructor(private renderer: Renderer2) {
+  constructor(public nav: NavbarService, private renderer: Renderer2) {
     this.renderer.removeClass(document.body, 'landing-background')
     this.renderer.addClass(document.getElementById('app-container'), 'centered');
     this.minString = this.updateTime(this.minute);
@@ -43,7 +53,7 @@ export class TimerComponent implements OnInit {
       return;
     }
     
-    this.isStarted = true;
+    this.nav.showNavbarTongue()
 
     // Play Animation
     if (circle != null) {
@@ -89,7 +99,7 @@ export class TimerComponent implements OnInit {
     this.minString = this.updateTime(this.minute);
     this.secString = this.updateTime(this.second);
 
-    this.isStarted = false;
+    this.nav.hideNavbarTongue()
   }
 
   updateTime = (i: number) => {

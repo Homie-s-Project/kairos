@@ -1,5 +1,6 @@
+<!-- <nav *ngIf="nav.isVisible" @slideOutUp> -->
 <nav *ngIf="nav.isVisible">
-    <div class="navbar">
+    <div class="navbar kairos-box-shadow">
         <button class="home-button" *ngIf="!nav.isBackVisible; else backButton"><h1 class="app-title">KAIROS</h1></button>
         <ng-template #backButton>
             <button class="back-button" (click)="goToTimer()"><fa-icon class="back-icon" [icon]="faCircleLeft"></fa-icon></button>
@@ -11,5 +12,5 @@
             <button class="nav-button" (click)="goToProfil()"><fa-icon class="navbar-icon" [icon]="faUser"></fa-icon></button>
         </div>
     </div>
-    <button class="nav-tongue" *ngIf="nav.isStarted"><fa-icon [icon]="faEllipsis"></fa-icon></button>
+    <button class="nav-tongue" *ngIf="nav.isStarted"><fa-icon class="tongue-icon" [icon]="faEllipsis"></fa-icon></button>
 </nav>

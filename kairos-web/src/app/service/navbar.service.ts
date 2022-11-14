@@ -21,7 +21,14 @@ export class NavbarService {
   showNavbar = () => {
     this.isVisible = true;
   }
+  hideNavbarTongue = () => {
+    this.isStarted = false;
+  }
 
+  showNavbarTongue = () => {
+    this.isStarted = true;
+  }
+  
   hideBackButton = () => {
     this.isBackVisible = false;
   }
