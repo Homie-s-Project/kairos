@@ -1,4 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
+import { NavbarService } from 'src/app/service/navbar.service';
 
 @Component({
   selector: 'app-calendar',
@@ -7,7 +8,8 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 })
 export class CalendarComponent implements OnInit {
 
-  constructor(private renderer: Renderer2) { 
+  constructor(public nav: NavbarService, private renderer: Renderer2) {
+    this.nav.showBackButton();
     this.renderer.removeClass(document.body, 'landing-background');
     this.renderer.removeClass(document.getElementById('app-container'), 'centered');
   }

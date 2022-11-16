@@ -1,6 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
+import { NavbarService } from 'src/app/service/navbar.service';
 
 @Component({
   selector: 'app-statistics',
@@ -46,12 +47,13 @@ export class StatisticsComponent implements OnInit {
   public typeDoughnutChartLabels: string[] = [
     'Science / Math', 
     'Economie', 
-    'Allemand de caca'
+    'Allemand',
+    'Autre'
   ]
 
   public typeDoughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
     {
-      data: [5, 7, 9], 
+      data: [5, 7, 9, 11], 
       label: "Serie A",
       borderColor: 'rgba(239, 247, 247, 1)',
       backgroundColor: 'rgba(51, 87, 108, 0.85)'
@@ -68,11 +70,12 @@ export class StatisticsComponent implements OnInit {
     labels: [
       'Science / Math', 
       'Economie', 
-      'Allemand de caca'
+      'Allemand',
+      'Autre'
     ],
     datasets: [
       {
-        data: [145, 35, 65],
+        data: [145, 35, 65, 85],
         label: 'Temps de travail / étude',
         borderColor: 'rgba(239, 247, 247, 1)',
         backgroundColor: 'rgba(51, 87, 108, 0.85)'
@@ -87,7 +90,8 @@ export class StatisticsComponent implements OnInit {
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor(private renderer: Renderer2) { 
+  constructor(public nav: NavbarService, private renderer: Renderer2) { 
+    this.nav.showBackButton();
     this.renderer.removeClass(document.body, 'landing-background');
     this.renderer.removeClass(document.getElementById('app-container'), 'centered');
   }

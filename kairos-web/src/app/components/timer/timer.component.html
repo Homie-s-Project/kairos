@@ -1,5 +1,5 @@
-<div id="timer" @slideOutDown>
-<!-- <div id="timer"> -->
+<!-- <div id="timer" @slideOutDown> -->
+<div id="timer">
     <button class="timer-tongue" *ngIf="nav.isStarted"><fa-icon [icon]="faEllipsis"></fa-icon></button>
     <div class="timer-countdown-container">
         <button class="kairos-button down-time time-controler" [disabled]="nav.isStarted == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>

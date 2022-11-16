@@ -33,17 +33,16 @@ export class NavbarComponent implements OnInit {
   }
 
   goToTimer = () => {
-    this.nav.hideBackButton();
+    
     this._router.navigate(['timer']);
   }
 
   goToCalendar = () => {
-    this.nav.showBackButton();
     this._router.navigate(['calendar']);
   }
 
   goToStatistics = () => {
-    this.nav.showBackButton();
+    
     this._router.navigate(['statistics']);
   }
 

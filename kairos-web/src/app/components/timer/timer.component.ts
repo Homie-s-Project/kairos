@@ -40,6 +40,7 @@ export class TimerComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.nav.hideBackButton();
     this.minString = this.updateTime(this.minute);
     this.secString = this.updateTime(this.second);
     this.animeState = 'paused';
