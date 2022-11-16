@@ -16,6 +16,7 @@ public class Reminder
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int ReminderId { get; set; }
+
     public DateTime ReminderTime { get; set; }
     [ForeignKey("Studies")] public int StudiesId { get; set; }
     public virtual Studies Studies { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Kairos.API.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Kairos.API.Migrations
 {
     [DbContext(typeof(KairosContext))]
-    partial class KairosContextModelSnapshot : ModelSnapshot
+    [Migration("20221117083922_FixFkGroupEvent")]
+    partial class FixFkGroupEvent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,21 +67,6 @@ namespace Kairos.API.Migrations
                     b.HasIndex("LabelsLabelId");
 
                     b.ToTable("GroupLabel");
-                });
-
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.Property<int>("GroupsGroupId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("UsersUserId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("GroupsGroupId", "UsersUserId");
-
-                    b.HasIndex("UsersUserId");
-
-                    b.ToTable("GroupUser");
                 });
 
             modelBuilder.Entity("Kairos.API.Models.Companion", b =>
@@ -157,6 +144,8 @@ namespace Kairos.API.Migrations
                     b.HasKey("GroupId");
 
                     b.HasIndex("EventId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Groups");
                 });
@@ -290,6 +279,9 @@ namespace Kairos.API.Migrations
                     b.Property<string>("FirstName")
                         .HasColumnType("text");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("LastName")
                         .HasColumnType("text");
 
@@ -300,6 +292,8 @@ namespace Kairos.API.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Users");
                 });
@@ -364,21 +358,6 @@ namespace Kairos.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GroupUser", b =>
-                {
-                    b.HasOne("Kairos.API.Models.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupsGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Kairos.API.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Kairos.API.Models.Companion", b =>
                 {
                     b.HasOne("Kairos.API.Models.User", "User")
@@ -396,7 +375,15 @@ namespace Kairos.API.Migrations
                         .WithMany()
                         .HasForeignKey("EventId");
 
+                    b.HasOne("Kairos.API.Models.User", "GouprOwnerUser")
+                        .WithMany("Groups")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Event");
+
+                    b.Navigation("GouprOwnerUser");
                 });
 
             modelBuilder.Entity("Kairos.API.Models.Label", b =>
@@ -443,6 +430,13 @@ namespace Kairos.API.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Kairos.API.Models.User", b =>
+                {
+                    b.HasOne("Kairos.API.Models.Group", null)
+                        .WithMany("Users")
+                        .HasForeignKey("GroupId");
+                });
+
             modelBuilder.Entity("LabelStudies", b =>
                 {
                     b.HasOne("Kairos.API.Models.Label", null)
@@ -456,6 +450,16 @@ namespace Kairos.API.Migrations
                         .HasForeignKey("StudiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Kairos.API.Models.Group", b =>
+                {
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Kairos.API.Models.User", b =>
+                {
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }
