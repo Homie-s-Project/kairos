@@ -13,6 +13,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { EventCardComponent } from './components/event-card/event-card.component';
 import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { EventListComponent } from './components/event-list/event-list.component';
+import { ErrorNotFoundComponent } from './components/error-not-found/error-not-found.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { EventListComponent } from './components/event-list/event-list.component
     NavbarComponent,
     EventCardComponent,
     EventDetailsComponent,
-    EventListComponent
+    EventListComponent,
+    ErrorNotFoundComponent
   ],
   imports: [
     BrowserModule,

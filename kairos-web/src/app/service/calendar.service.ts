@@ -28,7 +28,7 @@ export class CalendarService {
     const id: number = this.getNextEventId();
     const event: EventModel = {
       id,
-      title: 'Tâche #' + id
+      title: 'Event #' + id
     };
     this.events.push(event);
     

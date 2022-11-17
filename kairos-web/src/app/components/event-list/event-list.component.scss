@@ -1,0 +1,12 @@
+:host {
+    display: flex;
+    flex-wrap: wrap;
+    align-content: start;
+}
+
+app-event-card {
+    margin: 6px;
+    flex: 1 1;
+    min-width: 384px;
+    max-width: 384px;
+}

@@ -1,1 +1,20 @@
-<p>event-card works!</p>
+<div class="header">
+    <div>
+        <h2>#{{ event?.id }}</h2>
+        <h1>{{ event?.title }}</h1>
+    </div>
+    <button>
+        <fa-icon [icon]="faEllipsisVertical"></fa-icon>
+    </button>
+    <div xPosition="before">
+        <button disabled>
+            <span>Edit</span>
+        </button>
+        <button (click)="onRemoveClicked.emit(event)">
+            <span>Delete</span>
+        </button>
+    </div>
+    <button  [routerLink]="['/events', event?.id]">
+        <span>See event</span>
+    </button>
+</div>

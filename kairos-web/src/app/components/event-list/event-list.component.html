@@ -1,1 +1,6 @@
-<p>event-list works!</p>
+<app-event-card
+    *ngFor="let event of events"
+    [event]="event"
+    (onRemoveClicked)="onRemoveEventClicked.emit($event)"
+    >
+</app-event-card>
