@@ -1,16 +1,15 @@
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Kairos.API.Utils.Microsoft.Models;
+using Kairos.API.Utils.Google.Models;
 
-namespace Kairos.API.Utils.Microsoft;
+namespace Kairos.API.Utils.Google;
 
-public class OAuth2Microsoft
+public class OAuth2Google
 {
     public class AuthorizeOptions
     {
         public string ClientId { get; set; }
-        public string TenantId { get; set; }
         public string RedirectUri { get; set; }
         public string State { get; set; }
         public string Scope { get; set; }
@@ -19,17 +18,16 @@ public class OAuth2Microsoft
     public static class OAuthHelper
     {
         public const string OAuthEndpoint =
-            "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token";
+            "https://oauth2.googleapis.com/token";
 
-        public const string AuthorizeEndpoint = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize";
+        public const string AuthorizeEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
         public static string GetAuthorizeUrl(AuthorizeOptions opts)
         {
-            var url = AuthorizeEndpoint.Replace("{tenant}", opts.TenantId)
+            var url = AuthorizeEndpoint
                 .SetQueryParam("client_id", opts.ClientId)
                 .SetQueryParam("response_type", "code")
                 .SetQueryParam("redirect_uri", opts.RedirectUri)
-                .SetQueryParam("response_mode", "query")
                 .SetQueryParam("state", opts.State)
                 .SetQueryParam("scope", opts.Scope);
 
@@ -37,7 +35,6 @@ public class OAuth2Microsoft
         }
 
         public static Task<OAuthResponse> GetAccessTokenAsync(string code, string clientId, string clientSecret,
-            string tenantId,
             string redirectUri)
         {
             var form = new
@@ -49,7 +46,7 @@ public class OAuth2Microsoft
                 code,
             };
 
-            return OAuthEndpoint.Replace("{tenant}", tenantId)
+            return OAuthEndpoint
                 .PostUrlEncodedAsync(form)
                 .ReceiveJson<OAuthResponse>();
         }

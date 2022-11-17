@@ -7,10 +7,10 @@ namespace Kairos.API.Models;
 
 public class User
 {
-    public User(string microsoftId, string lastName, string firstName, DateTime birthDate, string email,
+    public User(string serviceId, string lastName, string firstName, DateTime birthDate, string email,
         DateTime lastUpdatedAt)
     {
-        MicrosoftId = microsoftId;
+        ServiceId = serviceId;
         LastName = lastName;
         FirstName = firstName;
         BirthDate = birthDate;
@@ -23,7 +23,7 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
 
-    public string MicrosoftId { get; set; }
+    public string ServiceId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public DateTime BirthDate { get; set; }

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Kairos.API.Utils.Microsoft.Models
+namespace Kairos.API.Utils.Google.Models
 {
     public class Json
     {

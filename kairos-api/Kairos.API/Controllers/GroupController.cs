@@ -28,7 +28,7 @@ public class GroupController : SecurityController
     {
         var userContext = (User) HttpContext.Items["User"];
 
-        var groups = _context.Groups.Where(g => g.UserId == userContext.UserId).ToList();
+        var groups = _context.Groups.Where(g => g.Users.Where(u => u.UserId == userContext.UserId).ToList().Count > 0).ToList();
         if (groups.Count > 0)
         {
             return Ok(groups);
