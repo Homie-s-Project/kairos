@@ -20,7 +20,6 @@ public class StudiesController : SecurityController
     [HttpGet("heartbeat")]
     public async Task<IActionResult> HeartBeat()
     {
-        
         var user = (User) HttpContext.Items["User"];
 
         // Si l'utilisateur n'est pas connecté,
@@ -29,13 +28,13 @@ public class StudiesController : SecurityController
             return Forbid("Not access");
         }
 
-        var encryptMicrosoftId = CryptoUtils.Encrypt(user.MicrosoftId);
+        var encryptMicrosoftId = CryptoUtils.Encrypt(user.ServiceId);
         if (!_memoryCache.TryGetValue(encryptMicrosoftId, out DateTime outState))
         {
             RefreshMemory(encryptMicrosoftId);
             return Ok("Started studies");
         }
-        
+
         RefreshMemory(encryptMicrosoftId);
         return Ok("Continue studies");
     }

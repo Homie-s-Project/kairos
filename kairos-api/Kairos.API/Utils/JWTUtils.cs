@@ -5,12 +5,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Crypto.AES;
-using Kairos.API;
 using Kairos.API.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
-namespace midas_api.Utils;
+namespace Kairos.API.Utils;
 
 public static class JwtUtils
 {
@@ -20,7 +19,7 @@ public static class JwtUtils
     {
         _config = Startup.StaticConfig;
     }
-    
+
     /// <summary>
     /// Chiffre le texte en paramètre
     /// </summary>
@@ -40,7 +39,8 @@ public static class JwtUtils
     private static string Decrypt(string encrypted)
     {
         var secretKey = _config.GetSection("Jwt")["SecretKey"];
-        return AES.DecryptString(secretKey, encrypted);;
+        return AES.DecryptString(secretKey, encrypted);
+        ;
     }
 
     /// <summary>
@@ -57,7 +57,7 @@ public static class JwtUtils
         var claims = new[]
         {
             new Claim("id", user.UserId.ToString()),
-            new Claim("microsoftId", user.MicrosoftId),
+            new Claim("microsoftId", user.ServiceId),
             new Claim("DateOfJoining", user.CreatedAt.ToString(CultureInfo.InvariantCulture)),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
@@ -65,7 +65,7 @@ public static class JwtUtils
         var configurationSection = _config.GetSection("Jwt");
         var jwtIssuer = configurationSection["Issuer"];
         var jwtAudience = configurationSection["Audience"];
-        
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -81,7 +81,7 @@ public static class JwtUtils
         var beEncrypted = tokenHandler.WriteToken(token);
         return Encrypt(beEncrypted);
     }
-    
+
     /// <summary>
     /// Permet de validé le jwt donné
     /// </summary>
@@ -94,7 +94,7 @@ public static class JwtUtils
         {
             return null;
         }
-        
+
         var jwtKey = _config.GetSection("Jwt")["Key"];
         var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey));
         var tokenHandler = new JwtSecurityTokenHandler();

@@ -1,4 +1,3 @@
-using System;
 using Kairos.API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,7 +6,6 @@ namespace Kairos.API.Context;
 
 public class KairosContext : DbContext
 {
-
     protected readonly IConfiguration _configuration;
 
     protected KairosContext(IConfiguration configuration)
@@ -37,4 +35,6 @@ public class KairosContext : DbContext
     public DbSet<Label> Labels { get; set; }
     public DbSet<Reminder> Reminders { get; set; }
     public DbSet<Studies> Studies { get; set; }
+    public DbSet<Companion> Companions { get; set; }
+    public DbSet<Item> Items { get; set; }
 }

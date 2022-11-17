@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,22 +7,10 @@ namespace Kairos.API.Models;
 
 public class User
 {
-    
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int UserId { get; set; }
-    public string MicrosoftId { get; set; }
-    public string LastName { get; set; }
-    public string FirstName { get; set; }
-    public DateTime BirthDate { get; set; }
-    public string Email { get; set; }
-    public DateTime CreatedAt { get; set; }
-    public DateTime LastUpdatedAt { get; set; }
-    public ICollection<Group> Groups { get; set; }
-
-    public User(string microsoftId, string lastName, string firstName, DateTime birthDate, string email, DateTime lastUpdatedAt)
+    public User(string serviceId, string lastName, string firstName, DateTime birthDate, string email,
+        DateTime lastUpdatedAt)
     {
-        MicrosoftId = microsoftId;
+        ServiceId = serviceId;
         LastName = lastName;
         FirstName = firstName;
         BirthDate = birthDate;
@@ -31,4 +18,18 @@ public class User
         CreatedAt = DateTime.UtcNow;
         LastUpdatedAt = lastUpdatedAt;
     }
+
+    [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public int UserId { get; set; }
+
+    public string ServiceId { get; set; }
+    public string LastName { get; set; }
+    public string FirstName { get; set; }
+    public DateTime BirthDate { get; set; }
+    public string Email { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime LastUpdatedAt { get; set; }
+
+    public virtual ICollection<Group> Groups { get; set; }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace Kairos.API.Utils.Microsoft;
+namespace Kairos.API.Utils.Google;
 
 public class Helper
 {
