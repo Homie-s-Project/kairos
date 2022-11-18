@@ -4,6 +4,7 @@ using Kairos.API.Context;
 using Kairos.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Kairos.API.Controllers;
 
@@ -28,13 +29,15 @@ public class GroupController : SecurityController
     {
         var userContext = (User) HttpContext.Items["User"];
 
-        var groups = _context.Groups.Where(g => g.Users.Where(u => u.UserId == userContext.UserId).ToList().Count > 0).ToList();
-        if (groups.Count > 0)
+        var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
+        var groups = _context.Groups.Where(g => g.Users.Contains(user)).AsSplitQuery().Include(g => g.Event)
+            .Include(g => g.Labels).Include(g => g.Users).ToList();
+        if (groups.Count == 0)
         {
-            return Ok(groups);
+            return NotFound("No group found");
         }
 
-        return NotFound("No group found");
+        return Ok(groups);
     }
 
     /// <summary>
@@ -50,12 +53,12 @@ public class GroupController : SecurityController
 
         var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.UserId == userConterxt.UserId)
             .ToList();
-        if (groups.Count > 0)
+        if (groups.Count == 0)
         {
-            return Ok(groups);
+            return NotFound("No group found");
         }
 
-        return NotFound("No group found");
+        return Ok(groups);
     }
 
     [HttpPost("create", Name = "Create a group")]
