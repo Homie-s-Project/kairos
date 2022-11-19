@@ -5,7 +5,7 @@ WORKDIR /usr/src/app
 
 COPY package.json package-lock.json /usr/src/app/
 RUN npm install
-RUN npm install -g @angular/cli@14.2.2
+RUN npm install -g @angular/cli@15.0.0
 
 COPY  . .
 RUN ng analytics off
