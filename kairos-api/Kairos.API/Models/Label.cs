@@ -17,8 +17,9 @@ public class Label
     public int LabelId { get; set; }
 
     [MaxLength(50)] public string LabelTitle { get; set; }
+
     [ForeignKey("User")] public int UserId { get; set; }
-    public User User { get; set; }
+    public virtual User User { get; set; }
 
     public ICollection<Group> Groups { get; set; }
     public ICollection<Event> Events { get; set; }

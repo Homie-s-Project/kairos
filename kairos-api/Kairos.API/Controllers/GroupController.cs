@@ -30,8 +30,14 @@ public class GroupController : SecurityController
         var userContext = (User) HttpContext.Items["User"];
 
         var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
-        var groups = _context.Groups.Where(g => g.Users.Contains(user)).AsSplitQuery().Include(g => g.Event)
-            .Include(g => g.Labels).Include(g => g.Users).ToList();
+        var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.UserId == userContext.UserId)
+            .AsSplitQuery()
+            .Include(g => g.Event)
+            .Include(g => g.Labels)
+            .Include(g => g.Users)
+            .Select(g => new GroupDto(g))
+            .ToList();
+
         if (groups.Count == 0)
         {
             return NotFound("No group found");
@@ -52,7 +58,9 @@ public class GroupController : SecurityController
         var userConterxt = (User) HttpContext.Items["User"];
 
         var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.UserId == userConterxt.UserId)
+            .Select(g => new GroupDto(g))
             .ToList();
+
         if (groups.Count == 0)
         {
             return NotFound("No group found");
@@ -82,6 +90,6 @@ public class GroupController : SecurityController
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
 
-        return Ok(group);
+        return Ok(new GroupDto(group));
     }
 }

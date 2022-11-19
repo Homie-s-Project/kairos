@@ -18,12 +18,12 @@ public class UserController : SecurityController
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetMe()
     {
-        var user = HttpContext.Items["User"];
+        var userContext = (User) HttpContext.Items["User"];
 
         // Si l'utilisateur est trouvé grâce au cookie
-        if (user != null)
+        if (userContext != null)
         {
-            return Ok(user);
+            return Ok(new UserDTO(userContext));
         }
 
         return Forbid("not access");

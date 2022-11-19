@@ -28,7 +28,14 @@ public class LabelController : SecurityController
     {
         var userContext = (User) HttpContext.Items["User"];
 
-        var labels = _context.Labels.Where(l => l.UserId == userContext.UserId).ToList();
+        var labels = _context.Labels.Where(l => l.UserId == userContext.UserId)
+            .AsSplitQuery()
+            .Include(l => l.Groups)
+            .Include(l => l.Events)
+            .Include(l => l.Studies)
+            .Select(l => new LabelDto(l))
+            .ToList();
+
         if (labels.Count > 0)
         {
             return Ok(labels);
@@ -60,7 +67,9 @@ public class LabelController : SecurityController
         }
 
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var events = _context.Events.Where(e => e.EventId == eventIdParsed).Include(e => e.Labels).ToList();
+        var events = _context.Events.Where(e => e.EventId == eventIdParsed)
+            .Include(e => e.Labels)
+            .ToList();
 
         if (events.Count == 0)
         {
@@ -93,7 +102,15 @@ public class LabelController : SecurityController
         }
 
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed).Include(g => g.Labels).ToList();
+        var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed)
+            .Include(g => g.Labels)
+            .Select(g => new
+            {
+                g.GroupId,
+                g.GroupName,
+                ownderId = g.UserId,
+            })
+            .ToList();
 
         if (groups.Count == 0)
         {

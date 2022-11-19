@@ -80,6 +80,7 @@ namespace Kairos.API
             // Ajout la gestion d'un cache en mémoire
             services.AddMemoryCache();
 
+            // évite la boucle infinie lors de la sérialisation des objets
             services.AddControllers().AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
