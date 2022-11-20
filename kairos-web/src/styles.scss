@@ -33,6 +33,13 @@ html {
     }
 }
 
+.kairos-box-shadow {
+    box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+    border-radius: 15px;
+}
+
 .centered {
     display: flex;
     justify-content: center;

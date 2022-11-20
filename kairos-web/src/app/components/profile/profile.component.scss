@@ -1,54 +1,60 @@
 @use '/src/styles/variables.scss' as vars;
 
-.kairos-box-shadow {
-  box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-  -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-  -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-  border-radius: 15px;
-}
-
 .profile-app-container {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  grid-template-rows: repeat(2, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
   max-width: 80%;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   margin: auto;
-
-    .profil {
-      grid-area: 1 / 1/ 2/ 4 ;
+  gap: 30px;
+    .profile-container {
+      padding: 15px;
       background-color: vars.$first-color;
     }
-
-    .label {
-      grid-area: 2 / 1 / 2;
-      background-color: vars.$first-color;
-      margin-top: 10%;
-
-      .kairos-box-input {
-        display: flex;
-        justify-content: center;
-        gap:5px;
-
-        .kairos-input {
-          border-radius: 8px;
-          gap: 10px 20px;
-          width: 40%;
-          margin-bottom: 4px;
+    .g-pas-de-nom-trouve-un-nom-christopher {
+      display: flex;
+      gap: 30px;
+      div {
+        width: 50%;
+      }
+      .label-container {
+        background-color: vars.$first-color;
+        padding: 15px;
+        .label-content {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          .label-input {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: auto;
+            input {
+              font-size: 18px;
+              border-radius: 8px;
+              gap: 10px 20px;
+              margin-bottom: 4px;
+              &:disabled {
+                border-style: none;
+                background-color: none;
+              }
+            }
+            .label-edit-controller {
+              display: flex;
+              justify-content: space-between;
+              width: 60px;
+              button {
+                font-size: 18px;
+                border-style: none;
+                background-color: transparent; 
+              }
+            }
+          }
         }
       }
-    }
-    .group {
-      grid-area: 2 / 3 / 4;
-      background-color: vars.$first-color;
-      margin-top: 10%;
+      .group-container {
+        padding: 15px;
+        background-color: vars.$first-color;
+      }
     }
 }
-.profile-container {
-  margin-left: 2%;
-  margin-right: 2%;
-}
-
-

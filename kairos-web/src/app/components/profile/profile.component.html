@@ -1,24 +1,29 @@
 <div class="profile-app-container">
-  <div class="kairos-box-shadow profil">
-    <div class="profile-container">
-      <h1> Profil </h1>
-      <p> profile works! </p>
+  <h1>Page de profil</h1>
+  <div class="kairos-box-shadow profile-container">
+    <h2 class="profile-title">Profil</h2>
+    <div class="profile-content">
+      <p>profile works!</p>
     </div>
   </div>
-  <div class="kairos-box-shadow label">
-    <div class="profile-container">
-      <h1> Label </h1>
-      <div class="kairos-box-input" *ngFor="let label of labels">
-        <input class="kairos-input" value="{{label.name}}" disabled="true">
-        <fa-icon [icon]="faPencil"></fa-icon><fa-icon [icon]="faTrashCan"></fa-icon>
-
+  <div class="g-pas-de-nom-trouve-un-nom-christopher">
+    <div class="kairos-box-shadow label-container">
+      <h2 class="label-title">Label</h2>
+      <div class="label-content">
+        <div class="label-input" *ngFor="let label of labels">
+          <input value="{{label.name}}" disabled="true">
+          <div class="label-edit-controller">
+            <button><fa-icon [icon]="faPencil"></fa-icon></button>
+            <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="kairos-box-shadow group">
-    <div class="profile-container">
-      <h1> Groupe </h1>
-      <p> profile works!</p>
+    <div class="kairos-box-shadow group-container">
+      <h2 class="group-title">Groupe</h2>
+      <div class="group-content">
+        <p>profile works!</p>
+      </div>
     </div>
   </div>
 </div>
