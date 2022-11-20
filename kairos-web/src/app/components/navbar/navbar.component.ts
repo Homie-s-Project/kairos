@@ -29,7 +29,7 @@ export class NavbarComponent implements OnInit {
   }
 
   goToStatistics = () => {
-    
+
     this._router.navigate(['statistics'])
   }
 
@@ -38,7 +38,7 @@ export class NavbarComponent implements OnInit {
   }
 
   goToProfil = () => {
-    throw new Error('Method not implemented.');
+    this._router.navigate(['profile'])
   }
 
 }

@@ -4,7 +4,9 @@ import { TimerComponent } from './components/timer/timer.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
- 
+import * as path from "path";
+import {ProfileComponent} from "./components/profile/profile.component";
+
 const routes: Routes = [
   {
     path: 'timer',
@@ -21,6 +23,10 @@ const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent
+  },
+  {
+    path:'profile',
+    component: ProfileComponent
   },
   {
     path: '',

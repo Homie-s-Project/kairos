@@ -1,0 +1,54 @@
+@use '/src/styles/variables.scss' as vars;
+
+.kairos-box-shadow {
+  box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+  -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+  -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
+  border-radius: 15px;
+}
+
+.profile-app-container {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  max-width: 80%;
+  justify-content: center;
+  margin: auto;
+
+    .profil {
+      grid-area: 1 / 1/ 2/ 4 ;
+      background-color: vars.$first-color;
+    }
+
+    .label {
+      grid-area: 2 / 1 / 2;
+      background-color: vars.$first-color;
+      margin-top: 10%;
+
+      .kairos-box-input {
+        display: flex;
+        justify-content: center;
+        gap:5px;
+
+        .kairos-input {
+          border-radius: 8px;
+          gap: 10px 20px;
+          width: 40%;
+          margin-bottom: 4px;
+        }
+      }
+    }
+    .group {
+      grid-area: 2 / 3 / 4;
+      background-color: vars.$first-color;
+      margin-top: 10%;
+    }
+}
+.profile-container {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+

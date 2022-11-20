@@ -1,0 +1,24 @@
+<div class="profile-app-container">
+  <div class="kairos-box-shadow profil">
+    <div class="profile-container">
+      <h1> Profil </h1>
+      <p> profile works! </p>
+    </div>
+  </div>
+  <div class="kairos-box-shadow label">
+    <div class="profile-container">
+      <h1> Label </h1>
+      <div class="kairos-box-input" *ngFor="let label of labels">
+        <input class="kairos-input" value="{{label.name}}" disabled="true">
+        <fa-icon [icon]="faPencil"></fa-icon><fa-icon [icon]="faTrashCan"></fa-icon>
+
+      </div>
+    </div>
+  </div>
+  <div class="kairos-box-shadow group">
+    <div class="profile-container">
+      <h1> Groupe </h1>
+      <p> profile works!</p>
+    </div>
+  </div>
+</div>
