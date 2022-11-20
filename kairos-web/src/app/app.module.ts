@@ -11,9 +11,9 @@ import { TimerComponent } from './components/timer/timer.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { EventCardComponent } from './components/event-card/event-card.component';
-import { EventDetailsComponent } from './components/event-details/event-details.component';
 import { EventListComponent } from './components/event-list/event-list.component';
 import { ErrorNotFoundComponent } from './components/error-not-found/error-not-found.component';
+import { EventEditComponent } from './components/event-edit/event-edit.component';
 
 @NgModule({
   declarations: [
@@ -24,9 +24,9 @@ import { ErrorNotFoundComponent } from './components/error-not-found/error-not-f
     StatisticsComponent,
     NavbarComponent,
     EventCardComponent,
-    EventDetailsComponent,
     EventListComponent,
-    ErrorNotFoundComponent
+    ErrorNotFoundComponent,
+    EventEditComponent
   ],
   imports: [
     BrowserModule,

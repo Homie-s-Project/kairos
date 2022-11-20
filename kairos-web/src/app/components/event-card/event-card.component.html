@@ -1,20 +1,11 @@
-<div class="header">
-    <div>
-        <h2>#{{ event?.id }}</h2>
-        <h1>{{ event?.title }}</h1>
+<div class="card-container" (click)="goToEvent(event?.id)">
+    <h1 class="card-title">{{ event?.title }}</h1>
+    <hr />
+    <!-- <p class="card-description">
+        {{ event?.description }}
+    </p> -->
+    <div class="card-data">
+        <p class="event-date"><fa-icon [icon]="faCalendar"></fa-icon> {{ event?.sessionDate }}</p>
+        <p class="event-label"><fa-icon [icon]="faTag"></fa-icon> {{ event?.label }}</p>
     </div>
-    <button>
-        <fa-icon [icon]="faEllipsisVertical"></fa-icon>
-    </button>
-    <div xPosition="before">
-        <button disabled>
-            <span>Edit</span>
-        </button>
-        <button (click)="onRemoveClicked.emit(event)">
-            <span>Delete</span>
-        </button>
-    </div>
-    <button  [routerLink]="['/events', event?.id]">
-        <span>See event</span>
-    </button>
 </div>

@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { CalendarService, EventModel } from 'src/app/service/calendar.service';
-import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { CalendarService } from 'src/app/service/calendar.service';
+import { faTag, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { EventModel } from 'src/app/models/event.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-event-card',
@@ -8,14 +10,13 @@ import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./event-card.component.scss']
 })
 export class EventCardComponent implements OnInit, OnDestroy {
-  faEllipsisVertical: any = faEllipsisVertical;
+  faTag: any = faTag;
+  faCalendar: any = faCalendar;
 
   @Input() event: EventModel|undefined;
   @Output() onRemoveClicked: EventEmitter<EventModel> = new EventEmitter<EventModel>();
 
-  constructor(
-    private calendarService: CalendarService
-  ) {
+  constructor(private calendarService: CalendarService, private _router: Router, ) {
   }
 
   ngOnInit(): void {
@@ -24,4 +25,12 @@ export class EventCardComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
   }
 
+  goToEvent = (eventId: number|undefined) => {
+    if (typeof eventId == undefined) {
+      alert('L\'event ne peut pas être "undefined"')
+      return 
+    }
+
+    this._router.navigate(['/calendar', eventId])
+  }
 }

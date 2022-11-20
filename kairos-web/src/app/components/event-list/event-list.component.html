@@ -1,6 +1,7 @@
-<app-event-card
+<app-event-card class="kairos-box-shadow"
     *ngFor="let event of events"
     [event]="event"
+    [id]="'event-card-' + event?.id"
     (onRemoveClicked)="onRemoveEventClicked.emit($event)"
     >
 </app-event-card>

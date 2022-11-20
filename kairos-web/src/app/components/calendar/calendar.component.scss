@@ -1,0 +1,27 @@
+@use '/src/styles/variables.scss' as vars;
+
+.calendar-container {
+    padding: 30px 120px 30px 120px;
+    .event-content {
+        display: flex;
+        flex-grow: 1;
+        .event-edit {
+            display: flex;
+            flex-direction: column;
+            max-width: 420px;
+            min-width: 420px;
+            padding: 30px;
+            position: relative;
+            border-radius: 15px;
+            background-color: vars.$first-color;
+            .edit-controller {
+                display: flex;
+                justify-content: space-between;
+                .edit-buttons {
+                    border-style: none;
+                    background-color: none;
+                }
+            }
+        }
+    }
+}

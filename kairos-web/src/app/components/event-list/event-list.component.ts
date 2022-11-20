@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { CalendarService, EventModel } from 'src/app/service/calendar.service';
+import { EventModel } from 'src/app/models/event.model';
+import { CalendarService } from 'src/app/service/calendar.service';
 
 @Component({
   selector: 'app-event-list',
@@ -11,9 +12,7 @@ export class EventListComponent implements OnInit {
   @Input() events: EventModel[] = [];
   @Output() onRemoveEventClicked: EventEmitter<EventModel> = new EventEmitter<EventModel>();
 
-  constructor(
-    private calendarService: CalendarService
-  ) { }
+  constructor(private calendarService: CalendarService) { }
 
   ngOnInit(): void {
   }

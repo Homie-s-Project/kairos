@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { EventModel } from '../models/event.model';
 
 @Injectable({
   providedIn: 'root'
@@ -7,11 +8,11 @@ export class CalendarService {
 
   private nextEventId: number = 128;
   private events: EventModel[] = [
-    { id: 123, title: 'Se présenter aux consultations', description: 'Rattraper les 8h de consultation de la semaine dernière.', assignedTo: 'Gregory House' },
-    { id: 124, title: 'Fouiller appartement de Mme Thomson', description: 'Rechercher des traces de moisissures.', assignedTo: 'Eric Foreman' },
-    { id: 125, title: 'Remplacer la vicodin par des placebo ', description: 'Voir avec le pharmacien comment procéder exactement.', assignedTo: 'Lisa Cuddy' },
-    { id: 126, title: 'Faire la prise de sang à Mme Thomson au labo', description: 'Chambre 706, puis l\'envoyer au labo', assignedTo: 'Eric Foreman' },
-    { id: 127, title: 'Faire le test pour la chorée de huntington', description: 'Qu\'on soit fixer une fois pour toute !', assignedTo: 'Numéro 13' }
+    { id: 1, title: 'Etudier les logarithmes', description: 'Test logarithmes 16 novembre, revoir les règles de simplification et refaire les exercices', label: 'Math', sessionDate: '15.11.2022' },
+    { id: 2, title: 'Test Economie', description: 'Test économie sur les systèmes économique', label: 'Economie', sessionDate: '22.11.2022' },
+    { id: 3, title: 'Apprendre vocabulaire d\'anglais', description: 'Réviser vobulaire de l\'Unit 6 pour le test', label: 'Anglais', sessionDate: '22.11.2022' },
+    { id: 4, title: 'Lorem ipsum', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam malesuada libero odio, a mattis augue efficitur vel. Cras in lectus at eros porta sagittis. Morbi eu libero tortor. Phasellus in congue lacus. Duis mollis, orci at facilisis tempus, urna libero cursus sapien, in interdum lacus tortor eget neque. Nullam metus leo, viverra sit amet imperdiet et, mattis eu dolor.', label: 'Lorem ipsum', sessionDate: '01.01.1901' },
+    { id: 5, title: 'Lorem ipsum', description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam malesuada libero odio, a mattis augue efficitur vel. Cras in lectus at eros porta sagittis. Morbi eu libero tortor.', label: 'Lorem ipsum', sessionDate: '01.01.1901' }
   ];
 
   constructor() { }
@@ -52,12 +53,4 @@ export class CalendarService {
     this.nextEventId++;
     return id;
   }
-}
-
-export interface EventModel {
-  id: number;
-  title: string;
-  description?: string;
-  assignedTo?: string;
-  dueDate?: string;
 }

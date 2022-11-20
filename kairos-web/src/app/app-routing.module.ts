@@ -4,7 +4,8 @@ import { TimerComponent } from './components/timer/timer.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
-import { EventCardComponent } from './components/event-card/event-card.component';
+import { EventEditComponent } from './components/event-edit/event-edit.component';
+
  
 const routes: Routes = [
   {
@@ -21,11 +22,11 @@ const routes: Routes = [
   },
   {
     path: 'calendar',
-    component: CalendarComponent
-  },
-  {
-    path: 'events',
-    component: EventCardComponent
+    component: CalendarComponent,
+    children : [
+      { path: ':eventId',
+      component: EventEditComponent } 
+    ]
   },
   {
     path: '',
