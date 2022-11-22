@@ -24,13 +24,13 @@ const routes: Routes = [
     component: CalendarComponent
   },
   {
-    path: '**',
-    component: ErrorComponent
-  },
-  {
     path: '',
     redirectTo: 'timer',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    component: ErrorComponent
   }
 ];
 
