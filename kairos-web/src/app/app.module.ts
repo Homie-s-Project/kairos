@@ -10,6 +10,7 @@ import { LandingComponent } from './components/landing/landing.component';
 import { TimerComponent } from './components/timer/timer.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ErrorComponent } from './components/error/error.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     LandingComponent,
     TimerComponent,
     StatisticsComponent,
-    NavbarComponent
+    NavbarComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
