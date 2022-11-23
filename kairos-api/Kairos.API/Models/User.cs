@@ -23,13 +23,12 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int UserId { get; set; }
 
-    public string ServiceId { get; set; }
+    [Required] public string ServiceId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
     public DateTime BirthDate { get; set; }
-    public string Email { get; set; }
+    [Required] public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime LastUpdatedAt { get; set; }
-
     public virtual ICollection<Group> Groups { get; set; }
 }

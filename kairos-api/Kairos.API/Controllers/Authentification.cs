@@ -263,7 +263,7 @@ public class Authentification : BaseController
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
         }
 
-        return Redirect("http://localhost:4200/logged");
+        return Redirect("http://localhost:4200/");
     }
 
     /// <summary>
@@ -333,7 +333,7 @@ public class Authentification : BaseController
 
         var client = await new GoogleClient(encryptedAccessToken).GetUserAsync();
 
-        var googleId = client.ResourceName.Replace("people/0", "");
+        var googleId = client.ResourceName.Replace("people/", "");
         var googleName = client.Names.First();
         var googleEmail = client.EmailAddresses.First();
         var googleBirthday = client.Birthdays.First();
@@ -419,6 +419,6 @@ public class Authentification : BaseController
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
         }
 
-        return Redirect("http://localhost:4200/logged");
+        return Redirect("http://localhost:4200/");
     }
 }

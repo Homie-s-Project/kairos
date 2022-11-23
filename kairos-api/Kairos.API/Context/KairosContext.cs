@@ -1,16 +1,12 @@
 using Kairos.API.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Kairos.API.Context;
 
 public class KairosContext : DbContext
 {
-    protected readonly IConfiguration _configuration;
-
-    protected KairosContext(IConfiguration configuration)
+    protected KairosContext()
     {
-        _configuration = configuration;
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
