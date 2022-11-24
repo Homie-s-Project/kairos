@@ -33,10 +33,12 @@ public class Authentification : BaseController
     private readonly string _microsoftClientSecret;
     private readonly string _microsoftTenantId;
     private readonly string _microsoftRedirectUri;
+    private readonly string _microsoftRedirectFront;
 
     private readonly string _googleClientId;
     private readonly string _googleClientSecret;
     private readonly string _googleRedirectUri;
+    private readonly string _googleRedirectFront;
 
     public Authentification(ILogger<Authentification> logger, KairosContext context, IMemoryCache memoryCache,
         IConfiguration config, IWebHostEnvironment env)
@@ -53,11 +55,13 @@ public class Authentification : BaseController
         _microsoftClientSecret = configurationSectionMicrosoft["ClientSecret"];
         _microsoftTenantId = configurationSectionMicrosoft["TenantId"];
         _microsoftRedirectUri = configurationSectionMicrosoft["RedirectUri"];
+        _microsoftRedirectFront = configurationSectionMicrosoft["RedirectFront"];
 
         var configurationSectionGoogle = _config.GetSection("Authentication:Google");
         _googleClientId = configurationSectionGoogle["ClientId"];
         _googleClientSecret = configurationSectionGoogle["ClientSecret"];
         _googleRedirectUri = configurationSectionGoogle["RedirectUri"];
+        _googleRedirectFront = configurationSectionGoogle["RedirectFront"];
     }
 
     /// <summary>
@@ -263,7 +267,7 @@ public class Authentification : BaseController
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
         }
 
-        return Redirect("http://localhost:4200/");
+        return Redirect(_microsoftRedirectFront);
     }
 
     /// <summary>
@@ -419,6 +423,6 @@ public class Authentification : BaseController
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
         }
 
-        return Redirect("http://localhost:4200/");
+        return Redirect(_googleRedirectFront);
     }
 }
