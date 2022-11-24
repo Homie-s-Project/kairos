@@ -2,12 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Kairos.API.Models;
 
 public class User
 {
-    public User(string serviceId, string lastName, string firstName, DateTime birthDate, string email,
+    public User(string serviceId, string lastName, string firstName, DateTime? birthDate, string email,
         DateTime lastUpdatedAt)
     {
         ServiceId = serviceId;
@@ -26,7 +27,7 @@ public class User
     [Required] public string ServiceId { get; set; }
     public string LastName { get; set; }
     public string FirstName { get; set; }
-    public DateTime BirthDate { get; set; }
+    public DateTime? BirthDate { get; set; }
     [Required] public string Email { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime LastUpdatedAt { get; set; }
