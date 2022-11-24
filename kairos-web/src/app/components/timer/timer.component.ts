@@ -15,10 +15,10 @@ export class TimerComponent implements OnInit {
   animeState: string = "";
 
   base: any;
-  faCircleChevronUp: any = faCircleChevronUp;
-  faCircleChevronDown: any = faCircleChevronDown;
-  faCircleChevronLeft: any = faCircleChevronLeft;
-  faCircleChevronRight: any = faCircleChevronRight;
+  faCircleChevronUp = faCircleChevronUp;
+  faCircleChevronDown = faCircleChevronDown;
+  faCircleChevronLeft = faCircleChevronLeft;
+  faCircleChevronRight = faCircleChevronRight;
 
   constructor(private renderer: Renderer2) {
     this.renderer.removeClass(document.body, 'landing-background')
@@ -37,11 +37,11 @@ export class TimerComponent implements OnInit {
   startTimer = () => {
     // Get circle countdown element
     const circle = document.getElementById('circle-countdown');
-    
+
     if (this.minute == 0 && this.second == 0) {
       return;
     }
-    
+
     this.isDisable = true;
 
     // Play Animation
@@ -57,26 +57,26 @@ export class TimerComponent implements OnInit {
 
   timer = () => {
     this.second--;
-    
+
     if (this.second < 0) {
       this.minute--;
 
       if (this.minute <= 0 && this.second <= 0) {
-        this.stop(); 
+        this.stop();
         return;
       }
 
       this.second = 59;
     }
-    
+
     this.minString = this.updateTime(this.minute);
-    this.secString = this.updateTime(this.second);   
+    this.secString = this.updateTime(this.second);
   }
 
   stop = () => {
     // Get circle countdown element
     const circle = document.getElementById('circle-countdown');
-    
+
     if (circle != null) {
       circle.classList.remove('circle-anim-countdown');
       circle.style.animationPlayState = "paused";
