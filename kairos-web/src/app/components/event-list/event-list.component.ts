@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EventModel } from 'src/app/models/event.model';
-import { CalendarService } from 'src/app/service/calendar.service';
+import { CalendarService } from 'src/app/services/calendar/calendar.service';
 
 @Component({
   selector: 'app-event-list',

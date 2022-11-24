@@ -1,6 +1,6 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { faPencil, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { CalendarService } from 'src/app/service/calendar.service';
+import { CalendarService } from 'src/app/services/calendar/calendar.service';
 
 @Component({
   selector: 'app-calendar',

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { CalendarService } from 'src/app/service/calendar.service';
+import { CalendarService } from 'src/app/services/calendar/calendar.service';
 import { faTag, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { EventModel } from 'src/app/models/event.model';
 import { Router } from '@angular/router';

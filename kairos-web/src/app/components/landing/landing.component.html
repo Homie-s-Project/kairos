@@ -1,10 +1,10 @@
 <div class="landing-container">
-    <div id="text-div" class="text-container hide">
+    <div id="title-container" class="hide">
         <h1 class="app-title">{{title}}</h1>
         <p class="app-subtitle">{{subTitle}}</p>
     </div>
-    <div id="button-div" class="account-container hide">
-        <button class="kairos-button login-btn" (click)="test()">Se connecter</button>
-        <button class="kairos-button register-btn">S'inscrire</button>
+    <div id="auth-container" class="hide">
+        <a class="auth-button kairos-box-shadow" href="http://localhost:5000/auth/login/google">Se connecter avec Google</a>
+        <a class="auth-button kairos-box-shadow" href="http://localhost:5000/auth/login/microsoft">Se connecter avec Microsoft</a>
     </div>
 </div>

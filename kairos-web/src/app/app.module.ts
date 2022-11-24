@@ -12,8 +12,9 @@ import {TimerComponent} from './components/timer/timer.component';
 import {StatisticsComponent} from './components/statistics/statistics.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {ErrorComponent} from './components/error/error.component';
-import {EventListComponent} from './components/event-list/event-list.component';
 import {ErrorNotFoundComponent} from './components/error-not-found/error-not-found.component';
+import {EventListComponent} from './components/event-list/event-list.component';
+import {EventCardComponent} from './components/event-card/event-card.component';
 import {EventEditComponent} from './components/event-edit/event-edit.component';
 
 @NgModule({
@@ -24,7 +25,7 @@ import {EventEditComponent} from './components/event-edit/event-edit.component';
     TimerComponent,
     StatisticsComponent,
     NavbarComponent,
-    ErrorComponent
+    ErrorComponent,
     EventCardComponent,
     EventListComponent,
     ErrorNotFoundComponent,

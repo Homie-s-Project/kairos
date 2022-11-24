@@ -1,7 +1,7 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
-import { NavbarService } from 'src/app/service/navbar.service';
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-navbar',

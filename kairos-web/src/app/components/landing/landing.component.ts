@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavbarService } from 'src/app/service/navbar.service';
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-landing',
@@ -22,8 +22,8 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.nav.hide();
     this.subTitle = this.subTitleDico[this.getRandomInt(this.subTitleDico.length)];
 
-    let textDiv = document.getElementById("text-div");
-    let buttonDiv = document.getElementById("button-div");
+    let textDiv = document.getElementById("title-container");
+    let buttonDiv = document.getElementById("auth-container");
 
     if(textDiv) {
       textDiv.style.animationPlayState = "running";
