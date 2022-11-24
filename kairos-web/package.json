@@ -9,8 +9,18 @@
     "test": "ng test"
   },
   "private": true,
+  "peerDependencies": {
+    "@angular/common": "^15.0.0",
+    "@angular/core": "^15.0.0",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "tslib": "^2.4.1"
+  },
   "dependencies": {
     "@angular/animations": "^15.0.0",
+    "@angular/cdk": "^15.0.0",
     "@angular/common": "^15.0.0",
     "@angular/compiler": "^15.0.0",
     "@angular/core": "^15.0.0",
@@ -20,17 +30,19 @@
     "@angular/router": "^15.0.0",
     "@fortawesome/angular-fontawesome": "^0.12.0",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
-    "@ngx-share/buttons": "^7.1.4",
-    "chart.js": "^4.0.1",
+    "chart.js": "^3.9.1",
     "ng2-charts": "^4.0.2",
+    "ngx-sharebuttons": "^11.0.0",
     "rxjs": "^7.5.7",
     "tslib": "^2.4.1",
     "zone.js": "^0.12.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^15.0.0",
-    "@angular/cli": "^15.0.0",
+    "@angular/cli": "^15.0.1",
     "@angular/compiler-cli": "^15.0.0",
     "@types/jasmine": "^4.3.0",
     "jasmine-core": "^4.5.0",
