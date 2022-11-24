@@ -36,5 +36,7 @@ public enum CompanionType
     DOG,
     CAT,
     SNAKE,
-    COW
+    COW,
+    PIG,
+    CHICKEN
 }

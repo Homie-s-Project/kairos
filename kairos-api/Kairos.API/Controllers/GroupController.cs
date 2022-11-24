@@ -30,7 +30,7 @@ public class GroupController : SecurityController
         var userContext = (User) HttpContext.Items["User"];
 
         var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
-        var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.UserId == userContext.UserId)
+        var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.OwnerId == userContext.UserId)
             .AsSplitQuery()
             .Include(g => g.Event)
             .Include(g => g.Labels)
@@ -57,7 +57,7 @@ public class GroupController : SecurityController
     {
         var userConterxt = (User) HttpContext.Items["User"];
 
-        var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.UserId == userConterxt.UserId)
+        var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.OwnerId == userConterxt.UserId)
             .Select(g => new GroupDto(g))
             .ToList();
 

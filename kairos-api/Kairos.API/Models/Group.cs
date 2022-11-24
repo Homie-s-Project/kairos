@@ -6,10 +6,10 @@ namespace Kairos.API.Models;
 
 public class Group
 {
-    public Group(string groupName, int userId, bool groupsIsPrivate = false)
+    public Group(string groupName, int ownerId, bool groupsIsPrivate = false)
     {
         GroupName = groupName;
-        UserId = userId;
+        OwnerId = ownerId;
         GroupsIsPrivate = groupsIsPrivate;
     }
 
@@ -20,7 +20,7 @@ public class Group
     [MaxLength(50)] public string GroupName { get; set; }
     public bool GroupsIsPrivate { get; set; }
 
-    public int UserId { get; set; }
+    public int OwnerId { get; set; }
 
     [ForeignKey("Event")] public int? EventId { get; set; }
     public Event Event { get; set; }

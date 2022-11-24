@@ -1,5 +1,8 @@
+using System;
+using System.IO;
 using Kairos.API.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Kairos.API.Context;
 
@@ -11,13 +14,15 @@ public class KairosContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
-        if (options.IsConfigured)
+        if (!options.IsConfigured)
         {
-            return;
+            IConfigurationRoot configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .Build();
+            
+            options.UseNpgsql(configuration.GetConnectionString("KairosDb"));
         }
-
-        // options.UseNpgsql(_configuration.GetConnectionString("KairosDb"));
-        options.UseNpgsql("Host=localhost;Port=5432;Database=Kairos;Username=kairos_user;Password=kairos_password;");
     }
 
     public KairosContext(DbContextOptions<KairosContext> options) : base(options)

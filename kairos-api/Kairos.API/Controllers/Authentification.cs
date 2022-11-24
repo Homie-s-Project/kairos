@@ -230,7 +230,7 @@ public class Authentification : BaseController
             var findOAuth2Credentials =
                 await _context.OAuth2Credentials.FirstOrDefaultAsync(auth => auth.UserId == findUser.UserId);
             var findGroup =
-                await _context.Groups.FirstOrDefaultAsync(u => u.GroupsIsPrivate && u.UserId == findUser.UserId);
+                await _context.Groups.FirstOrDefaultAsync(u => u.GroupsIsPrivate && u.OwnerId == findUser.UserId);
 
             tokenString = JwtUtils.GenerateJsonWebToken(findUser);
 
@@ -386,7 +386,7 @@ public class Authentification : BaseController
             var findOAuth2Credentials =
                 await _context.OAuth2Credentials.FirstOrDefaultAsync(auth => auth.UserId == findUser.UserId);
             var findGroup =
-                await _context.Groups.FirstOrDefaultAsync(u => u.GroupsIsPrivate && u.UserId == findUser.UserId);
+                await _context.Groups.FirstOrDefaultAsync(u => u.GroupsIsPrivate && u.OwnerId == findUser.UserId);
 
             tokenString = JwtUtils.GenerateJsonWebToken(findUser);
 

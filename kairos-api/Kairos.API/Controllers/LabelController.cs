@@ -108,7 +108,7 @@ public class LabelController : SecurityController
             {
                 g.GroupId,
                 g.GroupName,
-                ownderId = g.UserId,
+                ownderId = g.OwnerId,
             })
             .ToList();
 

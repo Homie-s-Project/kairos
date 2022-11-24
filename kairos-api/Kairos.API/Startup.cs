@@ -1,4 +1,5 @@
-﻿using Kairos.API.Context;
+﻿using System;
+using Kairos.API.Context;
 using Kairos.API.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,12 +15,16 @@ namespace Kairos.API
     {
         public IConfiguration Configuration { get; }
         public static IConfiguration StaticConfig { get; private set; }
+        
+        private readonly DbContextOptions<KairosContext> _contextOptions;
         private const string PolicyName = "CorsPolicy";
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
             StaticConfig = configuration;
+            _contextOptions = new DbContextOptions<KairosContext>();
+            
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -70,12 +75,15 @@ namespace Kairos.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);*/
             });
+            
+            var connectionString = Configuration.GetConnectionString("KairosDb");
+            services.AddDbContext<KairosContext>(opts => opts.UseNpgsql(connectionString));
 
-            services.AddDbContext<KairosContext>(options =>
+            // TODO: Faire marcher avec docker
+            using (var context = new KairosContext(_contextOptions))
             {
-                var connectionString = Configuration.GetConnectionString("KairosDb");
-                options.UseNpgsql(connectionString);
-            });
+                context.Database.Migrate();
+            }
 
             // Ajout la gestion d'un cache en mémoire
             services.AddMemoryCache();
