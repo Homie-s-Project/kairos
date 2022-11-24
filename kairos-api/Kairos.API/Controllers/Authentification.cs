@@ -62,7 +62,6 @@ public class Authentification : BaseController
         _googleClientSecret = configurationSectionGoogle["ClientSecret"];
         _googleRedirectUri = configurationSectionGoogle["RedirectUri"];
         _googleRedirectFront = configurationSectionGoogle["RedirectFront"];
-
     }
 
     /// <summary>
