@@ -5,6 +5,8 @@ import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ErrorComponent } from './components/error/error.component';
+import { EventEditComponent } from './components/event-edit/event-edit.component';
+
  
 const routes: Routes = [
   {
@@ -21,7 +23,11 @@ const routes: Routes = [
   },
   {
     path: 'calendar',
-    component: CalendarComponent
+    component: CalendarComponent,
+    children : [
+      { path: ':eventId',
+      component: EventEditComponent } 
+    ]
   },
   {
     path: '',
