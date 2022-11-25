@@ -141,7 +141,7 @@ namespace Kairos.API
         {
             using (var context = new KairosContext(_contextOptions))
             {
-                _logger.LogInformation("Migration de la base de données si nécessaire.");
+                _logger.LogInformation("Migration de la base de données si nécessaire");
                 context.Database.Migrate();
 
                 var serviceIdDev = "serviceIdDev";
@@ -149,11 +149,11 @@ namespace Kairos.API
 
                 if (env.IsDevelopment())
                 {
-                    _logger.LogInformation("Lancement de l'ajout des données fictives dans la base de données.");
+                    _logger.LogInformation("Lancement de l'ajout des données fictives dans la base de données");
                     // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
                     var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
                     var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
-                    var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).Select(g => g.Event)
+                    var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
                         .ToList();
                     
                     if (eventsDev.Count > 0)
@@ -178,9 +178,9 @@ namespace Kairos.API
                     var devUser = new User(serviceIdDev, "Developer", "Best", DateTime.Today, emailDev, DateTime.UtcNow);
                     context.Users.Add(devUser);
                     await context.SaveChangesAsync();
-
+                    
                     // Il affiche le jwt pour qu'on puisse l'utiliser.
-                    _logger.LogWarning("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
+                    _logger.LogInformation("New DevUser (id:{})",devUser.UserId);
 
                     // On crée des labels
                     List<Label> labels = new List<Label>();
@@ -216,23 +216,7 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Ajout de {} labels pr le groupe {} (id: {})", devGroupPrivate.Labels.Count, devGroupPrivate.GroupName, devGroupPrivate.GroupId);
-                    
-                    // On crée un groupe publique
-                    var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
-                    context.Groups.Add(devGroupPublic);
-                    await context.SaveChangesAsync();
-                    
-                    _logger.LogInformation("Création d'un nouveau groupe publique (id: {})", devGroupPublic.GroupId);
 
-                    // Ajoute des labels au groupe publique
-                    devGroupPublic.Labels = new List<Label>();
-                    devGroupPublic.Labels.Add(labelsExisting[2]);
-                    devGroupPublic.Labels.Add(labelsExisting[3]);
-                    devGroupPublic.Labels.Add(labelsExisting[4]);
-                    await context.SaveChangesAsync();
-                    
-                    _logger.LogInformation("Ajout de {} labels pr le groupe {} (id: {})", devGroupPublic.Labels.Count, devGroupPublic.GroupName, devGroupPublic.GroupId);
-                    
                     // Ajout d'un event au groupe privé
                     Event eventPrivateDev = new Event(DateTime.Today, "Dev Private Event", "Dev Private Event Description");
                     context.Events.Add(eventPrivateDev);                    
@@ -251,6 +235,24 @@ namespace Kairos.API
 
                     devGroupPrivate.Event = eventPrivateDev;
                     await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe privé (id: {})", devGroupPrivate.Event.EventId, devGroupPrivate.GroupId);
+                    
+                    // On crée un groupe publique
+                    var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
+                    context.Groups.Add(devGroupPublic);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'un nouveau groupe publique (id: {})", devGroupPublic.GroupId);
+
+                    // Ajoute des labels au groupe publique
+                    devGroupPublic.Labels = new List<Label>();
+                    devGroupPublic.Labels.Add(labelsExisting[2]);
+                    devGroupPublic.Labels.Add(labelsExisting[3]);
+                    devGroupPublic.Labels.Add(labelsExisting[4]);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr le groupe {} (id: {})", devGroupPublic.Labels.Count, devGroupPublic.GroupName, devGroupPublic.GroupId);
 
                     // Ajout d'un event au groupe publique
                     Event eventPublicDev = new Event(DateTime.Today, "Dev Public Event", "Dev Public Event Description");
@@ -267,16 +269,19 @@ namespace Kairos.API
                     
                     _logger.LogInformation("Ajout de {} labels pr l'event publique {} (id: {})", eventPublicDev.Labels.Count, eventPublicDev.EventTitle, eventPublicDev.EventId);
 
-                    devGroupPrivate.Event = eventPublicDev;
+                    devGroupPublic.Event = eventPublicDev;
                     await context.SaveChangesAsync();
                     
+                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe publique (id: {})", devGroupPublic.Event.EventId, devGroupPublic.GroupId);
+                    
                     // Création d'un studies pour le groupe privé
-                    Studies studiesPrivateDev = new Studies("3482741_prv", "3050", DateTime.Today);
+                    Studies studiesPrivateDev = new Studies("3482741_prv", "3050", DateTime.Today, devGroupPrivate.GroupId);
                     context.Studies.Add(studiesPrivateDev);
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Création d'une nouvelle session d'étude privé (id: {})", studiesPrivateDev.StudiesId);
-                    
+
+                    studiesPrivateDev.Labels = new List<Label>();
                     labelsExisting.ForEach(l =>
                     {
                         studiesPrivateDev.Labels.Add(l);
@@ -285,16 +290,14 @@ namespace Kairos.API
                     
                     _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studiesPrivateDev.Labels.Count, studiesPrivateDev.StudiesNumber, studiesPrivateDev.StudiesId);
                     
-                    studiesPrivateDev.Group = devGroupPrivate;
-                    await context.SaveChangesAsync();
-                    
                     // Création d'un studies pour le groupe publique
-                    Studies studiesPublicDev = new Studies("3482741_pub", "3050", DateTime.Today);
+                    Studies studiesPublicDev = new Studies("3482741_pub", "3050", DateTime.Today, devGroupPublic.GroupId);
                     context.Studies.Add(studiesPublicDev);
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Création d'une nouvelle session d'étude publique (id: {})", studiesPublicDev.StudiesId);
                     
+                    studiesPublicDev.Labels = new List<Label>();
                     labelsExisting.ForEach(l =>
                     {
                         studiesPublicDev.Labels.Add(l);
@@ -302,9 +305,6 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Ajout de {} labels pr la session d'étude publique {} (id: {})", studiesPublicDev.Labels.Count, studiesPublicDev.StudiesNumber, studiesPublicDev.StudiesId);
-                    
-                    studiesPublicDev.Group = devGroupPublic;
-                    await context.SaveChangesAsync();
 
                     // On crée un companion
                     var devCompanion = new Companion("DevCompanion", devUser.UserId, CompanionType.DOG);
@@ -312,6 +312,7 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Création d'un nouveau companion (id: {})", devCompanion.CompanionId);
+                    _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
                 }
             }
         }
