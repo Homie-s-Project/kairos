@@ -141,6 +141,7 @@ namespace Kairos.API
         {
             using (var context = new KairosContext(_contextOptions))
             {
+                _logger.LogInformation("Migration de la base de données si nécessaire.");
                 context.Database.Migrate();
 
                 var serviceIdDev = "serviceIdDev";
@@ -148,17 +149,28 @@ namespace Kairos.API
 
                 if (env.IsDevelopment())
                 {
+                    _logger.LogInformation("Lancement de l'ajout des données fictives dans la base de données.");
                     // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
                     var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
                     var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
+                    var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).Select(g => g.Event)
+                        .ToList();
+                    
+                    if (eventsDev.Count > 0)
+                    {
+                        _logger.LogWarning("{} event détecté. Lancement de la suppression", eventsDev.Count);
+                        context.Events.RemoveRange(eventsDev);
+                    }
 
                     if (groupsDev.Count > 0)
                     {
+                        _logger.LogWarning("{} group détecté. Lancement de la suppression", groupsDev.Count);
                         context.Groups.RemoveRange(groupsDev);
                     }
                     
                     if (devUserExisting != null)
                     {
+                        _logger.LogWarning("L'utilisateur (id: {}) de développement détecté, Lancement de sa suppression", devUserExisting.UserId);
                         context.Users.Remove(devUserExisting);
                     }
                     
@@ -183,20 +195,19 @@ namespace Kairos.API
                         context.Labels.Add(l);
                     });
                     await context.SaveChangesAsync();
+                    _logger.LogInformation("Création de {} nouveau label", labels.Count);
+
+                    // Pour plus tard dans le code
+                    var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
                     
                     // On crée un groupe privé
                     var devGroupPrivate = new Group("Dev Group Private", devUser.UserId);
                     context.Groups.Add(devGroupPrivate);
                     await context.SaveChangesAsync();
                     
-                    // On crée un groupe publique
-                    var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
-                    context.Groups.Add(devGroupPublic);
-                    await context.SaveChangesAsync();
-
+                    _logger.LogInformation("Création d'un nouveau groupe privé (id: {})", devGroupPrivate.GroupId);
+                    
                     // Ajoute des labels au groupe privé
-                    var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
-
                     devGroupPrivate.Labels = new List<Label>();
                     labelsExisting.ForEach(l =>
                     {
@@ -204,17 +215,103 @@ namespace Kairos.API
                     });
                     await context.SaveChangesAsync();
                     
+                    _logger.LogInformation("Ajout de {} labels pr le groupe {} (id: {})", devGroupPrivate.Labels.Count, devGroupPrivate.GroupName, devGroupPrivate.GroupId);
+                    
+                    // On crée un groupe publique
+                    var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
+                    context.Groups.Add(devGroupPublic);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'un nouveau groupe publique (id: {})", devGroupPublic.GroupId);
+
                     // Ajoute des labels au groupe publique
                     devGroupPublic.Labels = new List<Label>();
                     devGroupPublic.Labels.Add(labelsExisting[2]);
                     devGroupPublic.Labels.Add(labelsExisting[3]);
                     devGroupPublic.Labels.Add(labelsExisting[4]);
                     await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr le groupe {} (id: {})", devGroupPublic.Labels.Count, devGroupPublic.GroupName, devGroupPublic.GroupId);
+                    
+                    // Ajout d'un event au groupe privé
+                    Event eventPrivateDev = new Event(DateTime.Today, "Dev Private Event", "Dev Private Event Description");
+                    context.Events.Add(eventPrivateDev);                    
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'un nouvel event privé (id: {})", eventPrivateDev.EventId);
+
+                    eventPrivateDev.Labels = new List<Label>();
+                    labelsExisting.ForEach(l =>
+                    {
+                        eventPrivateDev.Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr l'event privé {} (id: {})", eventPrivateDev.Labels.Count, eventPrivateDev.EventTitle, eventPrivateDev.EventId);
+
+                    devGroupPrivate.Event = eventPrivateDev;
+                    await context.SaveChangesAsync();
+
+                    // Ajout d'un event au groupe publique
+                    Event eventPublicDev = new Event(DateTime.Today, "Dev Public Event", "Dev Public Event Description");
+                    context.Events.Add(eventPublicDev);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'un nouvel event publique (id: {})", eventPublicDev.EventId);
+                    
+                    eventPublicDev.Labels = new List<Label>();
+                    eventPublicDev.Labels.Add(labelsExisting[2]);
+                    eventPublicDev.Labels.Add(labelsExisting[3]);
+                    eventPublicDev.Labels.Add(labelsExisting[4]);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr l'event publique {} (id: {})", eventPublicDev.Labels.Count, eventPublicDev.EventTitle, eventPublicDev.EventId);
+
+                    devGroupPrivate.Event = eventPublicDev;
+                    await context.SaveChangesAsync();
+                    
+                    // Création d'un studies pour le groupe privé
+                    Studies studiesPrivateDev = new Studies("3482741_prv", "3050", DateTime.Today);
+                    context.Studies.Add(studiesPrivateDev);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'une nouvelle session d'étude privé (id: {})", studiesPrivateDev.StudiesId);
+                    
+                    labelsExisting.ForEach(l =>
+                    {
+                        studiesPrivateDev.Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studiesPrivateDev.Labels.Count, studiesPrivateDev.StudiesNumber, studiesPrivateDev.StudiesId);
+                    
+                    studiesPrivateDev.Group = devGroupPrivate;
+                    await context.SaveChangesAsync();
+                    
+                    // Création d'un studies pour le groupe publique
+                    Studies studiesPublicDev = new Studies("3482741_pub", "3050", DateTime.Today);
+                    context.Studies.Add(studiesPublicDev);
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'une nouvelle session d'étude publique (id: {})", studiesPublicDev.StudiesId);
+                    
+                    labelsExisting.ForEach(l =>
+                    {
+                        studiesPublicDev.Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr la session d'étude publique {} (id: {})", studiesPublicDev.Labels.Count, studiesPublicDev.StudiesNumber, studiesPublicDev.StudiesId);
+                    
+                    studiesPublicDev.Group = devGroupPublic;
+                    await context.SaveChangesAsync();
 
                     // On crée un companion
                     var devCompanion = new Companion("DevCompanion", devUser.UserId, CompanionType.DOG);
                     context.Companions.Add(devCompanion);
                     await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Création d'un nouveau companion (id: {})", devCompanion.CompanionId);
                 }
             }
         }

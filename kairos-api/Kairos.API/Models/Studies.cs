@@ -7,11 +7,11 @@ namespace Kairos.API.Models;
 
 public class Studies
 {
-    public Studies(int studiesId, string studiesNumber, string studiesTime)
+    public Studies(string studiesNumber, string studiesTime, DateTime studiesCreatedDate)
     {
-        StudiesId = studiesId;
         StudiesNumber = studiesNumber;
         StudiesTime = studiesTime;
+        StudiesCreatedDate = studiesCreatedDate;
     }
 
     [Key]
