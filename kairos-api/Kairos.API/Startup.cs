@@ -1,12 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Kairos.API.Context;
+using Kairos.API.Controllers;
 using Kairos.API.Middleware;
+using Kairos.API.Models;
+using Kairos.API.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace Kairos.API
@@ -15,18 +21,22 @@ namespace Kairos.API
     {
         public IConfiguration Configuration { get; }
         public static IConfiguration StaticConfig { get; private set; }
-        
+        private readonly ILogger<Startup> _logger;
         private readonly DbContextOptions<KairosContext> _contextOptions;
+        private readonly IServiceProvider _serviceProvider;
         private const string PolicyName = "CorsPolicy";
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IServiceProvider serviceProvider, ILogger<Startup> logger)
         {
+            _logger = logger;
+
+            _contextOptions = new DbContextOptions<KairosContext>();
+            _serviceProvider = serviceProvider;
+
             Configuration = configuration;
             StaticConfig = configuration;
-            _contextOptions = new DbContextOptions<KairosContext>();
-            
         }
-
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -79,12 +89,6 @@ namespace Kairos.API
             var connectionString = Configuration.GetConnectionString("KairosDb");
             services.AddDbContext<KairosContext>(opts => opts.UseNpgsql(connectionString));
 
-            // TODO: Faire marcher avec docker
-            using (var context = new KairosContext(_contextOptions))
-            {
-                context.Database.Migrate();
-            }
-
             // Ajout la gestion d'un cache en mémoire
             services.AddMemoryCache();
 
@@ -98,6 +102,11 @@ namespace Kairos.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            /* FIX
+             *   InvalidCastException: Cannot write DateTime with kind 
+             */
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -115,6 +124,64 @@ namespace Kairos.API
             app.UseAuthorization();
             app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            // Normale qu'il n'y aille pas de await
+#pragma warning disable CS4014
+            CreateSeed(_serviceProvider, env);
+#pragma warning restore CS4014
+        }
+
+        /// <summary>
+        /// Lorsque l'environement est en DEV, il crée un utilisateur de dev avec des données.
+        /// </summary>
+        /// <param name="serviceProvider"></param>
+        /// <param name="env"></param>
+        private async Task CreateSeed(IServiceProvider serviceProvider, IWebHostEnvironment env)
+        {
+            using (var context = new KairosContext(_contextOptions))
+            {
+                context.Database.Migrate();
+
+                var serviceIdDev = "serviceIdDev";
+                var emailDev = "dev@kairos.com";
+
+                if (env.IsDevelopment())
+                {
+                    // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
+                    var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
+                    if (devUserExisting != null)
+                    {
+                        context.Users.Remove(devUserExisting);
+                    }
+                    
+                    // On crée un user
+                    var devUser = new User(serviceIdDev, "Developer", "Best", DateTime.Today, emailDev, DateTime.UtcNow);
+                    context.Users.Add(devUser);
+                    await context.SaveChangesAsync();
+
+                    // Il affiche le jwt pour qu'on puisse l'utiliser.
+                    _logger.LogWarning("New DevUser created with the JWT: {}", JwtUtils.GenerateJsonWebToken(devUser));
+
+                    // On crée des labels
+                    List<Label> labels = new List<Label>();
+                    labels.Add(new Label("Math", devUser.UserId));
+                    labels.Add(new Label("Physique", devUser.UserId));
+                    labels.Add(new Label("Allemand", devUser.UserId));
+                    labels.Add(new Label("Anglais", devUser.UserId));
+                    labels.Add(new Label("Science", devUser.UserId));
+                    
+                    labels.ForEach(l =>
+                    {
+                        context.Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+
+                    // On crée un companion
+                    var devCompanion = new Companion("DevCompanion", devUser.UserId, CompanionType.DOG);
+                    context.Companions.Add(devCompanion);
+                    await context.SaveChangesAsync();
+                }
+            }
         }
     }
 }

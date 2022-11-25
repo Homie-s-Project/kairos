@@ -23,7 +23,7 @@ public class UserController : SecurityController
         // Si l'utilisateur est trouvé grâce au cookie
         if (userContext != null)
         {
-            return Ok(new UserDTO(userContext));
+            return Ok(new UserDto(userContext));
         }
 
         return Forbid("not access");

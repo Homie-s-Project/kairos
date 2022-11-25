@@ -69,6 +69,7 @@ public class LabelController : SecurityController
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
         var events = _context.Events.Where(e => e.EventId == eventIdParsed)
             .Include(e => e.Labels)
+            .Select(e => new EventDto(e))
             .ToList();
 
         if (events.Count == 0)
@@ -104,12 +105,7 @@ public class LabelController : SecurityController
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
         var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed)
             .Include(g => g.Labels)
-            .Select(g => new
-            {
-                g.GroupId,
-                g.GroupName,
-                ownderId = g.OwnerId,
-            })
+            .Select(g => new GroupDto(g))
             .ToList();
 
         if (groups.Count == 0)
@@ -146,6 +142,6 @@ public class LabelController : SecurityController
         _context.Labels.Add(label);
         await _context.SaveChangesAsync();
 
-        return Ok(label);
+        return Ok(new LabelDto(label));
     }
 }

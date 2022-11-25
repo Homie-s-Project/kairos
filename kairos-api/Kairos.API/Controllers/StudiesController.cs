@@ -72,7 +72,10 @@ public class StudiesController : SecurityController
         }
 
         // TODO: Check qu'il l'utilisateur est bien dans le groupe de l'étude
-        var studies = _context.Studies.FirstOrDefault(s => s.StudiesId == studiesIdParsed);
+        var studies = _context.Studies
+            .Select(s => new StudiesDto(s))
+            .FirstOrDefault(s => s.StudiesId == studiesIdParsed);
+        
         if (studies == null)
         {
             return NotFound("Studies not found");

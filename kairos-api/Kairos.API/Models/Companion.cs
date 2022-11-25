@@ -7,10 +7,9 @@ namespace Kairos.API.Models;
 public class Companion
 {
     // Par défaut, si aucun âge n'est donné, il aura 1 an et ce sera un chat.
-    public Companion(int companionId, string companionName, int userId, CompanionType companionType = CompanionType.CAT,
+    public Companion(string companionName, int userId, CompanionType companionType = CompanionType.CAT,
         int companionAge = 1)
     {
-        CompanionId = companionId;
         CompanionName = companionName;
         CompanionType = companionType;
         CompanionAge = companionAge;

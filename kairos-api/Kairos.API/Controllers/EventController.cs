@@ -36,7 +36,7 @@ public class EventController : SecurityController
         var events = _context.Groups
             .Where(g => g.GroupId == groupIdParsed)
             .Include(g => g.Event.Labels)
-            .Select(g => g.Event)
+            .Select(g => new EventDto(g.Event))
             .ToList();
 
         if (events.Count == 0)
