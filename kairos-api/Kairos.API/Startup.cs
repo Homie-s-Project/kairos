@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Controllers;
@@ -149,6 +150,13 @@ namespace Kairos.API
                 {
                     // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
                     var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
+                    var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
+
+                    if (groupsDev.Count > 0)
+                    {
+                        context.Groups.RemoveRange(groupsDev);
+                    }
+                    
                     if (devUserExisting != null)
                     {
                         context.Users.Remove(devUserExisting);
@@ -160,7 +168,7 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
 
                     // Il affiche le jwt pour qu'on puisse l'utiliser.
-                    _logger.LogWarning("New DevUser created with the JWT: {}", JwtUtils.GenerateJsonWebToken(devUser));
+                    _logger.LogWarning("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
 
                     // On crée des labels
                     List<Label> labels = new List<Label>();
@@ -174,6 +182,33 @@ namespace Kairos.API
                     {
                         context.Labels.Add(l);
                     });
+                    await context.SaveChangesAsync();
+                    
+                    // On crée un groupe privé
+                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId);
+                    context.Groups.Add(devGroupPrivate);
+                    await context.SaveChangesAsync();
+                    
+                    // On crée un groupe publique
+                    var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
+                    context.Groups.Add(devGroupPublic);
+                    await context.SaveChangesAsync();
+
+                    // Ajoute des labels au groupe privé
+                    var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
+
+                    devGroupPrivate.Labels = new List<Label>();
+                    labelsExisting.ForEach(l =>
+                    {
+                        devGroupPrivate.Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    // Ajoute des labels au groupe publique
+                    devGroupPublic.Labels = new List<Label>();
+                    devGroupPublic.Labels.Add(labelsExisting[2]);
+                    devGroupPublic.Labels.Add(labelsExisting[3]);
+                    devGroupPublic.Labels.Add(labelsExisting[4]);
                     await context.SaveChangesAsync();
 
                     // On crée un companion
