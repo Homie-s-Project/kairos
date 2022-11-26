@@ -26,6 +26,6 @@ public class UserController : SecurityController
             return Ok(new UserDto(userContext));
         }
 
-        return Forbid("not access");
+        return Forbid("No user connected");
     }
 }
