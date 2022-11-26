@@ -58,6 +58,12 @@ public class LabelController : SecurityController
         {
             return BadRequest("Event id not specified");
         }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized("Can't create a group");
+        }
 
         int eventIdParsed;
         bool isParsed = int.TryParse(eventId, out eventIdParsed);
@@ -66,18 +72,18 @@ public class LabelController : SecurityController
             return BadRequest("Event id is not valid");
         }
 
-        // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var events = _context.Events.Where(e => e.EventId == eventIdParsed)
-            .Include(e => e.Labels)
-            .Select(e => new EventDto(e, true))
-            .ToList();
+        var groupEvent = _context.Groups
+            .Include(g => g.Event)
+            .Include(g => g.Event.Labels)
+            .FirstOrDefault(g => g.OwnerId == userConterxt.UserId && g.Event.EventId == eventIdParsed);
 
-        if (events.Count == 0)
+        if (groupEvent == null)
         {
-            return NotFound("No event found with this id: " + eventIdParsed);
+            return NotFound("No event found with this id: " + eventIdParsed); 
         }
-
-        return Ok(events);
+        
+        var eventDto = new GroupDto(groupEvent, true);
+        return Ok(eventDto.Event);
     }
 
     /// <summary>
@@ -94,6 +100,12 @@ public class LabelController : SecurityController
         {
             return BadRequest("Group id not specified");
         }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized("Can't create a group");
+        }
 
         int groupIdParsed;
         bool isParsed = int.TryParse(groupId, out groupIdParsed);
@@ -102,18 +114,17 @@ public class LabelController : SecurityController
             return BadRequest("Group id is not valid");
         }
 
-        // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed)
+        var group = _context.Groups
             .Include(g => g.Labels)
-            .Select(g => new GroupDto(g, true , false))
-            .ToList();
+            .FirstOrDefault(g => g.OwnerId == userConterxt.UserId && g.GroupId == groupIdParsed);
 
-        if (groups.Count == 0)
+        if (group == null)
         {
             return NotFound("No group found with this id: " + groupIdParsed);
         }
 
-        return Ok(groups);
+        var groupDto = new GroupDto(group, true);
+        return Ok(groupDto);
     }
 
     /// <summary>

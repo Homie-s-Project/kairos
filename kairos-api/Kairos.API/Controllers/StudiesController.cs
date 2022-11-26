@@ -27,7 +27,7 @@ public class StudiesController : SecurityController
     /// send heatbeat to check if user is still studying
     /// </summary>
     /// <returns></returns>
-    [HttpGet("heartbeat")]
+    [HttpPost("heartbeat")]
     public async Task<IActionResult> HeartBeat()
     {
         var user = (User) HttpContext.Items["User"];

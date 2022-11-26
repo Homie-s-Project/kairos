@@ -23,6 +23,11 @@ public class EventDto
         EventTitle = eventDb.EventTitle;
         EventDescription = eventDb.EventDescription;
         EventCreatedDate = eventDb.EventCreatedDate;
+
+        if (eventDb.Labels != null)
+        {
+            Labels = eventDb.Labels.Select(l => new LabelDto(l, false)).ToList();
+        }
     } 
     
     public EventDto(Event eventDb, bool loadMore = true)
