@@ -1,5 +1,11 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {
+  faCircleChevronDown,
+  faCircleChevronLeft,
+  faCircleChevronRight,
+  faCircleChevronUp
+} from '@fortawesome/free-solid-svg-icons';
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-timer',

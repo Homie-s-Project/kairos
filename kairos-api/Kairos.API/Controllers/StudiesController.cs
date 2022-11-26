@@ -27,7 +27,8 @@ public class StudiesController : SecurityController
     /// send heatbeat to check if user is still studying
     /// </summary>
     /// <returns></returns>
-    [HttpGet("heartbeat")]
+    [HttpPost("heartbeat")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     public async Task<IActionResult> HeartBeat()
     {
         var user = (User) HttpContext.Items["User"];
@@ -55,30 +56,32 @@ public class StudiesController : SecurityController
     /// <param name="studiesId">the studies number</param>
     /// <returns></returns>
     [HttpGet("/{studiesId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Studies))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Studies))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudiesDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetStudies(string studiesId)
     {
         if (string.IsNullOrEmpty(studiesId))
         {
-            return BadRequest("Studies id not specified");
+            return BadRequest(new ErrorMessage("Studies id not specified", StatusCodes.Status400BadRequest));
         }
 
         int studiesIdParsed;
         bool isParsed = int.TryParse(studiesId, out studiesIdParsed);
         if (!isParsed)
         {
-            return BadRequest("Studies id is not valid");
+            return BadRequest(new ErrorMessage("Studies id is not valid", StatusCodes.Status400BadRequest));
         }
 
         // TODO: Check qu'il l'utilisateur est bien dans le groupe de l'étude
-        var studies = _context.Studies.FirstOrDefault(s => s.StudiesId == studiesIdParsed);
+        var studies = _context.Studies
+            .FirstOrDefault(s => s.StudiesId == studiesIdParsed);
+
         if (studies == null)
         {
-            return NotFound("Studies not found");
+            return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
         }
 
-        return Ok(studies);
+        return Ok(new StudiesDto(studies, false));
     }
 
     /// <summary>

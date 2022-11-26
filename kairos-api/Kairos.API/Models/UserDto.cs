@@ -1,8 +1,8 @@
 ﻿namespace Kairos.API.Models;
 
-public class UserDTO
+public class UserDto
 {
-    public UserDTO(int userId, string lastName, string firstName, string email)
+    public UserDto(int userId, string lastName, string firstName, string email)
     {
         UserId = userId;
         LastName = lastName;
@@ -10,7 +10,7 @@ public class UserDTO
         Email = email;
     }
 
-    public UserDTO(User user)
+    public UserDto(User user)
     {
         UserId = user.UserId;
         LastName = user.LastName;

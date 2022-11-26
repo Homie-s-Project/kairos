@@ -22,8 +22,8 @@ public class LabelController : SecurityController
     /// </summary>
     /// <returns>all the labels</returns>
     [HttpGet("me", Name = "Get all your created label")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetLabels()
     {
         var userContext = (User) HttpContext.Items["User"];
@@ -33,7 +33,7 @@ public class LabelController : SecurityController
             .Include(l => l.Groups)
             .Include(l => l.Events)
             .Include(l => l.Studies)
-            .Select(l => new LabelDto(l))
+            .Select(l => new LabelDto(l, true, false))
             .ToList();
 
         if (labels.Count > 0)
@@ -41,7 +41,7 @@ public class LabelController : SecurityController
             return Ok(labels);
         }
 
-        return NotFound("no labels created by you found");
+        return NotFound(new ErrorMessage("No labels created by you found", StatusCodes.Status404NotFound));
     }
 
     /// <summary>
@@ -50,33 +50,40 @@ public class LabelController : SecurityController
     /// <param name="eventId">the id of the event</param>
     /// <returns>the labels</returns>
     [HttpGet("/label/event/{eventId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetEventLabel(string eventId)
     {
         if (string.IsNullOrEmpty(eventId))
         {
-            return BadRequest("Event id not specified");
+            return BadRequest(new ErrorMessage("Event id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't get the labels from this event", StatusCodes.Status401Unauthorized));
         }
 
         int eventIdParsed;
         bool isParsed = int.TryParse(eventId, out eventIdParsed);
         if (!isParsed)
         {
-            return BadRequest("Event id is not valid");
+            return BadRequest(new ErrorMessage("Event id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var events = _context.Events.Where(e => e.EventId == eventIdParsed)
-            .Include(e => e.Labels)
-            .ToList();
+        var groupEvent = _context.Groups
+            .Include(g => g.Event)
+            .Include(g => g.Event.Labels)
+            .FirstOrDefault(g => g.OwnerId == userConterxt.UserId && g.Event.EventId == eventIdParsed);
 
-        if (events.Count == 0)
+        if (groupEvent == null)
         {
-            return NotFound("No event found with this id: " + eventIdParsed);
+            return NotFound(new ErrorMessage("No event found with this id: " + eventIdParsed, StatusCodes.Status404NotFound));
         }
-
-        return Ok(events);
+        
+        var eventDto = new GroupDto(groupEvent, true);
+        return Ok(eventDto.Event);
     }
 
     /// <summary>
@@ -85,39 +92,39 @@ public class LabelController : SecurityController
     /// <param name="groupId">the id of the group</param>
     /// <returns>the labels</returns>
     [HttpGet("/label/group/{groupId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetGroupLabel(string groupId)
     {
         if (string.IsNullOrEmpty(groupId))
         {
-            return BadRequest("Group id not specified");
+            return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't get the label of this group", StatusCodes.Status401Unauthorized));
         }
 
         int groupIdParsed;
         bool isParsed = int.TryParse(groupId, out groupIdParsed);
         if (!isParsed)
         {
-            return BadRequest("Group id is not valid");
+            return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        // TODO: Vérifier que l'utilisateur aille accès à cette event.
-        var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed)
+        var group = _context.Groups
             .Include(g => g.Labels)
-            .Select(g => new
-            {
-                g.GroupId,
-                g.GroupName,
-                ownderId = g.OwnerId,
-            })
-            .ToList();
+            .FirstOrDefault(g => g.OwnerId == userConterxt.UserId && g.GroupId == groupIdParsed);
 
-        if (groups.Count == 0)
+        if (group == null)
         {
-            return NotFound("No group found with this id: " + groupIdParsed);
+            return NotFound(new ErrorMessage("No group found with this id: " + groupIdParsed, StatusCodes.Status404NotFound));
         }
 
-        return Ok(groups);
+        var groupDto = new GroupDto(group, true);
+        return Ok(groupDto);
     }
 
     /// <summary>
@@ -126,26 +133,26 @@ public class LabelController : SecurityController
     /// <param name="labelName">the name of the label</param>
     /// <returns>the created label</returns>
     [HttpPost("create", Name = "Create a label")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> CreateLabel(string labelName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
 
         if (userConterxt == null)
         {
-            return Unauthorized("Can't create a group");
+            return Unauthorized(new ErrorMessage("Can't create a label", StatusCodes.Status401Unauthorized));
         }
 
         if (string.IsNullOrEmpty(labelName))
         {
-            return BadRequest("No name specified");
+            return BadRequest(new ErrorMessage("No name specified", StatusCodes.Status400BadRequest));
         }
 
         var label = new Label(labelName, userConterxt.UserId);
         _context.Labels.Add(label);
         await _context.SaveChangesAsync();
 
-        return Ok(label);
+        return Ok(new LabelDto(label, false));
     }
 }
