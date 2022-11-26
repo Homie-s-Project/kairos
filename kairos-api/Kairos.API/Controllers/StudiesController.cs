@@ -55,8 +55,8 @@ public class StudiesController : SecurityController
     /// <param name="studiesId">the studies number</param>
     /// <returns></returns>
     [HttpGet("/{studiesId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Studies))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Studies))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudiesDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(StudiesDto))]
     public IActionResult GetStudies(string studiesId)
     {
         if (string.IsNullOrEmpty(studiesId))
@@ -73,15 +73,14 @@ public class StudiesController : SecurityController
 
         // TODO: Check qu'il l'utilisateur est bien dans le groupe de l'étude
         var studies = _context.Studies
-            .Select(s => new StudiesDto(s))
             .FirstOrDefault(s => s.StudiesId == studiesIdParsed);
-        
+
         if (studies == null)
         {
             return NotFound("Studies not found");
         }
 
-        return Ok(studies);
+        return Ok(new StudiesDto(studies, false));
     }
 
     /// <summary>

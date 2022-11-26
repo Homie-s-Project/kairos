@@ -17,7 +17,7 @@ public class EventController : SecurityController
     }
 
     [HttpGet("{groupId}", Name = "Get the events of a group")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     public IActionResult GetEventFromGroupId(string groupId)
     {
         if (string.IsNullOrEmpty(groupId))

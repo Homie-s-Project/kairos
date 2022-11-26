@@ -14,7 +14,7 @@ public class UserController : SecurityController
     /// <response code="403">If no user is not connected</response>   
     /// <returns>Retourne l'utilisateur connecté</returns>
     [HttpGet("me", Name = "Get Current User Info")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(User))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetMe()
     {

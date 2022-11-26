@@ -22,8 +22,8 @@ public class LabelController : SecurityController
     /// </summary>
     /// <returns>all the labels</returns>
     [HttpGet("me", Name = "Get all your created label")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public IActionResult GetLabels()
     {
         var userContext = (User) HttpContext.Items["User"];
@@ -33,7 +33,7 @@ public class LabelController : SecurityController
             .Include(l => l.Groups)
             .Include(l => l.Events)
             .Include(l => l.Studies)
-            .Select(l => new LabelDto(l))
+            .Select(l => new LabelDto(l, true, false))
             .ToList();
 
         if (labels.Count > 0)
@@ -50,8 +50,8 @@ public class LabelController : SecurityController
     /// <param name="eventId">the id of the event</param>
     /// <returns>the labels</returns>
     [HttpGet("/label/event/{eventId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public IActionResult GetEventLabel(string eventId)
     {
         if (string.IsNullOrEmpty(eventId))
@@ -69,7 +69,7 @@ public class LabelController : SecurityController
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
         var events = _context.Events.Where(e => e.EventId == eventIdParsed)
             .Include(e => e.Labels)
-            .Select(e => new EventDto(e))
+            .Select(e => new EventDto(e, true))
             .ToList();
 
         if (events.Count == 0)
@@ -86,8 +86,8 @@ public class LabelController : SecurityController
     /// <param name="groupId">the id of the group</param>
     /// <returns>the labels</returns>
     [HttpGet("/label/group/{groupId}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
     public IActionResult GetGroupLabel(string groupId)
     {
         if (string.IsNullOrEmpty(groupId))
@@ -105,7 +105,7 @@ public class LabelController : SecurityController
         // TODO: Vérifier que l'utilisateur aille accès à cette event.
         var groups = _context.Groups.Where(g => g.GroupId == groupIdParsed)
             .Include(g => g.Labels)
-            .Select(g => new GroupDto(g))
+            .Select(g => new GroupDto(g, true , false))
             .ToList();
 
         if (groups.Count == 0)
@@ -122,8 +122,8 @@ public class LabelController : SecurityController
     /// <param name="labelName">the name of the label</param>
     /// <returns>the created label</returns>
     [HttpPost("create", Name = "Create a label")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Label))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(Label))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(string))]
     public async Task<IActionResult> CreateLabel(string labelName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
@@ -142,6 +142,6 @@ public class LabelController : SecurityController
         _context.Labels.Add(label);
         await _context.SaveChangesAsync();
 
-        return Ok(new LabelDto(label));
+        return Ok(new LabelDto(label, false));
     }
 }

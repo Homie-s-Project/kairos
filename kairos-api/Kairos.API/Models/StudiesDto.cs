@@ -26,6 +26,20 @@ public class StudiesDto
         StudiesLabels = studies.Labels.Select(l => new LabelDto(l)).ToList();
         Group = new GroupDto(studies.Group);
     }
+    
+    public StudiesDto(Studies studies, bool loadMore = true)
+    {
+        StudiesId = studies.StudiesId;
+        StudiesNumber = studies.StudiesNumber;
+        StudiesTime = studies.StudiesTime;
+        StudiesCreatedDate = studies.StudiesCreatedDate;
+        
+        if (loadMore)
+        {
+            Group = new GroupDto(studies.Group);
+            StudiesLabels = studies.Labels.Select(l => new LabelDto(l)).ToList();
+        }
+    }
 
     public int StudiesId { get; set; }
     public string StudiesNumber { get; set; }

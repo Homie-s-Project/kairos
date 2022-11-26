@@ -23,8 +23,8 @@ public class GroupController : SecurityController
     /// </summary>
     /// <returns>the list of the groups</returns>
     [HttpGet("me", Name = "Get all group where connected user is in")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GroupDto))]
     public IActionResult GetGroups()
     {
         var userContext = (User) HttpContext.Items["User"];
@@ -51,8 +51,8 @@ public class GroupController : SecurityController
     /// </summary>
     /// <returns>the personal groups</returns>
     [HttpGet("personal", Name = "Get all the personal groups")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(GroupDto))]
     public IActionResult GetPrivateGroup()
     {
         var userConterxt = (User) HttpContext.Items["User"];
@@ -70,8 +70,8 @@ public class GroupController : SecurityController
     }
 
     [HttpPost("create", Name = "Create a group")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(GroupDto))]
     public async Task<IActionResult> CreateGroup(string groupName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
@@ -90,6 +90,6 @@ public class GroupController : SecurityController
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
 
-        return Ok(new GroupDto(group));
+        return Ok(new GroupDto(group, false));
     }
 }
