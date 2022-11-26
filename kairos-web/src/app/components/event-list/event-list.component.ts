@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { EventModel } from 'src/app/models/event.model';
+import { IEventModel } from 'src/app/models/ievent.model';
 import { CalendarService } from 'src/app/service/calendar.service';
 
 @Component({
@@ -9,8 +9,8 @@ import { CalendarService } from 'src/app/service/calendar.service';
 })
 export class EventListComponent implements OnInit {
 
-  @Input() events: EventModel[] = [];
-  @Output() onRemoveEventClicked: EventEmitter<EventModel> = new EventEmitter<EventModel>();
+  @Input() events: IEventModel[] = [];
+  @Output() onRemoveEventClicked: EventEmitter<IEventModel> = new EventEmitter<IEventModel>();
 
   constructor(private calendarService: CalendarService) { }
 

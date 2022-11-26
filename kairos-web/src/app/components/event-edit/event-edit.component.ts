@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { faXmark } from '@fortawesome/free-solid-svg-icons'; 
-import { EventModel } from 'src/app/models/event.model';
+import { IEventModel } from 'src/app/models/ievent.model';
 import { CalendarService } from 'src/app/service/calendar.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
@@ -13,7 +13,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./event-edit.component.scss']
 })
 export class EventEditComponent implements OnInit {
-  public event?: EventModel;
+  public event?: IEventModel;
   private subscriptions: Subscription[] = [];
 
   public eventForm: FormGroup<any> = new FormGroup<any> ({
