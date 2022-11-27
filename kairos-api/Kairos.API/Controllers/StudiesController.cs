@@ -180,10 +180,35 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     public IActionResult LastWeekRate()
     {
-        // TODO: Valeur factive
-        var hours = GenerateNumberBetween(-50, 50);
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .ToList();
+        
+        
+        var studiesBeforeLastWeek = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-14) &&
+                s.StudiesCreatedDate < DateTime.Now.AddDays(-7))
+            .ToList();
+        
+        var studiesLastWeeksTime = studiesLastWeeks.Sum(s => int.Parse(s.StudiesTime));
+        var studiesBeforeLastWeekTime = studiesBeforeLastWeek.Sum(s => int.Parse(s.StudiesTime));
 
-        return Ok(hours);
+        int rate = (studiesLastWeeksTime * 100) / studiesBeforeLastWeekTime;
+        rate -= 100;
+
+        return Ok(rate);
     }
 
     /// <summary>
