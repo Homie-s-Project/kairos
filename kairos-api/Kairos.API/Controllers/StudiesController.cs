@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
@@ -140,17 +141,24 @@ public class StudiesController : SecurityController
         }
         
         var studiesLastWeeks = _context.Studies
+            .Include(s => s.Labels)
             .Where(s => 
                 s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
                 s.Group.OwnerId == userConterxt.UserId &&
                 s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .Select(s => new StudiesDto(s, true))
             .ToList();
 
 
+        // TODO: Les labels ne sont pas prit en compte
         Dictionary<string, float> data = new Dictionary<string, float>();
-        studiesLastWeeks.ForEach((s) =>
-        {
-            var studiesLabel = s.Labels.ToList();
+        studiesLastWeeks.ForEach((s) => {
+            if (s.StudiesLabels== null)
+            {
+                return;
+            }
+            
+            var studiesLabel = s.StudiesLabels.ToList();
             studiesLabel.ForEach((l) =>
             {
                 int studiedTime;
