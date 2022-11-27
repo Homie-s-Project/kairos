@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
+using Kairos.API.Utils;
 using Microsoft.AspNetCore.Http;
-using midas_api.Utils;
 
 namespace Kairos.API.Middleware;
 
@@ -26,7 +26,7 @@ public class JwtMiddleware
         {
             token = token.Remove(0, BEARER.Length + 1);
         }
-        
+
         // Récupère l'id de l'utilisateur
         var informationsJwt = JwtUtils.ValidateCurrentToken(token);
 

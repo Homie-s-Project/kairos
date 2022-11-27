@@ -3,14 +3,17 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgChartsModule } from 'ng2-charts';
+import {ShareButtonModule} from "ngx-sharebuttons/button";
 
-import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { CalendarComponent } from './components/calendar/calendar.component';
-import { LandingComponent } from './components/landing/landing.component';
-import { TimerComponent } from './components/timer/timer.component';
-import { StatisticsComponent } from './components/statistics/statistics.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {CalendarComponent} from './components/calendar/calendar.component';
+import {LandingComponent} from './components/landing/landing.component';
+import {TimerComponent} from './components/timer/timer.component';
+import {StatisticsComponent} from './components/statistics/statistics.component';
+import {NavbarComponent} from './components/navbar/navbar.component';
+import {ErrorComponent} from './components/error/error.component';
+
 
 @NgModule({
   declarations: [
@@ -19,14 +22,16 @@ import { NavbarComponent } from './components/navbar/navbar.component';
     LandingComponent,
     TimerComponent,
     StatisticsComponent,
-    NavbarComponent
+    NavbarComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    ShareButtonModule,
     FontAwesomeModule,
-    NgChartsModule
+    NgChartsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

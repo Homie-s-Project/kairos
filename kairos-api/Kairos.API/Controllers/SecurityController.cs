@@ -1,8 +1,7 @@
-﻿using Kairos.API.Controllers;
-using Microsoft.AspNetCore.Authorization;
+﻿using Kairos.API.Middleware;
 using Microsoft.AspNetCore.Mvc;
 
-namespace midas_api.Controllers;
+namespace Kairos.API.Controllers;
 
 [ApiController]
 [Route("[controller]")]
