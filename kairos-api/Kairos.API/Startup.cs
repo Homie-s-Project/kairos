@@ -110,9 +110,14 @@ namespace Kairos.API
             
             if (env.IsDevelopment())
             {
+                app.UseStaticFiles();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kairos.API v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kairos.API v1");
+                    c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                });
             }
 
             app.UseAuthentication();
@@ -276,13 +281,20 @@ namespace Kairos.API
                     
                     // Création d'un studies pour le groupe privé
                     List<Studies> studies = new List<Studies>();
-                    studies.Add(new Studies("3482741_prv", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Allemand", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Anglais", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
-                    studies.Add(new Studies("Révision", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("3482741_prv", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-1), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-2), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-3), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Allemand", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-4), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Anglais", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-5), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-6), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Révision", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-7), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Informatique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-8), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-9), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-10), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Chimie", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-11), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Histoire", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-12), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-13), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Informatique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-14), devGroupPrivate.GroupId));
                     
                     studies.ForEach(s =>
                     {

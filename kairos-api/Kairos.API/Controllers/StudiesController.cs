@@ -97,17 +97,31 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LastWeekHoursData))]
     public IActionResult LastWeekWork()
     {
-        // TODO: données fictive
-        Dictionary<string, int> data = new Dictionary<string, int>
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
         {
-            {"Lundi", GenerateNumberBetween(1, 6)},
-            {"Mardi", GenerateNumberBetween(1, 6)},
-            {"Mercredi", GenerateNumberBetween(1, 6)},
-            {"Jeudi", GenerateNumberBetween(1, 6)},
-            {"Vendredi", GenerateNumberBetween(1, 6)},
-            {"Samedi", GenerateNumberBetween(1, 6)},
-            {"Dimanche", GenerateNumberBetween(1, 6)}
-        };
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .ToList();
+
+
+        Dictionary<string, float> data = new Dictionary<string, float>();
+        studiesLastWeeks.ForEach((s) =>
+        {
+            int studiedTime;
+            bool isParsed = int.TryParse(s.StudiesTime, out studiedTime);
+            if (isParsed)
+            {
+                data.Add(s.StudiesCreatedDate.DayOfWeek.ToString(), (float) studiedTime / 3_600);
+            }
+        });
 
         return Ok(new LastWeekHoursData(data));
     }
@@ -119,15 +133,42 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LastWeekWorkPerLabel))]
     public IActionResult LastWeekHoursPerLabel()
     {
-        // TODO: données fictive
-        Dictionary<string, int> data = new Dictionary<string, int>
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
         {
-            {"Science / Math", GenerateNumberBetween(1, 6)},
-            {"Economie", GenerateNumberBetween(1, 6)},
-            {"Allemand", GenerateNumberBetween(1, 6)},
-            {"Anglais", GenerateNumberBetween(1, 6)},
-            {"Informatique", GenerateNumberBetween(1, 6)}
-        };
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .ToList();
+
+
+        Dictionary<string, float> data = new Dictionary<string, float>();
+        studiesLastWeeks.ForEach((s) =>
+        {
+            var studiesLabel = s.Labels.ToList();
+            studiesLabel.ForEach((l) =>
+            {
+                int studiedTime;
+                bool isParsed = int.TryParse(s.StudiesTime, out studiedTime);
+                if (isParsed)
+                {
+                    if (data.ContainsKey(l.LabelTitle))
+                    {
+                        data[l.LabelTitle] += (float) studiedTime / 3_600;
+                    }
+                    else
+                    {
+                        data.Add(l.LabelTitle, (float) studiedTime / 3_600);
+                    }
+                }
+            });
+            
+        });
 
         return Ok(new LastWeekWorkPerLabel(data));
     }
@@ -167,10 +208,10 @@ public class StudiesController : SecurityController
 
 public class LastWeekWorkPerLabel
 {
-    public Dictionary<string, int>.KeyCollection Labels { get; set; }
-    public Dictionary<string, int>.ValueCollection Hours { get; set; }
+    public Dictionary<string, float>.KeyCollection Labels { get; set; }
+    public Dictionary<string, float>.ValueCollection Hours { get; set; }
 
-    public LastWeekWorkPerLabel(Dictionary<string, int> data)
+    public LastWeekWorkPerLabel(Dictionary<string, float> data)
     {
         Labels = data.Keys;
         Hours = data.Values;
@@ -179,10 +220,10 @@ public class LastWeekWorkPerLabel
 
 public class LastWeekHoursData
 {
-    public Dictionary<string, int>.KeyCollection DayOfWeek { get; set; }
-    public Dictionary<string, int>.ValueCollection Hours { get; set; }
+    public Dictionary<string, float>.KeyCollection DayOfWeek { get; set; }
+    public Dictionary<string, float>.ValueCollection Hours { get; set; }
 
-    public LastWeekHoursData(Dictionary<string, int> data)
+    public LastWeekHoursData(Dictionary<string, float> data)
     {
         DayOfWeek = data.Keys;
         Hours = data.Values;
