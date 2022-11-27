@@ -1,7 +1,9 @@
+import {HttpClientModule} from "@angular/common/http"
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgChartsModule} from 'ng2-charts';
+import {CookieService} from 'ngx-cookie-service'
 import {ShareButtonModule} from "ngx-sharebuttons/button";
 
 import {AppRoutingModule} from './app-routing.module';
@@ -34,11 +36,14 @@ import {EventEditComponent} from './components/event-edit/event-edit.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    HttpClientModule,
     ShareButtonModule,
     FontAwesomeModule,
-    NgChartsModule,
+    NgChartsModule
   ],
-  providers: [],
+  providers: [
+    CookieService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

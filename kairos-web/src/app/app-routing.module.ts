@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { IsLoggedGuard } from './guards/isLogged/is-logged.guard';
 import { TimerComponent } from './components/timer/timer.component';
 import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
@@ -11,7 +12,8 @@ import { EventEditComponent } from './components/event-edit/event-edit.component
 const routes: Routes = [
   {
     path: 'timer',
-    component: TimerComponent
+    component: TimerComponent,
+    canActivate: [IsLoggedGuard]
   },
   {
     path: 'landing',
@@ -19,7 +21,8 @@ const routes: Routes = [
   },
   {
     path: 'statistics',
-    component: StatisticsComponent
+    component: StatisticsComponent,
+    canActivate: [IsLoggedGuard]
   },
   {
     path: 'calendar',
@@ -27,16 +30,18 @@ const routes: Routes = [
     children : [
       { path: ':eventId',
       component: EventEditComponent } 
-    ]
+    ],
+    canActivate: [IsLoggedGuard]
   },
   {
     path: '',
     redirectTo: 'timer',
-    pathMatch: 'full'
+    pathMatch: 'full' 
   },
   {
     path: '**',
-    component: ErrorComponent
+    component: ErrorComponent,
+    canActivate: [IsLoggedGuard]
   }
 ];
 

@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
+import { faGoogle, faMicrosoft } from '@fortawesome/free-brands-svg-icons';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
@@ -8,6 +9,10 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit, OnDestroy {
+  faGoogle: any = faGoogle;
+  faMicrosoft: any = faMicrosoft;
+
+
   title: string = 'KAIROS';
   subTitle: string = 'Prenez contrôle de votre temps';
   subTitleDico: string[];

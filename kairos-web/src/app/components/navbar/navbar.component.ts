@@ -1,4 +1,4 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
 import { faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
@@ -8,17 +8,13 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   faCalendar: any = faCalendar;
   faChartLine: any = faChartLine;
   faPaw: any = faPaw;
   faUser: any = faUser;
 
   constructor(public nav: NavbarService, private _router: Router, private renderer: Renderer2) { }
-
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
-  }
 
   goToTimer = () => {
     this._router.navigate(['timer'])
@@ -29,7 +25,6 @@ export class NavbarComponent implements OnInit {
   }
 
   goToStatistics = () => {
-    
     this._router.navigate(['statistics'])
   }
 
@@ -38,7 +33,7 @@ export class NavbarComponent implements OnInit {
   }
 
   goToProfil = () => {
-    throw new Error('Method not implemented.');
+    this._router.navigate(['profile'])
   }
 
 }
