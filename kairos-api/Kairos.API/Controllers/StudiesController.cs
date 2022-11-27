@@ -60,6 +60,12 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetStudies(string studiesId)
     {
+        var userConterxt = (User) HttpContext.Items["User"]; 
+        if (userConterxt == null)
+        { 
+            return Forbid("Not access");
+        }
+                
         if (string.IsNullOrEmpty(studiesId))
         {
             return BadRequest(new ErrorMessage("Studies id not specified", StatusCodes.Status400BadRequest));
@@ -71,10 +77,10 @@ public class StudiesController : SecurityController
         {
             return BadRequest(new ErrorMessage("Studies id is not valid", StatusCodes.Status400BadRequest));
         }
-
-        // TODO: Check qu'il l'utilisateur est bien dans le groupe de l'étude
+        
         var studies = _context.Studies
-            .FirstOrDefault(s => s.StudiesId == studiesIdParsed);
+            .FirstOrDefault(s => s.StudiesId == studiesIdParsed &&
+                                 (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || s.Group.OwnerId == userConterxt.UserId));
 
         if (studies == null)
         {
