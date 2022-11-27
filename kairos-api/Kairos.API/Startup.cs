@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
-using Kairos.API.Controllers;
 using Kairos.API.Middleware;
 using Kairos.API.Models;
 using Kairos.API.Utils;
@@ -15,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Kairos.API
 {
@@ -96,7 +96,7 @@ namespace Kairos.API
             // évite la boucle infinie lors de la sérialisation des objets
             services.AddControllers().AddNewtonsoftJson(options =>
             {
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
         }
 
@@ -275,20 +275,31 @@ namespace Kairos.API
                     _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe publique (id: {})", devGroupPublic.Event.EventId, devGroupPublic.GroupId);
                     
                     // Création d'un studies pour le groupe privé
-                    Studies studiesPrivateDev = new Studies("3482741_prv", "3050", DateTime.Today, devGroupPrivate.GroupId);
-                    context.Studies.Add(studiesPrivateDev);
-                    await context.SaveChangesAsync();
+                    List<Studies> studies = new List<Studies>();
+                    studies.Add(new Studies("3482741_prv", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Allemand", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Anglais", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Révision", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today, devGroupPrivate.GroupId));
                     
-                    _logger.LogInformation("Création d'une nouvelle session d'étude privé (id: {})", studiesPrivateDev.StudiesId);
-
-                    studiesPrivateDev.Labels = new List<Label>();
-                    labelsExisting.ForEach(l =>
+                    studies.ForEach(s =>
                     {
-                        studiesPrivateDev.Labels.Add(l);
+                        context.Studies.Add(s);
                     });
                     await context.SaveChangesAsync();
                     
-                    _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studiesPrivateDev.Labels.Count, studiesPrivateDev.StudiesNumber, studiesPrivateDev.StudiesId);
+                    _logger.LogInformation("Création de {} nouvelles sessions d'étude privé (id: {})", studies.Count, studies[0].StudiesId);
+
+                    studies[0].Labels = new List<Label>();
+                    labelsExisting.ForEach(l =>
+                    {
+                        studies[0].Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studies[0].Labels.Count, studies[0].StudiesNumber, studies[0].StudiesId);
                     
                     // Création d'un studies pour le groupe publique
                     Studies studiesPublicDev = new Studies("3482741_pub", "3050", DateTime.Today, devGroupPublic.GroupId);
@@ -315,6 +326,12 @@ namespace Kairos.API
                     _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
                 }
             }
+        }
+
+        private string GenerateTimeStudiesInSeconds(int minutesDepart, int minutesFin)
+        {
+            Random random = new Random();
+            return (random.Next(minutesDepart, minutesFin) * 60).ToString();
         }
     }
 }
