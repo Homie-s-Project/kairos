@@ -1,5 +1,5 @@
 import {Component, Input, OnInit, Renderer2} from '@angular/core';
-import { faPencil, faTrashCan } from '@fortawesome/free-solid-svg-icons'
+import { faPencil, faTrashCan,faSquarePlus  } from '@fortawesome/free-solid-svg-icons'
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -8,12 +8,24 @@ import { faPencil, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 export class ProfileComponent implements OnInit {
   faPencil : any = faPencil;
   faTrashCan : any = faTrashCan;
+  faSquarePlus :any = faSquarePlus  ;
   labels = [
     {name : 'Science / Math'},
     {name : 'Economie'},
     {name : 'Allemand'},
     {name : 'Anglais'},
     {name : 'Informatique'},
+  ]
+  groups = [
+    {name : 'Skt t1'},
+    {name : 'Los pollos hermanos'},
+  ]
+  guys  = [
+    {name : 'Chris'},
+    {name : 'William'},
+    {name : 'Romain'},
+    {name : 'Alexandre'},
+    {name : 'Clyve'},
   ]
   constructor(private renderer: Renderer2) {
     this.renderer.removeClass(document.body, 'landing-background');

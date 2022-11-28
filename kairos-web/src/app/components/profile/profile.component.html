@@ -3,12 +3,18 @@
   <div class="kairos-box-shadow profile-container">
     <h2 class="profile-title">Profil</h2>
     <div class="profile-content">
-      <p>profile works!</p>
+      <h4 class="profile-label">Prenom:</h4><p>Christopher</p>
+      <h4 class="profile-label">Nom:</h4><p>Andrade</p>
+      <h4 class="profile-label">Date de naissance:</h4><p>22/06/1997</p>
+      <h4 class="profile-label">Mail:</h4><p>andrade.christopher@hotmail.com</p>
     </div>
   </div>
-  <div class="g-pas-de-nom-trouve-un-nom-christopher">
+  <div class="profile-bottom-part">
     <div class="kairos-box-shadow label-container">
-      <h2 class="label-title">Label</h2>
+      <div class="label-title-content">
+        <h2 class="label-title">Label</h2>
+        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+      </div>
       <div class="label-content">
         <div class="label-input" *ngFor="let label of labels">
           <input value="{{label.name}}" disabled="true">
@@ -20,29 +26,22 @@
       </div>
     </div>
     <div class="kairos-box-shadow group-container">
-      <h2 class="group-title">Groupe</h2>
+      <div class="group-title-content">
+        <h2>Groupe</h2>
+        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+      </div>
       <div class="group-content">
-        <div class="bref-trouve-un-nom-autre-que-group-group-content-et-kairos-group-content" >
-          <!--Le fameux input avec le nom du groupe ↑ngFor↑ 
-          bouton ajouter et éditer le nom même comportement que les labels
-          div
-            ul
-              li ngFor
-                div
-                  p nom du gars dans le groupe
-                  bouton pour enlever si chef du groupe bah y a pa le bouton
-                div 
-              li
-              li
-                div
-                  p nom du gars dans le groupe
-                  bouton pour enlever si chef du groupe bah y a pa le bouton
-                div 
-              li
-            ul
-          div
-          -->
-        </div>
+          <div *ngFor="let group of groups">
+            <p class="group-name">{{group.name}}</p>
+            <ul>
+              <li *ngFor="let guy of guys">
+                <div class="group-delete-controller">
+                  <p>{{guy.name}}</p>
+                  <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
+                </div>
+              </li>
+            </ul>
+          </div>
       </div>
     </div>
   </div>

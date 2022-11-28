@@ -10,16 +10,38 @@
     .profile-container {
       padding: 15px;
       background-color: vars.$first-color;
+      .profile-content{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        .profile-label{
+        }
+      }
     }
-    .g-pas-de-nom-trouve-un-nom-christopher {
+    .profile-bottom-part {
       display: flex;
       gap: 30px;
+      li{
+        list-style: none;
+      }
       div {
         width: 50%;
       }
       .label-container {
         background-color: vars.$first-color;
         padding: 15px;
+        button {
+          font-size: 18px;
+          border-style: none;
+          background-color: transparent;
+        }
+        .label-title-content{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: auto;
+        }
+
         .label-content {
           display: flex;
           flex-direction: column;
@@ -36,18 +58,13 @@
               margin-bottom: 4px;
               &:disabled {
                 border-style: none;
-                background-color: none;
+                background-color: transparent;
               }
             }
             .label-edit-controller {
               display: flex;
               justify-content: space-between;
               width: 60px;
-              button {
-                font-size: 18px;
-                border-style: none;
-                background-color: transparent; 
-              }
             }
           }
         }
@@ -55,6 +72,37 @@
       .group-container {
         padding: 15px;
         background-color: vars.$first-color;
+        button {
+          font-size: 18px;
+          border-style: none;
+          background-color: transparent;
+        }
+        .group-content{
+          width: 100%;
+        }
+        ul{
+          width: 100%;
+        }
+        li{
+          width: 100%;
+        }
+        .group-title-content{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: 100%;
+        }
+        .group-name{
+          font-size: x-large ;
+          width: 100%;
+        }
+        .group-delete-controller{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: 100%;
+        }
       }
     }
 }
+
