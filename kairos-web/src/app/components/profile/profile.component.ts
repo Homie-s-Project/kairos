@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
     {name : 'Skt t1'},
     {name : 'Los pollos hermanos'},
   ]
-  guys  = [
+  members  = [
     {name : 'Chris'},
     {name : 'William'},
     {name : 'Romain'},

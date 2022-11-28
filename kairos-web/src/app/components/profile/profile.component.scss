@@ -14,8 +14,8 @@
         display: flex;
         justify-content: space-between;
         flex-direction: column;
-        .profile-label{
-        }
+        // .profile-label{
+        // }
       }
     }
     .profile-bottom-part {
@@ -96,7 +96,7 @@
           font-size: x-large ;
           width: 100%;
         }
-        .group-delete-controller{
+        .group-member-container{
           display: flex;
           justify-content: space-between ;
           flex-direction: row;

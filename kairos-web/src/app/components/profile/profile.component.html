@@ -30,18 +30,16 @@
         <h2>Groupe</h2>
         <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
-      <div class="group-content">
-          <div *ngFor="let group of groups">
-            <p class="group-name">{{group.name}}</p>
-            <ul>
-              <li *ngFor="let guy of guys">
-                <div class="group-delete-controller">
-                  <p>{{guy.name}}</p>
-                  <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
-                </div>
-              </li>
-            </ul>
-          </div>
+      <div class="group-content" *ngFor="let group of groups">
+        <p class="group-name">{{group.name}}</p>
+        <ul>
+          <li *ngFor="let member of members">
+            <div class="group-member-container">
+              <p>{{member.name}}</p>
+              <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
