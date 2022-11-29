@@ -1,9 +1,14 @@
 <nav *ngIf="nav.isVisible">
-    <button class="home-button" (click)="goToTimer()"><h1 class="app-title">KAIROS</h1></button>
-    <div class="nav-button-container">
-        <button class="nav-button" (click)="goToCalendar()"><fa-icon class="navbar-icon" [icon]="faCalendar"></fa-icon></button>
-        <button class="nav-button" (click)="goToStatistics()"><fa-icon class="navbar-icon" [icon]="faChartLine"></fa-icon></button>
-        <button class="nav-button" (click)="goToCompanion()"><fa-icon class="navbar-icon" [icon]="faPaw"></fa-icon></button>
-        <button class="nav-button" (click)="goToProfil()"><fa-icon class="navbar-icon" [icon]="faUser"></fa-icon></button>
+    <div class="navbar kairos-box-shadow">
+        <button class="home-button" *ngIf="!nav.isBackVisible; else backButton"><h1 class="app-title">KAIROS</h1></button>
+        <ng-template #backButton>
+            <button class="back-button" [routerLink]="['/timer']"><fa-icon class="back-icon" [icon]="faCircleLeft"></fa-icon></button>
+        </ng-template>
+        <div class="nav-button-container">
+            <button class="nav-button" [routerLink]="['/calendar']"><fa-icon class="navbar-icon" [icon]="faCalendar"></fa-icon></button>
+            <button class="nav-button" [routerLink]="['/statistics']"><fa-icon class="navbar-icon" [icon]="faChartLine"></fa-icon></button>
+            <button class="nav-button" [routerLink]="['/companion']"><fa-icon class="navbar-icon" [icon]="faPaw"></fa-icon></button>
+            <button class="nav-button" [routerLink]="['/profile']"><fa-icon class="navbar-icon" [icon]="faUser"></fa-icon></button>
+        </div>
     </div>
 </nav>
