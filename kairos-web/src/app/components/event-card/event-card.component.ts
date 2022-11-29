@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./event-card.component.scss']
 })
 export class EventCardComponent implements OnInit, OnDestroy {
-  faTag: any = faTag;
-  faCalendar: any = faCalendar;
+  faTag = faTag;
+  faCalendar = faCalendar;
 
   @Input() event: EventModel|undefined;
   @Output() onRemoveClicked: EventEmitter<EventModel> = new EventEmitter<EventModel>();

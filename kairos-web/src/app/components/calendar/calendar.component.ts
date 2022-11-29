@@ -8,8 +8,8 @@ import { CalendarService } from 'src/app/services/calendar/calendar.service';
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
-  faPencil: any = faPencil;
-  faXmark: any = faXmark;
+  faPencil = faPencil;
+  faXmark = faXmark;
 
   constructor(public CalendarService: CalendarService, private renderer: Renderer2) { 
     this.renderer.removeClass(document.body, 'landing-background');

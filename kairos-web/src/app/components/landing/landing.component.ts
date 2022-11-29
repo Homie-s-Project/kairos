@@ -9,8 +9,8 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit, OnDestroy {
-  faGoogle: any = faGoogle;
-  faMicrosoft: any = faMicrosoft;
+  faGoogle = faGoogle;
+  faMicrosoft = faMicrosoft;
 
 
   title: string = 'KAIROS';
