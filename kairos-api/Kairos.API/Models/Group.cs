@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,20 +6,25 @@ namespace Kairos.API.Models;
 
 public class Group
 {
-    public Group(int groupId, string groupName, DateTime endDate, int eventId)
+    public Group(string groupName, int ownerId, bool groupsIsPrivate = false)
     {
-        GroupId = groupId;
         GroupName = groupName;
-        EndDate = endDate;
-        EventId = eventId;
+        OwnerId = ownerId;
+        GroupsIsPrivate = groupsIsPrivate;
     }
 
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int GroupId { get; set; }
-    public string GroupName { get; set; }
-    public DateTime EndDate { get; set; }
-    [ForeignKey("Event")] public int EventId { get; set; }
-    public virtual Event Event { get; set; }
+
+    [MaxLength(50)] public string GroupName { get; set; }
+    public bool GroupsIsPrivate { get; set; }
+
+    public int OwnerId { get; set; }
+
+    [ForeignKey("Event")] public int? EventId { get; set; }
+    public Event Event { get; set; }
+
     public ICollection<User> Users { get; set; }
+    public ICollection<Label> Labels { get; set; }
 }

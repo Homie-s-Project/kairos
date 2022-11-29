@@ -5,7 +5,7 @@ import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { EventEditComponent } from './components/event-edit/event-edit.component';
-
+import { ErrorComponent } from './components/error/error.component';
  
 const routes: Routes = [
   {
@@ -32,6 +32,10 @@ const routes: Routes = [
     path: '',
     redirectTo: 'timer',
     pathMatch: 'full'
+  },
+  {
+    path: '**',
+    component: ErrorComponent
   }
 ];
 

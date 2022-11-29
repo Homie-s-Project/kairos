@@ -1,6 +1,6 @@
 using System;
 
-namespace Kairos.API.Utils;
+namespace Kairos.API.Utils.Microsoft;
 
 public class Helper
 {
@@ -10,20 +10,14 @@ public class Helper
 
         public static long GetCurrentUnixTimestampSeconds()
         {
-#if STANDARD
-         return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-#else
-            return (long)(DateTime.UtcNow - UnixEpoch).TotalSeconds;
-#endif
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            return (long) (DateTime.UtcNow - UnixEpoch).TotalSeconds;
         }
 
         public static DateTimeOffset FromUnixTimestampSeconds(long seconds)
         {
-#if STANDARD
-         return DateTimeOffset.FromUnixTimeSeconds(seconds);
-#else
+            return DateTimeOffset.FromUnixTimeSeconds(seconds);
             return UnixEpoch.AddSeconds(seconds);
-#endif
         }
     }
 }

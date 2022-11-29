@@ -17,6 +17,7 @@ services:
       - pgdata:/var/lib/postgresql/data
       - pgconf:/etc/postgresql
       - pglog:/var/log/postgresql
+      - ./kairos-db/sql:/docker-entrypoint-initdb.d/
 
 
   karios-pgadmin:
@@ -46,6 +47,7 @@ services:
     ports:
       - 5000:5000
     environment:
+      - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
       - DOTNET_WATCH_SUPPRESS_EMOJIS=1  
       - ASPNETCORE_ENVIRONMENT=Development
     volumes:

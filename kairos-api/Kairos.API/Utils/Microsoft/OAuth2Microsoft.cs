@@ -1,13 +1,12 @@
 using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
-using Kairos.API.Utils.OAuth2.Microsoft.Models;
+using Kairos.API.Utils.Microsoft.Models;
 
-namespace Kairos.API.Utils;
+namespace Kairos.API.Utils.Microsoft;
 
 public class OAuth2Microsoft
 {
-
     public class AuthorizeOptions
     {
         public string ClientId { get; set; }
@@ -21,7 +20,7 @@ public class OAuth2Microsoft
     {
         public const string OAuthEndpoint =
             "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token";
-        
+
         public const string AuthorizeEndpoint = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize";
 
         public static string GetAuthorizeUrl(AuthorizeOptions opts)
@@ -37,7 +36,8 @@ public class OAuth2Microsoft
             return url;
         }
 
-        public static Task<OAuthResponse> GetAccessTokenAsync(string code, string clientId, string clientSecret, string tenantId,
+        public static Task<OAuthResponse> GetAccessTokenAsync(string code, string clientId, string clientSecret,
+            string tenantId,
             string redirectUri)
         {
             var form = new
@@ -51,7 +51,7 @@ public class OAuth2Microsoft
 
             return OAuthEndpoint.Replace("{tenant}", tenantId)
                 .PostUrlEncodedAsync(form)
-                .ReceiveJson<OAuthResponse>();;
+                .ReceiveJson<OAuthResponse>();
         }
     }
 }
