@@ -23,14 +23,14 @@ public class GroupController : SecurityController
     /// </summary>
     /// <returns>the list of the groups</returns>
     [HttpGet("me", Name = "Get all group where connected user is in")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetGroups()
     {
         var userContext = (User) HttpContext.Items["User"];
 
         var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
-        var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.UserId == userContext.UserId)
+        var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.OwnerId == userContext.UserId)
             .AsSplitQuery()
             .Include(g => g.Event)
             .Include(g => g.Labels)
@@ -40,7 +40,7 @@ public class GroupController : SecurityController
 
         if (groups.Count == 0)
         {
-            return NotFound("No group found");
+            return NotFound(new ErrorMessage("No group found", StatusCodes.Status404NotFound));
         }
 
         return Ok(groups);
@@ -51,45 +51,45 @@ public class GroupController : SecurityController
     /// </summary>
     /// <returns>the personal groups</returns>
     [HttpGet("personal", Name = "Get all the personal groups")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetPrivateGroup()
     {
         var userConterxt = (User) HttpContext.Items["User"];
 
-        var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.UserId == userConterxt.UserId)
+        var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.OwnerId == userConterxt.UserId)
             .Select(g => new GroupDto(g))
             .ToList();
 
         if (groups.Count == 0)
         {
-            return NotFound("No group found");
+            return NotFound(new ErrorMessage("No group found", StatusCodes.Status404NotFound));
         }
 
         return Ok(groups);
     }
 
     [HttpPost("create", Name = "Create a group")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group))]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(Group))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> CreateGroup(string groupName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
 
         if (userConterxt == null)
         {
-            return Unauthorized("Can't create a group");
+            return Unauthorized(new ErrorMessage("Can't create a group", StatusCodes.Status401Unauthorized));
         }
 
         if (string.IsNullOrEmpty(groupName))
         {
-            return BadRequest("No name specified");
+            return BadRequest(new ErrorMessage("Can't create a group", StatusCodes.Status400BadRequest));
         }
 
         var group = new Group(groupName, userConterxt.UserId);
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
 
-        return Ok(new GroupDto(group));
+        return Ok(new GroupDto(group, false));
     }
 }

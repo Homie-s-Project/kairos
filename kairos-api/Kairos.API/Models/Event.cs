@@ -7,9 +7,8 @@ namespace Kairos.API.Models;
 
 public class Event
 {
-    public Event(int eventId, DateTime eventDate, string eventTitle, string eventDescription)
+    public Event(DateTime eventDate, string eventTitle, string eventDescription)
     {
-        EventId = eventId;
         EventDate = eventDate;
         EventTitle = eventTitle;
         EventDescription = eventDescription;
@@ -23,6 +22,6 @@ public class Event
     public string EventTitle { get; set; }
     public string EventDescription { get; set; }
     public DateTime EventCreatedDate { get; set; }
-
+    
     public ICollection<Label> Labels { get; set; }
 }

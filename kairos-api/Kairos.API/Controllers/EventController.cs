@@ -17,31 +17,31 @@ public class EventController : SecurityController
     }
 
     [HttpGet("{groupId}", Name = "Get the events of a group")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Event))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetEventFromGroupId(string groupId)
     {
         if (string.IsNullOrEmpty(groupId))
-        {
-            return BadRequest("Group id not specified");
+        {            
+            return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
         }
 
         int groupIdParsed;
         bool isParsed = int.TryParse(groupId, out groupIdParsed);
         if (!isParsed)
         {
-            return BadRequest("Group id is not valid");
+            return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        // TODO: Check if the user is part of the group
         var events = _context.Groups
             .Where(g => g.GroupId == groupIdParsed)
             .Include(g => g.Event.Labels)
-            .Select(g => g.Event)
+            .Select(g => new EventDto(g.Event))
             .ToList();
 
         if (events.Count == 0)
         {
-            return BadRequest("No event found for this group");
+            return NotFound(new ErrorMessage("No event found for this group", StatusCodes.Status404NotFound));
         }
 
         return Ok(events);
