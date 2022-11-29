@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EventModel } from '../models/ievent.model';
+import { IEventModel } from 'src/app/models/ievent.model';
+
 
 @Injectable({
   providedIn: 'root'
@@ -7,7 +8,7 @@ import { EventModel } from '../models/ievent.model';
 export class CalendarService {
 
   private nextEventId: number = 128;
-  private events: EventModel[] = [
+  private events: IEventModel[] = [
     { id: 1, title: 'Etudier les logarithmes', description: 'Test logarithmes 16 novembre, revoir les règles de simplification et refaire les exercices', label: 'Math', sessionDate: '15.11.2022' },
     { id: 2, title: 'Test Economie', description: 'Test économie sur les systèmes économique', label: 'Economie', sessionDate: '22.11.2022' },
     { id: 3, title: 'Apprendre vocabulaire d\'anglais', description: 'Réviser vobulaire de l\'Unit 6 pour le test', label: 'Anglais', sessionDate: '22.11.2022' },
@@ -17,17 +18,17 @@ export class CalendarService {
 
   constructor() { }
 
-  getEvents(): EventModel[] {
+  getEvents(): IEventModel[] {
     return this.events;
   }
 
-  getEvent(eventId: number): EventModel|undefined {
-    return this.events.find((event: EventModel) => event.id === eventId);
+  getEvent(eventId: number): IEventModel|undefined {
+    return this.events.find((event: IEventModel) => event.id === eventId);
   }
 
-  createEvent(): EventModel {
+  createEvent(): IEventModel {
     const id: number = this.getNextEventId();
-    const event: EventModel = {
+    const event: IEventModel = {
       id,
       title: 'Event #' + id
     };
@@ -36,11 +37,11 @@ export class CalendarService {
     return event;
   }
 
-  deleteEvent(event: EventModel): void {
-    this.events = this.events.filter((item: EventModel) => item.id !== event.id);
+  deleteEvent(event: IEventModel): void {
+    this.events = this.events.filter((item: IEventModel) => item.id !== event.id);
   }
 
-  saveEvent(event: EventModel): void {
+  saveEvent(event: IEventModel): void {
     // si la event existe dans le tableau
     const eventIndex: number = this.events.indexOf(event);
     eventIndex >= 0 ?

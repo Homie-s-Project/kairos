@@ -1,15 +1,18 @@
-h2 {
-    color: #555;
-    margin-bottom: 0;
+.event-details {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .highlights {
+        display: flex;
+        flex-direction: column;
+        .highlight {
+            width: 100%;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
 }
 
-.highlights {
-    margin-top: 24px;
-    display: flex;
-}
-
-.highlight {
-    display: flex;
-    align-items: center;
-    margin-right: 24px;
-}

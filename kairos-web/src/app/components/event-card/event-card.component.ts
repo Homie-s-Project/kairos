@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { CalendarService } from 'src/app/service/calendar.service';
+import { CalendarService } from 'src/app/services/calendar/calendar.service';
 import { faTag, faCalendar } from '@fortawesome/free-solid-svg-icons';
 import { IEventModel } from 'src/app/models/ievent.model';
 import { Router } from '@angular/router';
@@ -10,8 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./event-card.component.scss']
 })
 export class EventCardComponent implements OnInit, OnDestroy {
-  faTag: any = faTag;
-  faCalendar: any = faCalendar;
+  faTag = faTag;
+  faCalendar = faCalendar;
 
   @Input() event: IEventModel|undefined;
   @Output() onRemoveClicked: EventEmitter<IEventModel> = new EventEmitter<IEventModel>();

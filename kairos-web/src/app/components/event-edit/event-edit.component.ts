@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { faXmark } from '@fortawesome/free-solid-svg-icons'; 
 import { IEventModel } from 'src/app/models/ievent.model';
-import { CalendarService } from 'src/app/service/calendar.service';
+import { CalendarService } from 'src/app/services/calendar/calendar.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 
