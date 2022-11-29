@@ -6,12 +6,10 @@ import { Injectable } from '@angular/core';
 export class NavbarService {
   isVisible: boolean;
   isBackVisible: boolean;
-  isStarted: boolean;
 
   constructor() {
     this.isVisible = true;
     this.isBackVisible = false;
-    this.isStarted = false;
   }
 
   hideNavbar = () => {
@@ -20,13 +18,6 @@ export class NavbarService {
 
   showNavbar = () => {
     this.isVisible = true;
-  }
-  hideNavbarTongue = () => {
-    this.isStarted = false;
-  }
-
-  showNavbarTongue = () => {
-    this.isStarted = true;
   }
   
   hideBackButton = () => {

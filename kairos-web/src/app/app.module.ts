@@ -13,6 +13,7 @@ import {TimerComponent} from './components/timer/timer.component';
 import {StatisticsComponent} from './components/statistics/statistics.component';
 import {NavbarComponent} from './components/navbar/navbar.component';
 import {ErrorComponent} from './components/error/error.component';
+import { TinyTimerComponent } from './components/tiny-timer/tiny-timer.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import {ErrorComponent} from './components/error/error.component';
     TimerComponent,
     StatisticsComponent,
     NavbarComponent,
-    ErrorComponent
+    ErrorComponent,
+    TinyTimerComponent
   ],
   imports: [
     BrowserModule,
