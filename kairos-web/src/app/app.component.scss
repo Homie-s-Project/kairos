@@ -1,5 +1,11 @@
 @use '/src/styles/variables.scss' as vars;
 
+app-tiny-timer{ 
+    position: fixed;
+    left: 30px;
+    top: 120px;
+}
+
 #app-container {
     width: 100vw;
     height: 90vh;

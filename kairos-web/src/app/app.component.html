@@ -1,4 +1,5 @@
 <app-navbar></app-navbar>
+<app-tiny-timer class="kairos-box-shadow" *ngIf="timer.isTinyVisible && timer.isStarted"></app-tiny-timer>
 <div id="app-container">
     <router-outlet></router-outlet>
 </div>

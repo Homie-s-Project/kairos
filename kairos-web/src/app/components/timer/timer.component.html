@@ -1,18 +1,24 @@
-<div class="timer-app-container">
-    <button class="kairos-button down-time time-controler" [disabled]="isDisable == true" (click)="downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
-    <div class="wrap">
-        <div class="timer-container">
-            <div class="timer">
-                <svg width="250" height="250">
-                    <circle id="circle-countdown" cx="125" cy="125" r="120" stroke="#162741" stroke-width="10" fill="none" stroke-linecap="round" />
-                    <circle class="background-countdown" cx="125" cy="125" r="120" stroke="#33576c" stroke-width="10" fill="none" stroke-linecap="round" />
-                </svg>
-                <span class="time">{{minString}} : {{secString}}</span>
+<div id="timer-container">
+    <button class="timer-tongue" [class.hidden]="!timer.isStarted" [disabled]="!timer.isStarted" (click)="expend()"><fa-icon [icon]="faEllipsis"></fa-icon></button>
+    <div id="timer-countdown-container" [class.hidden]="timer.isCollapsed" [@collapse]="timer.isCollapsed">
+        <button class="kairos-button down-time time-controler" [disabled]="timer.isStarted" (click)="timer.downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>
+        <div class="wrap">
+            <div class="timer-container">
+                <div class="timer">
+                    <svg width="250" height="250">
+                        <circle id="circle-countdown" cx="125" cy="125" r="120" stroke="#162741" stroke-width="10" fill="none" stroke-linecap="round" />
+                        <circle class="background-countdown" cx="125" cy="125" r="120" stroke="#33576c" stroke-width="10" fill="none" stroke-linecap="round" />
+                    </svg>
+                    <span class="time">{{timer.minuteStr}} : {{timer.secondStr}}</span>
+                </div>
+            </div>
+            <div class="control-container">
+                <button class="kairos-button" *ngIf="!timer.isStarted; else cancelButton" (click)="startTimer()">Démarrer</button>
+                <ng-template #cancelButton>
+                    <button class="kairos-button" (click)="stop()">Annuler</button>
+                </ng-template>
             </div>
         </div>
-        <div class="control-container">
-            <button class="kairos-button" [disabled]="isDisable == true" (click)="startTimer()">Démarrer</button>
-        </div>
+        <button class="kairos-button up-time time-controler" [disabled]="timer.isStarted" (click)="timer.upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
     </div>
-    <button class="kairos-button up-time time-controler" [disabled]="isDisable == true" (click)="upTime()"><fa-icon [icon]="faCircleChevronRight"></fa-icon></button>
 </div>

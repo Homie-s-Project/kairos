@@ -1,63 +1,75 @@
 @use '/src/styles/variables.scss' as vars;
 
-.timer-app-container {
-    width: 450px;
-    height: 450px;
+#timer-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    padding: 30px;
-    border-radius: 5%;
+    border-radius: 30px;
+    padding: 0 30px 30px 30px;
     background-color: vars.$first-color;
-    box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-    -webkit-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-    -moz-box-shadow: 5px 5px 15px 0px rgba(51,87,108,0.75);
-    .time-controler {
-        width: 30px;
+    .timer-tongue {
+        width: 100%;
         height: 30px;
-        color: vars.$fourth-color;
         font-size: 30px;
-        background-color: transparent;
+        border-style: none;
+        background-color: vars.$first-color;;
     }
-    .wrap {
-        padding: 30px;
-        display: inline-block;
+    #timer-countdown-container {
+        width: 400px;
+        height: 400px;
+        display: flex;
         justify-content: center;
-        text-align: center;
-        .timer-container {
-            position: relative;
-            width: 250px;
-            height: 250px;
-            line-height: 250px;
-            border-radius: 50%;
-            margin: 15px;
-            .timer {
-                display: inline;
+        align-items: center;
+        .time-controler {
+            width: 30px;
+            height: 30px;
+            color: vars.$fourth-color;
+            font-size: 30px;
+            background-color: transparent;
+        }
+        .wrap {
+            padding: 30px;
+            display: inline-block;
+            justify-content: center;
+            text-align: center;
+            .timer-container {
+                position: relative;
                 width: 250px;
                 height: 250px;
-                svg {
-                    position: absolute;
-                    left: 0;
-                    .circle-anim-countdown {
-                        stroke-dasharray: 770;
-                        stroke-dashoffset: -770;
-                        animation: animateCircle 20s linear infinite;
-                        animation-play-state: paused;
+                line-height: 250px;
+                border-radius: 50%;
+                margin: 15px;
+                .timer {
+                    display: inline;
+                    width: 250px;
+                    height: 250px;
+                    svg {
+                        position: absolute;
+                        left: 0;
+                        .circle-anim-countdown {
+                            stroke-dasharray: 770;
+                            stroke-dashoffset: -770;
+                            animation: animateCircle 20s linear infinite;
+                            animation-play-state: paused;
+                        }
+                        .background-countdown {
+                            opacity: 0.5;
+                        }
                     }
-                    .background-countdown {
-                        opacity: 0.5;
+                    .time {
+                        margin: 10px;
+                        font-size: 32px;
+                        color: vars.$fourth-color;
                     }
-                }
-                .time {
-                    margin: 10px;
-                    font-size: 32px;
-                    color: vars.$fourth-color;
                 }
             }
-        }
-        .control-container {
-            width: 100%;
-            height: 35px;
+            .control-container {
+                width: 100%;
+                height: 35px;
+                button{
+                    margin: 15px
+                }
+            }
         }
     }
 }

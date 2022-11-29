@@ -1,7 +1,8 @@
 @use '/src/styles/variables.scss' as vars;
 
 .error-container {
-    display: inline-block;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
