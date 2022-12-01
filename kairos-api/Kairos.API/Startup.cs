@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Middleware;
@@ -117,6 +119,7 @@ namespace Kairos.API
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kairos.API v1");
                     c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                    c.InjectJavascript("/swagger-auto-auth/SwaggerAutoAuth.js");
                 });
             }
 
@@ -341,7 +344,13 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Création d'un nouveau companion (id: {})", devCompanion.CompanionId);
-                    _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
+                    
+                    var generateJsonWebToken = JwtUtils.GenerateJsonWebToken(devUser);
+                    _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}\n\n",devUser.UserId,  generateJsonWebToken);
+
+                    // Essaye de lancer le navigateur par défaut
+                    var linkSwagger = "http://localhost:5000/swagger/index.html?token="+generateJsonWebToken;
+                    OpenBrowser(linkSwagger);
                 }
             }
         }
@@ -356,6 +365,26 @@ namespace Kairos.API
         {
             Random random = new Random();
             return random.Next(min, max);
+        }
+        
+        private static void OpenBrowser(string url)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+            else
+            {
+                Console.WriteLine("Le navigateur par défaut n'a pas pu être ouvert");
+            }
         }
     }
 }
