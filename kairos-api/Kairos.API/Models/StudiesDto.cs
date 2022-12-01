@@ -41,7 +41,10 @@ public class StudiesDto
                 Group = new GroupDto(studies.Group);
             }
 
-            StudiesLabels = studies.Labels.Select(l => new LabelDto(l)).ToList();
+            if (studies.Labels != null)
+            {
+                StudiesLabels = studies.Labels.Select(l => new LabelDto(l, false)).ToList();
+            }
         }
     }
 

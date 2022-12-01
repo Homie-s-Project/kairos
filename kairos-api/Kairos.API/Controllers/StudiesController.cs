@@ -7,6 +7,7 @@ using Kairos.API.Context;
 using Kairos.API.Models;
 using Kairos.API.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -78,17 +79,20 @@ public class StudiesController : SecurityController
         {
             return BadRequest(new ErrorMessage("Studies id is not valid", StatusCodes.Status400BadRequest));
         }
-        
-        var studies = _context.Studies
-            .FirstOrDefault(s => s.StudiesId == studiesIdParsed &&
-                                 (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || s.Group.OwnerId == userConterxt.UserId));
 
+        var studies = _context.Studies
+            .Include(s => s.Labels)
+            .FirstOrDefault(s => s.StudiesId == studiesIdParsed &&
+                                 (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null ||
+                                  s.Group.OwnerId == userConterxt.UserId));
+        
         if (studies == null)
         {
             return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
         }
 
-        return Ok(new StudiesDto(studies, false));
+        _context.Entry(studies).Collection(s => s.Labels).Load();
+        return Ok(new StudiesDto(studies, true));
     }
 
     /// <summary>
@@ -106,12 +110,11 @@ public class StudiesController : SecurityController
         }
         
         var studiesLastWeeks = _context.Studies
-            .Where(s => 
-                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
-                s.Group.OwnerId == userConterxt.UserId &&
+            .Where(s =>
+                (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null ||
+                 s.Group.OwnerId == userConterxt.UserId) &&
                 s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
             .ToList();
-
 
         Dictionary<string, float> data = new Dictionary<string, float>();
         studiesLastWeeks.ForEach((s) =>
@@ -141,18 +144,27 @@ public class StudiesController : SecurityController
         }
         
         var studiesLastWeeks = _context.Studies
-            .Include(s => s.Labels)
             .Where(s => 
                 s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
                 s.Group.OwnerId == userConterxt.UserId &&
                 s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
-            .Select(s => new StudiesDto(s, true))
+            .Include(s => s.Labels)
             .ToList();
 
+        if (studiesLastWeeks.Count == 0)
+        {
+            return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
+        }
 
-        // TODO: Les labels ne sont pas prit en compte
+        studiesLastWeeks.ForEach((s) =>
+        {
+            _context.Entry(s).Collection(s => s.Labels).Load();
+        });
+
+        var studiesDtos = studiesLastWeeks.Select(s => new StudiesDto(s, true)).ToList();
         Dictionary<string, float> data = new Dictionary<string, float>();
-        studiesLastWeeks.ForEach((s) => {
+        
+        studiesDtos.ForEach((s) => {
             if (s.StudiesLabels== null)
             {
                 return;
@@ -175,7 +187,6 @@ public class StudiesController : SecurityController
                     }
                 }
             });
-            
         });
 
         return Ok(new LastWeekWorkPerLabel(data));

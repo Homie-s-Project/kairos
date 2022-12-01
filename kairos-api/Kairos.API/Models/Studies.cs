@@ -31,6 +31,6 @@ public class Studies
 
     public bool IsInGroup(int userId)
     {
-        return Group.Users.FirstOrDefault(u => u.UserId == userId) != null;
+        return Group.Users.FirstOrDefault(u => u.UserId == userId) != null || Group.OwnerId == userId;
     }
 }

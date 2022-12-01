@@ -157,24 +157,24 @@ namespace Kairos.API
                     _logger.LogInformation("Lancement de l'ajout des données fictives dans la base de données");
                     // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
                     var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
-                    var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
-                    var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
-                        .ToList();
-                    
-                    if (eventsDev.Count > 0)
-                    {
-                        _logger.LogWarning("{} event détecté. Lancement de la suppression", eventsDev.Count);
-                        context.Events.RemoveRange(eventsDev);
-                    }
-
-                    if (groupsDev.Count > 0)
-                    {
-                        _logger.LogWarning("{} group détecté. Lancement de la suppression", groupsDev.Count);
-                        context.Groups.RemoveRange(groupsDev);
-                    }
-                    
                     if (devUserExisting != null)
                     {
+                        var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
+                        var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
+                            .ToList();
+                    
+                        if (eventsDev.Count > 0)
+                        {
+                            _logger.LogWarning("{} event détecté. Lancement de la suppression", eventsDev.Count);
+                            context.Events.RemoveRange(eventsDev);
+                        }
+
+                        if (groupsDev.Count > 0)
+                        {
+                            _logger.LogWarning("{} group détecté. Lancement de la suppression", groupsDev.Count);
+                            context.Groups.RemoveRange(groupsDev);
+                        }
+                        
                         _logger.LogWarning("L'utilisateur (id: {}) de développement détecté, Lancement de sa suppression", devUserExisting.UserId);
                         context.Users.Remove(devUserExisting);
                     }
@@ -298,6 +298,12 @@ namespace Kairos.API
                     
                     studies.ForEach(s =>
                     {
+                        s.Labels = new List<Label>();
+                        s.Labels.Add(labelsExisting[GenerateNumberBetweenValues(0, labelsExisting.Count - 1)]);
+                    });
+                    
+                    studies.ForEach(s =>
+                    {
                         context.Studies.Add(s);
                     });
                     await context.SaveChangesAsync();
@@ -344,6 +350,12 @@ namespace Kairos.API
         {
             Random random = new Random();
             return (random.Next(minutesDepart, minutesFin) * 60).ToString();
+        }
+        
+        private int GenerateNumberBetweenValues(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
         }
     }
 }
