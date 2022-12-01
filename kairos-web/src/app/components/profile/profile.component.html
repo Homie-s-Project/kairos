@@ -31,7 +31,11 @@
         <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
       <div class="group-content" *ngFor="let group of groups">
+        <div class="group-name-container">
         <p class="group-name">{{group.name}}</p>
+        <button><fa-icon [icon]="faPencil"></fa-icon></button>
+        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+        </div>
         <ul>
           <li *ngFor="let member of members">
             <div class="group-member-container">
