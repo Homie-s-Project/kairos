@@ -10,9 +10,7 @@ import calendar from 'calendar-js'
 export class CalendarComponent implements OnInit {
 
   private selectedMonth?: number;
-
   private selectedYear?: number;
-
 
   private calendar = calendar({
     months: [
@@ -52,14 +50,14 @@ export class CalendarComponent implements OnInit {
   public currentMonthName?: string;
   public currentYearName?: string;
 
+  public isLoadingCalendar: boolean = true;
+
   constructor(public nav: NavbarService) {
     this.nav.showBackButton();
   }
 
   ngOnInit(): void {
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
-
-    console.log(this.previousCalendarMonth, this.currentCalendarMonth, this.nextCalendarMonth)
   }
 
   prevMonthCalendar() {
@@ -105,6 +103,8 @@ export class CalendarComponent implements OnInit {
   }
 
   updateCalendar(month: number, year: number) {
+    this.isLoadingCalendar = true;
+
     let date = new Date();
     date.setDate(1);
     date.setMonth(month);
@@ -124,5 +124,13 @@ export class CalendarComponent implements OnInit {
 
     this.currentMonthName = this.currentCalendarMonth?.month;
     this.currentYearName = this.currentCalendarMonth?.year.toString();
+
+    this.currentCalendarMonth.calendar[0] = this.previousCalendarMonth.calendar[this.previousCalendarMonth.calendar.length -1]
+      .slice(0, this.currentCalendarMonth.firstWeekday)
+      .concat(this.currentCalendarMonth.calendar[0]
+        .slice(this.currentCalendarMonth?.firstWeekday, this.currentCalendarMonth.calendar[0].length));
+
+    // TODO: Le mettre après la récupération des données
+    this.isLoadingCalendar = false;
   }
 }
