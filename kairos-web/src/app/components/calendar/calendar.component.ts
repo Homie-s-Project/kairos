@@ -9,13 +9,9 @@ import calendar from 'calendar-js'
 })
 export class CalendarComponent implements OnInit {
 
-  private currentMonth?: number;
-  private previousMonth?: number;
-  private nextMonth?: number;
+  private selectedMonth?: number;
 
-  private currentYear?: number;
-  private previousYear?: number;
-  private nextYear?: number;
+  private selectedYear?: number;
 
 
   private calendar = calendar({
@@ -54,6 +50,7 @@ export class CalendarComponent implements OnInit {
   public nextCalendarMonth?: CalendarType;
 
   public currentMonthName?: string;
+  public currentYearName?: string;
 
   constructor(public nav: NavbarService) {
     this.nav.showBackButton();
@@ -66,42 +63,66 @@ export class CalendarComponent implements OnInit {
   }
 
   prevMonthCalendar() {
-    let previousNumber = this.currentMonth == 0 ? 11 : this.currentMonth - 1;
-    let previousYear = this.currentMonth == 0 ? this.currentYear - 1 : this.currentYear;
+    if (this.selectedMonth === undefined){
+      this.selectedMonth = new Date().getMonth();
+    }
 
-    this.updateCalendar(previousNumber, previousYear);
+    if (this.selectedYear === undefined){
+      this.selectedYear = new Date().getFullYear();
+    }
+
+    let previousMonth = this.selectedMonth == 0 ? 11 : this.selectedMonth - 1;
+    let previousYear = this.selectedMonth == 0 ? this.selectedYear - 1 : this.selectedYear;
+
+    this.updateCalendar(previousMonth, previousYear);
   }
 
   currentMonthCalendar() {
+    if (this.selectedMonth === undefined){
+      this.selectedMonth = new Date().getMonth();
+    }
+
+    if (this.selectedYear === undefined){
+      this.selectedYear = new Date().getFullYear();
+    }
+
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
   }
 
   nextMonthCalendar() {
-    let nextNumber = this.currentMonth == 11 ? 0 : this.currentMonth + 1;
-    let nextYear = this.currentMonth == 11 ? this.currentYear + 1 : this.currentYear;
+    if (this.selectedMonth === undefined){
+      this.selectedMonth = new Date().getMonth();
+    }
 
-    this.updateCalendar(nextNumber, nextYear);
+    if (this.selectedYear === undefined){
+      this.selectedYear = new Date().getFullYear();
+    }
+
+    let nextMonth = this.selectedMonth == 11 ? 0 : this.selectedMonth + 1;
+    let nextYear = this.selectedMonth == 11 ? this.selectedYear + 1 : this.selectedYear;
+
+    this.updateCalendar(nextMonth, nextYear);
   }
 
   updateCalendar(month: number, year: number) {
-    console.log(month, year)
-
     let date = new Date();
+    date.setDate(1);
     date.setMonth(month);
     date.setFullYear(year);
 
-    this.currentMonth = date.getMonth();
-    this.previousMonth = this.currentMonth == 0 ? 11 : this.currentMonth - 1;
-    this.nextMonth = this.currentMonth == 11 ? 0 : this.currentMonth + 1;
+    this.selectedMonth = date.getMonth();
+    let previousMonth = this.selectedMonth == 0 ? 11 : this.selectedMonth - 1;
+    let nextMonth = this.selectedMonth == 11 ? 0 : this.selectedMonth + 1;
 
-    this.currentYear = new Date().getFullYear();
-    this.previousYear = this.currentMonth == 0 ? this.currentYear - 1 : this.currentYear;
-    this.nextYear = this.currentMonth == 11 ? this.currentYear + 1 : this.currentYear;
+    this.selectedYear = date.getFullYear();
+    let previousYear = this.selectedMonth == 0 ? this.selectedYear - 1 : this.selectedYear;
+    let nextYear = this.selectedMonth == 11 ? this.selectedYear + 1 : this.selectedYear;
 
-    this.previousCalendarMonth = this.calendar.of(this.previousYear, this.previousMonth);
-    this.currentCalendarMonth = this.calendar.of(this.currentYear, this.currentMonth);
-    this.nextCalendarMonth = this.calendar.of(this.nextYear, this.nextMonth);
+    this.previousCalendarMonth = this.calendar.of(previousYear, previousMonth);
+    this.currentCalendarMonth = this.calendar.of(this.selectedYear, this.selectedMonth);
+    this.nextCalendarMonth = this.calendar.of(nextYear, nextMonth);
 
     this.currentMonthName = this.currentCalendarMonth?.month;
+    this.currentYearName = this.currentCalendarMonth?.year.toString();
   }
 }
