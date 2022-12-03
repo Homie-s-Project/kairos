@@ -125,10 +125,19 @@ export class CalendarComponent implements OnInit {
     this.currentMonthName = this.currentCalendarMonth?.month;
     this.currentYearName = this.currentCalendarMonth?.year.toString();
 
+    // Ajouter des dates avant le mois courant
     this.currentCalendarMonth.calendar[0] = this.previousCalendarMonth.calendar[this.previousCalendarMonth.calendar.length -1]
       .slice(0, this.currentCalendarMonth.firstWeekday)
       .concat(this.currentCalendarMonth.calendar[0]
-        .slice(this.currentCalendarMonth?.firstWeekday, this.currentCalendarMonth.calendar[0].length));
+        .slice(this.currentCalendarMonth.firstWeekday, this.currentCalendarMonth.calendar[0].length))
+
+    // Ajouter des dates après le mois courant
+    if (this.nextCalendarMonth.firstWeekday > 0) {
+      this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1] = this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1]
+        .slice(0, this.nextCalendarMonth.firstWeekday)
+        .concat(this.nextCalendarMonth.calendar[0]
+          .slice(this.nextCalendarMonth.firstWeekday, this.nextCalendarMonth.calendar[0].length));
+    }
 
     // TODO: Le mettre après la récupération des données
     this.isLoadingCalendar = false;
