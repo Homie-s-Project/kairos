@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Kairos.API.Models;
 
@@ -27,4 +28,9 @@ public class Studies
 
     [ForeignKey("Group")] public int GroupId { get; set; }
     public virtual Group Group { get; set; }
+
+    public bool IsInGroup(int userId)
+    {
+        return Group.Users.FirstOrDefault(u => u.UserId == userId) != null || Group.OwnerId == userId;
+    }
 }
