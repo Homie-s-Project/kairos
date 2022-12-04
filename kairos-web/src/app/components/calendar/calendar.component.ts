@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-calendar',
@@ -43,6 +44,10 @@ export class CalendarComponent implements OnInit {
     ],
   });
 
+  private todayday = new Date().getUTCDate();
+  private todayMonth = new Date().getUTCMonth();
+  private todayYear = new Date().getFullYear();
+
   public previousCalendarMonth?: CalendarType;
   public currentCalendarMonth?: CalendarType;
   public nextCalendarMonth?: CalendarType;
@@ -51,8 +56,9 @@ export class CalendarComponent implements OnInit {
   public currentYearName?: string;
 
   public isLoadingCalendar: boolean = true;
+  public sidePanelOpen: boolean = true;
 
-  constructor(public nav: NavbarService) {
+  constructor(public nav: NavbarService, private router: Router) {
     this.nav.showBackButton();
   }
 
@@ -131,7 +137,8 @@ export class CalendarComponent implements OnInit {
       .concat(this.currentCalendarMonth.calendar[0]
         .slice(this.currentCalendarMonth.firstWeekday, this.currentCalendarMonth.calendar[0].length))
 
-    // Ajouter des dates après le mois courant
+    // Ajouter des dates après le mois courant seulement si la dernière semaine n'est pas complète
+    // On vérifie ça en regardant si le jour du départ du mois suivant n'est pas lundi
     if (this.nextCalendarMonth.firstWeekday > 0) {
       this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1] = this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1]
         .slice(0, this.nextCalendarMonth.firstWeekday)
@@ -141,5 +148,9 @@ export class CalendarComponent implements OnInit {
 
     // TODO: Le mettre après la récupération des données
     this.isLoadingCalendar = false;
+  }
+
+  isToday(day: number): boolean {
+    return this.selectedMonth == this.todayMonth && this.selectedYear == this.todayYear && day == this.todayday;
   }
 }
