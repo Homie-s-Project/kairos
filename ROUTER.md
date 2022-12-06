@@ -20,12 +20,21 @@ Dans cette section, vous retrouvez toutes les routes.
 | GET         | /group/personal | Cette route permet de retourner tous les groupes personnels que l'utilisateur possède, c'est-à-dire tous les groupes privés avec lui en tant que fondateur. |
 | POST         | /group/create?groupName=`<nom du groupe>` | Cette route permet de créer un group. |
 
+## Event
+
+| HTTP Method | Path            | Description                                                                                                                                                 |
+| ----------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET         | /event/`{groupId}`       | Cette route permet d'avoir l'event d'un group. |
+
+
 ### Label
 
 | HTTP Method | Path                                     | Description                                                                |
 | ----------- | ---------------------------------------- | -------------------------------------------------------------------------- |
 | GET         | /label/me                                | Cette route permet de récupérer tous les labels que l'utilisateur à créer. |
 | POST        | /label/create?labelName=`<nom du label>` | Cette route permet de créer un label.                                      |
+| GET        | /label/event/`{eventId}` | Cette route permet de recevoir les labels utilisés par un event en particulier.  |
+| GET        | /label/group/`{groupId}` | Cette route permet de recevoir les labels utilisés par un group en particulier.  |
 
 ### Studies
 
