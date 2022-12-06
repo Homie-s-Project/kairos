@@ -2,43 +2,40 @@
 
 .statistics-container {
     padding: 30px 240px 30px 240px;
-    .statistics-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-        grid-column-gap: 30px;
-        grid-row-gap: 30px;
-        .weekly-statistics { 
-            grid-area: 1 / 1 / 2 / 3;
-            max-height: 500px;
+    .statistics-title {
+        margin-bottom: 15px;
+        .statistics-date {
+            font-size: 24px;
         }
-        .chart-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;    
-        }
-        .work-rate { 
-            grid-area: 2 / 1 / 3 / 2;
-            max-height: 150px;
-            .work-rate-text {
-                display: flex;
-                justify-content: center;
-                text-align: center;
-                padding-right: 5px;
+        .work-rate-text {
+            padding-right: 5px;
+            color: vars.$up-rate-color;
+            font-size: 21px;
+            .chart-icon {
                 color: vars.$up-rate-color;
-                font-size: 30px;
-                .chart-icon {
-                    color: vars.$up-rate-color;
-                }
             }
         }
+    }
+    .statistics-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        .weekly-statistics { 
+            width: 100%;
+            min-height: 400px;
+            max-height: 400px;
+        }
         .session-time { 
-            grid-area: 3 / 1 / 4 / 2;
-            max-height: 350px;
+            width: 100%;
+            min-height: 400px;
+            max-height: 400px;
         }
         .session-type { 
-            grid-area: 2 / 2 / 4 / 3;
-            max-height: 600px;
+            width: 100%;
+            min-height: 400px;
+            max-height: 400px;
         }
         .stat-grid-div {
             border-radius: 15px;
@@ -46,4 +43,12 @@
             background-color: vars.$first-color;
         }
     }
+}
+
+.chart-container {
+    width: 100%;
+    height: 100%;  
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

@@ -1,4 +1,4 @@
-<div id="timer-container">
+<div id="timer-container" class="kairos-box-shadow">
     <button class="timer-tongue" [class.hidden]="!timer.isStarted" [disabled]="!timer.isStarted" (click)="expend()"><fa-icon [icon]="faEllipsis"></fa-icon></button>
     <div id="timer-countdown-container" [class.hidden]="timer.isCollapsed" [@collapse]="timer.isCollapsed">
         <button class="kairos-button down-time time-controler" [disabled]="timer.isStarted" (click)="timer.downTime()"><fa-icon [icon]="faCircleChevronLeft"></fa-icon></button>

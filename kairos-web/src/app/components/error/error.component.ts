@@ -1,4 +1,5 @@
 import { Component} from '@angular/core';
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-error',
@@ -7,5 +8,7 @@ import { Component} from '@angular/core';
 })
 export class ErrorComponent {
 
-  constructor() { }
+  constructor(public nav: NavbarService) { 
+    this.nav.showBackButton();
+  }
 }

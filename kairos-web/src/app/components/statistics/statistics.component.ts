@@ -1,17 +1,18 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
+import { Component} from '@angular/core';
 import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
 import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
+import { StatisticsService } from 'src/app/services/statistics/statistics.service';
 
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent {
   workRateTxt: string = "Augmentation de 5% ";
-  faArrowTrendUp: any = faArrowTrendUp;
-  faArrowTrendDown: any = faArrowTrendDown;
+  faArrowTrend = faArrowTrendUp;
+  faArrowTrendDown = faArrowTrendDown;
 
 
   // Weekly session line chart
@@ -38,7 +39,8 @@ export class StatisticsComponent implements OnInit {
     ],
   };
   public weeklyLineChartOptions: ChartOptions<'line'> = {
-    responsive: false,
+    responsive: true,
+    maintainAspectRatio: false
   };
   public weeklyLineChartLegend = true;
 
@@ -61,7 +63,8 @@ export class StatisticsComponent implements OnInit {
   ]
 
   public typeDoughnutChartOptions: ChartConfiguration<'doughnut'>['options'] = {
-    responsive: false,
+    responsive: true,
+    maintainAspectRatio: false
   };
 
 
@@ -84,17 +87,14 @@ export class StatisticsComponent implements OnInit {
   }
 
   public timeBarChartOptions: ChartConfiguration<'bar'>['options'] = {
-    responsive: false,
+    responsive: true,
+    maintainAspectRatio: false
   }
 
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor(public nav: NavbarService, private renderer: Renderer2) { 
+  constructor(public nav: NavbarService, public stat: StatisticsService) { 
     this.nav.showBackButton();
-  }
-
-  ngOnInit(): void {
-
   }
 }
