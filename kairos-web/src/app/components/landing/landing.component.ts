@@ -24,7 +24,7 @@ export class LandingComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit(): void {
-    this.nav.hide();
+    this.nav.hideNavbar();
     this.subTitle = this.subTitleDico[this.getRandomInt(this.subTitleDico.length)];
 
     let textDiv = document.getElementById("title-container");
@@ -53,6 +53,8 @@ export class LandingComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.nav.show();
+    this.renderer.removeClass(document.body, 'landing-background');
+    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
+    this.nav.showNavbar();
   }
 }

@@ -1,39 +1,22 @@
-import { Component, Renderer2 } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCalendar, faChartLine, faPaw,faUser } from '@fortawesome/free-solid-svg-icons'
+import { faCircleLeft, faCalendar, faChartLine, faPaw, faUser, faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
+
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.scss']
+  styleUrls: ['./navbar.component.scss'],
 })
-export class NavbarComponent {
-  faCalendar: any = faCalendar;
-  faChartLine: any = faChartLine;
-  faPaw: any = faPaw;
-  faUser: any = faUser;
+export class NavbarComponent{
+  faCircleLeft = faCircleLeft;
+  faCalendar = faCalendar;
+  faChartLine = faChartLine;
+  faPaw = faPaw;
+  faUser = faUser;
+  faEllipsis = faEllipsis;
 
-  constructor(public nav: NavbarService, private _router: Router, private renderer: Renderer2) { }
-
-  goToTimer = () => {
-    this._router.navigate(['timer'])
-  }
-
-  goToCalendar = () => {
-    this._router.navigate(['calendar'])
-  }
-
-  goToStatistics = () => {
-    this._router.navigate(['statistics'])
-  }
-
-  goToCompanion = () => {
-    throw new Error('Method not implemented.');
-  }
-
-  goToProfil = () => {
-    this._router.navigate(['profile'])
-  }
+  constructor(public nav: NavbarService, private _router: Router) { }
 
 }

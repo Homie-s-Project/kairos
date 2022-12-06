@@ -18,6 +18,8 @@ import {ErrorNotFoundComponent} from './components/error-not-found/error-not-fou
 import {EventListComponent} from './components/event-list/event-list.component';
 import {EventCardComponent} from './components/event-card/event-card.component';
 import {EventEditComponent} from './components/event-edit/event-edit.component';
+import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
+
 
 @NgModule({
   declarations: [
@@ -32,11 +34,13 @@ import {EventEditComponent} from './components/event-edit/event-edit.component';
     EventListComponent,
     ErrorNotFoundComponent,
     EventEditComponent
+    TinyTimerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    BrowserAnimationsModule,
     ShareButtonModule,
     FontAwesomeModule,
     NgChartsModule
