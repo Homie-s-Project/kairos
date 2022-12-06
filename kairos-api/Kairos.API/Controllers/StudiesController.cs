@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Models;
 using Kairos.API.Utils;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -60,6 +62,12 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetStudies(string studiesId)
     {
+        var userConterxt = (User) HttpContext.Items["User"]; 
+        if (userConterxt == null)
+        { 
+            return Forbid("Not access");
+        }
+                
         if (string.IsNullOrEmpty(studiesId))
         {
             return BadRequest(new ErrorMessage("Studies id not specified", StatusCodes.Status400BadRequest));
@@ -72,16 +80,19 @@ public class StudiesController : SecurityController
             return BadRequest(new ErrorMessage("Studies id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        // TODO: Check qu'il l'utilisateur est bien dans le groupe de l'étude
         var studies = _context.Studies
-            .FirstOrDefault(s => s.StudiesId == studiesIdParsed);
-
+            .Include(s => s.Labels)
+            .FirstOrDefault(s => s.StudiesId == studiesIdParsed &&
+                                 (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null ||
+                                  s.Group.OwnerId == userConterxt.UserId));
+        
         if (studies == null)
         {
             return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
         }
 
-        return Ok(new StudiesDto(studies, false));
+        _context.Entry(studies).Collection(s => s.Labels).Load();
+        return Ok(new StudiesDto(studies, true));
     }
 
     /// <summary>
@@ -91,17 +102,30 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LastWeekHoursData))]
     public IActionResult LastWeekWork()
     {
-        // TODO: données fictive
-        Dictionary<string, int> data = new Dictionary<string, int>
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
         {
-            {"Lundi", GenerateNumberBetween(1, 6)},
-            {"Mardi", GenerateNumberBetween(1, 6)},
-            {"Mercredi", GenerateNumberBetween(1, 6)},
-            {"Jeudi", GenerateNumberBetween(1, 6)},
-            {"Vendredi", GenerateNumberBetween(1, 6)},
-            {"Samedi", GenerateNumberBetween(1, 6)},
-            {"Dimanche", GenerateNumberBetween(1, 6)}
-        };
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s =>
+                (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null ||
+                 s.Group.OwnerId == userConterxt.UserId) &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .ToList();
+
+        Dictionary<string, float> data = new Dictionary<string, float>();
+        studiesLastWeeks.ForEach((s) =>
+        {
+            int studiedTime;
+            bool isParsed = int.TryParse(s.StudiesTime, out studiedTime);
+            if (isParsed)
+            {
+                data.Add(s.StudiesCreatedDate.DayOfWeek.ToString(), (float) studiedTime / 3_600);
+            }
+        });
 
         return Ok(new LastWeekHoursData(data));
     }
@@ -113,15 +137,57 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LastWeekWorkPerLabel))]
     public IActionResult LastWeekHoursPerLabel()
     {
-        // TODO: données fictive
-        Dictionary<string, int> data = new Dictionary<string, int>
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
         {
-            {"Science / Math", GenerateNumberBetween(1, 6)},
-            {"Economie", GenerateNumberBetween(1, 6)},
-            {"Allemand", GenerateNumberBetween(1, 6)},
-            {"Anglais", GenerateNumberBetween(1, 6)},
-            {"Informatique", GenerateNumberBetween(1, 6)}
-        };
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .Include(s => s.Labels)
+            .ToList();
+
+        if (studiesLastWeeks.Count == 0)
+        {
+            return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
+        }
+
+        studiesLastWeeks.ForEach((s) =>
+        {
+            _context.Entry(s).Collection(s => s.Labels).Load();
+        });
+
+        var studiesDtos = studiesLastWeeks.Select(s => new StudiesDto(s, true)).ToList();
+        Dictionary<string, float> data = new Dictionary<string, float>();
+        
+        studiesDtos.ForEach((s) => {
+            if (s.StudiesLabels== null)
+            {
+                return;
+            }
+            
+            var studiesLabel = s.StudiesLabels.ToList();
+            studiesLabel.ForEach((l) =>
+            {
+                int studiedTime;
+                bool isParsed = int.TryParse(s.StudiesTime, out studiedTime);
+                if (isParsed)
+                {
+                    if (data.ContainsKey(l.LabelTitle))
+                    {
+                        data[l.LabelTitle] += (float) studiedTime / 3_600;
+                    }
+                    else
+                    {
+                        data.Add(l.LabelTitle, (float) studiedTime / 3_600);
+                    }
+                }
+            });
+        });
 
         return Ok(new LastWeekWorkPerLabel(data));
     }
@@ -133,10 +199,35 @@ public class StudiesController : SecurityController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
     public IActionResult LastWeekRate()
     {
-        // TODO: Valeur factive
-        var hours = GenerateNumberBetween(-50, 50);
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Forbid("Not access");
+        }
+        
+        var studiesLastWeeks = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+            .ToList();
+        
+        
+        var studiesBeforeLastWeek = _context.Studies
+            .Where(s => 
+                s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null || 
+                s.Group.OwnerId == userConterxt.UserId &&
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-14) &&
+                s.StudiesCreatedDate < DateTime.Now.AddDays(-7))
+            .ToList();
+        
+        var studiesLastWeeksTime = studiesLastWeeks.Sum(s => int.Parse(s.StudiesTime));
+        var studiesBeforeLastWeekTime = studiesBeforeLastWeek.Sum(s => int.Parse(s.StudiesTime));
 
-        return Ok(hours);
+        int rate = (studiesLastWeeksTime * 100) / studiesBeforeLastWeekTime;
+        rate -= 100;
+
+        return Ok(rate);
     }
 
     /// <summary>
@@ -161,10 +252,10 @@ public class StudiesController : SecurityController
 
 public class LastWeekWorkPerLabel
 {
-    public Dictionary<string, int>.KeyCollection Labels { get; set; }
-    public Dictionary<string, int>.ValueCollection Hours { get; set; }
+    public Dictionary<string, float>.KeyCollection Labels { get; set; }
+    public Dictionary<string, float>.ValueCollection Hours { get; set; }
 
-    public LastWeekWorkPerLabel(Dictionary<string, int> data)
+    public LastWeekWorkPerLabel(Dictionary<string, float> data)
     {
         Labels = data.Keys;
         Hours = data.Values;
@@ -173,10 +264,10 @@ public class LastWeekWorkPerLabel
 
 public class LastWeekHoursData
 {
-    public Dictionary<string, int>.KeyCollection DayOfWeek { get; set; }
-    public Dictionary<string, int>.ValueCollection Hours { get; set; }
+    public Dictionary<string, float>.KeyCollection DayOfWeek { get; set; }
+    public Dictionary<string, float>.ValueCollection Hours { get; set; }
 
-    public LastWeekHoursData(Dictionary<string, int> data)
+    public LastWeekHoursData(Dictionary<string, float> data)
     {
         DayOfWeek = data.Keys;
         Hours = data.Values;

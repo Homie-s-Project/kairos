@@ -11,13 +11,11 @@ public class Helper
         public static long GetCurrentUnixTimestampSeconds()
         {
             return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-            return (long) (DateTime.UtcNow - UnixEpoch).TotalSeconds;
         }
 
         public static DateTimeOffset FromUnixTimestampSeconds(long seconds)
         {
             return DateTimeOffset.FromUnixTimeSeconds(seconds);
-            return UnixEpoch.AddSeconds(seconds);
         }
     }
 }
