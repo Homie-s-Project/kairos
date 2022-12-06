@@ -39,8 +39,13 @@ nav {
                 border-style: none;
                 color: vars.$first-color;
                 background-color: transparent;
+                transition: ease-out 0.1s;
+                &:hover {
+                    transition: ease-out 0.1s;
+                    transform: scale(1.15);
+                }
                 .navbar-icon {
-                    color: vars.$first-color;;
+                    color: vars.$first-color;
                 }
             }
         }
