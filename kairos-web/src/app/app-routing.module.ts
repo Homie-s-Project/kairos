@@ -6,6 +6,7 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { EventEditComponent } from './components/event-edit/event-edit.component';
 import { ErrorComponent } from './components/error/error.component';
+import { EventDetailsComponent } from './components/event-details/event-details.component';
  
 const routes: Routes = [
   {
@@ -23,9 +24,16 @@ const routes: Routes = [
   {
     path: 'calendar',
     component: CalendarComponent,
-    children : [
-      { path: ':eventId',
-      component: EventEditComponent } 
+    children : 
+    [
+      { 
+        path: ':eventId',
+        component: EventDetailsComponent
+      },
+      {
+        path: ':eventId/edit',
+        component: EventEditComponent
+      }
     ]
   },
   {

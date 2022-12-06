@@ -5,9 +5,8 @@
     <div class="event-content">
         <app-event-list [events]="CalendarService.getEvents()">
         </app-event-list>
-        <div [class.hidden]="!rightContent.isActivated" class="kairos-box-shadow event-edit">
+        <div [class.hidden-edit]="!rightContent.isActivated" class="kairos-box-shadow event-edit">
             <div class="edit-controller">
-                <button class="edit-buttons" [routerLink]="['/calendar']"><fa-icon [icon]="faPencil"></fa-icon></button>
                 <button class="edit-buttons" [routerLink]="['/calendar']"><fa-icon [icon]="faXmark"></fa-icon></button>
             </div>
             <router-outlet #rightContent="outlet"></router-outlet>

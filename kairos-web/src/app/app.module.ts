@@ -1,8 +1,8 @@
-import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgChartsModule } from 'ng2-charts';
+import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
+import {NgChartsModule} from 'ng2-charts';
 import {ShareButtonModule} from "ngx-sharebuttons/button";
 
 import {AppRoutingModule} from './app-routing.module';
@@ -18,6 +18,7 @@ import {ErrorNotFoundComponent} from './components/error-not-found/error-not-fou
 import {EventEditComponent} from './components/event-edit/event-edit.component';
 import {ErrorComponent} from './components/error/error.component';
 import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
+import {EventDetailsComponent} from './components/event-details/event-details.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
     ErrorNotFoundComponent,
     EventEditComponent,
     ErrorComponent,
-    TinyTimerComponent
+    TinyTimerComponent,
+    EventDetailsComponent
   ],
   imports: [
     BrowserModule,

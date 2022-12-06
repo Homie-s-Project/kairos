@@ -1,6 +1,22 @@
-<ng-container *ngIf="event">
+<div class="event-form">
+    <form [formGroup = "eventForm"]>
+        <div class="form-group">
+            <label for="">Titre</label>
+        </div>
+        <div class="form-group">
+            <label for="">Description</label>
+        </div>
+        <div class="form-group">
+            <label for="">Date de session</label>
+        </div>
+        <div class="form-group">
+            <label for="">Label</label>
+        </div>
+    </form>
+</div>
+<!--<ng-container *ngIf="event">
     <div class="event-details">
-        <div class="event-content">
+        <div class="event-description">
             <h1>{{ event.title }}</h1>
             <p>{{ event.description }}</p>
         </div>
@@ -17,22 +33,6 @@
             </div>
         </div>
     </div>
-    <!-- <div class="event-form">
-        <form [formGroup = "eventForm"]>
-            <div class="form-group">
-                <label for="">Titre</label>
-            </div>
-            <div class="form-group">
-                <label for="">Description</label>
-            </div>
-            <div class="form-group">
-                <label for="">Date de session</label>
-            </div>
-            <div class="form-group">
-                <label for="">Label</label>
-            </div>
-        </form>
-    </div> -->
 </ng-container>
 <app-error-not-found *ngIf="!event" [message]="'Aucun event n\'a été trouvé'">
-</app-error-not-found>
+</app-error-not-found>-->

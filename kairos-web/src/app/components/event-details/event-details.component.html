@@ -1,0 +1,41 @@
+<ng-container *ngIf="event">
+    <div class="event-details">
+        <div class="event-description">
+            <div class="event-details-edit">
+                <h1>{{ event.title }}</h1>
+                <button class="edit-buttons" [routerLink]="['edit']"><fa-icon [icon]="faPencil"></fa-icon></button>
+            </div>
+            <p>{{ event.description }}</p>
+        </div>
+        <div class="highlights">
+            <hr />
+            <div class="highlight">
+                <p style="margin-right: 5px;">Date de fin :</p>
+                <span>{{ event.sessionDate || 'Pas de date de fin' }}</span>
+            </div>
+            <hr />
+            <div class="highlight">
+                <p style="margin-right: 5px;">Label :</p>
+                <span>{{ event.label || 'Aucun label' }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="event-form">
+        <form [formGroup = "eventForm"]>
+            <div class="form-group">
+                <label for="">Titre</label>
+            </div>
+            <div class="form-group">
+                <label for="">Description</label>
+            </div>
+            <div class="form-group">
+                <label for="">Date de session</label>
+            </div>
+            <div class="form-group">
+                <label for="">Label</label>
+            </div>
+        </form>
+    </div> -->
+</ng-container>
+<app-error-not-found *ngIf="!event" [message]="'Aucun event n\'a été trouvé'">
+</app-error-not-found>

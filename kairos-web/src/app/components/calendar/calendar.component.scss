@@ -16,12 +16,21 @@
             background-color: vars.$first-color;
             .edit-controller {
                 display: flex;
-                justify-content: space-between;
+                flex-direction: row-reverse;
                 .edit-buttons {
+                    color: vars.$fourth-color;
+                    font-size: 18px;
                     border-style: none;
-                    background-color: none;
+                    background-color: transparent;
                 }
             }
+        }
+        .hidden-edit {
+            width: 0;
+            min-width: 0;
+            max-width: 0;
+            padding: 0;
+            overflow: hidden;
         }
     }
 }

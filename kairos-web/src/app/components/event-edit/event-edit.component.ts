@@ -12,8 +12,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./event-edit.component.scss']
 })
 export class EventEditComponent implements OnInit {
-  public event?: IEventModel;
-  private subscriptions: Subscription[] = [];
+  event?: IEventModel;
+  subscriptions: Subscription[] = [];
+  isEditing: boolean = false;
 
   public eventForm: FormGroup<any> = new FormGroup<any> ({
     eventTitle: new FormControl('', [Validators.required]),

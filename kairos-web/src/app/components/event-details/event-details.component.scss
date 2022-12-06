@@ -5,6 +5,18 @@
     justify-content: space-between;
     .event-description {
         margin: 15px 0 15px 0;
+        .event-details-edit {
+            display: flex;
+            justify-content: space-between;
+            .edit-buttons {
+                // display: inline-block;
+                // align-items: flex-start;
+                vertical-align: top;
+                font-size: 24px;
+                border-style: none;
+                background-color: transparent;
+            }
+        }
     }
     .highlights {
         display: flex;
