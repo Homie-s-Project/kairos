@@ -159,7 +159,7 @@ export class CalendarComponent implements OnInit {
     let firstArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[0];
     let lastArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[this.currentCalendarMonth?.calendar.length -1];
 
-    if (!this.previousCalendarMonth || !this.currentCalendarMonth || !firstArrayOfCurrentCalendar || !lastArrayOfCurrentCalendar) {
+    if (!this.nextCalendarMonth || !this.previousCalendarMonth || !this.currentCalendarMonth || !firstArrayOfCurrentCalendar || !lastArrayOfCurrentCalendar) {
       console.warn("Erreur dans le chargement du calendrier");
       return false;
     }
@@ -173,11 +173,12 @@ export class CalendarComponent implements OnInit {
     }
 
     // Détermine si le jour est dans le mois suivant
-    /*if (lastArrayOfCurrentCalendar.indexOf(day) !== -1 &&
+    if (lastArrayOfCurrentCalendar.indexOf(day) !== -1 &&
       lastArrayOfCurrentCalendar.indexOf(day) > this.currentCalendarMonth?.lastWeekday &&
-      daysOfWeeks[0] > 1) {
+      daysOfWeeks[0] > 1 &&
+      daysOfWeeks[this.nextCalendarMonth?.firstWeekday -1 ] === this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1][this.currentCalendarMonth.lastWeekday]) {
       return true;
-    }*/
+    }
 
     return false;
   }
