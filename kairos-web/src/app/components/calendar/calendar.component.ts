@@ -155,26 +155,28 @@ export class CalendarComponent implements OnInit {
     return this.selectedMonth == this.todayMonth && this.selectedYear == this.todayYear && day == this.todayday;
   }
 
-  isOtherMonth(day: number): boolean {
+  isOtherMonth(day: number, daysOfWeeks: number[]): boolean {
     let firstArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[0];
     let lastArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[this.currentCalendarMonth?.calendar.length -1];
 
-    if (firstArrayOfCurrentCalendar === undefined || lastArrayOfCurrentCalendar === undefined) {
+    if (!this.currentCalendarMonth || !firstArrayOfCurrentCalendar || !lastArrayOfCurrentCalendar) {
       console.warn("Erreur dans le chargement du calendrier");
       return false;
     }
 
-    // @ts-ignore
-    if (lastArrayOfCurrentCalendar.indexOf(day) > this.currentCalendarMonth?.lastWeekday) {
+    // Détermine si le jour est dans le mois précédent
+    if (firstArrayOfCurrentCalendar.indexOf(day) !== -1 &&
+      firstArrayOfCurrentCalendar.indexOf(day) < this.currentCalendarMonth.firstWeekday &&
+      daysOfWeeks[daysOfWeeks.length -1] <= (7 - this.currentCalendarMonth.firstWeekday)) {
       return true;
     }
 
-    // @ts-ignore
-    if (firstArrayOfCurrentCalendar.indexOf(day) !== -1 && firstArrayOfCurrentCalendar.some(days => day >= firstArrayOfCurrentCalendar[0] && day > firstArrayOfCurrentCalendar[firstArrayOfCurrentCalendar?.length -1])) {
+    // Détermine si le jour est dans le mois suivant
+    /*if (lastArrayOfCurrentCalendar.indexOf(day) !== -1 &&
+      lastArrayOfCurrentCalendar.indexOf(day) > this.currentCalendarMonth?.lastWeekday &&
+      daysOfWeeks[0] > 1) {
       return true;
-    }
-
-
+    }*/
 
     return false;
   }
