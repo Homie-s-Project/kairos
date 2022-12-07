@@ -1,25 +1,21 @@
-<div>
-  <div>
-    <button (click)="prevMonthCalendar()">Prev</button>
-    <button (click)="currentMonthCalendar()">Current</button>
+<div class="calendar" style="margin-top: 50px">
+  <div class="calendar-controls">
+    <button (click)="prevMonthCalendar()">Previous</button>
+    <button (click)="currentMonthCalendar()">{{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}</button>
     <button (click)="nextMonthCalendar()">Next</button>
   </div>
 
-  <div>
-    {{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}
-  </div>
-
-  <table *ngIf="currentCalendarMonth">
-    <thead>
+  <table *ngIf="currentCalendarMonth" class="calendar-table">
+    <thead class="calendar-weekday">
     <td *ngFor="let weekday of currentCalendarMonth.weekdays">
       {{ weekday }}
     </td>
     </thead>
-    <tbody>
+    <tbody class="calendar-date">
     <tr *ngFor="let day of currentCalendarMonth.calendar">
       <ng-container *ngFor="let date of day">
-        <td>
-          <span [ngStyle]="{'color': isToday(date) ? 'red': 'black'}">{{ date }}</span>
+        <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date)}">
+          <span>{{ date }}</span>
         </td>
       </ng-container>
     </tr>

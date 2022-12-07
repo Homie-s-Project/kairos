@@ -1,0 +1,60 @@
+.calendar {
+  margin: 0 auto;
+  width: min(100%, 800px);
+
+  border: 1px solid #162741;
+
+  & .calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #162741;
+
+    & button {
+      background-color: #162741;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  }
+
+  & .calendar-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1rem;
+
+    & th {
+      text-align: center;
+      padding: 10px;
+      background-color: #162741;
+      color: #fff;
+    }
+
+    & td {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #162741;
+      cursor: pointer;
+
+      &.month-day {
+        color: #162741;
+      }
+
+      &.not {
+        background: #c3d2d7;
+      }
+
+      &.today {
+        background-color: #33576c;
+        color: #fff;
+      }
+
+      &.selected {
+        background-color: #162741;
+        color: #fff;
+      }
+    }
+  }
+}

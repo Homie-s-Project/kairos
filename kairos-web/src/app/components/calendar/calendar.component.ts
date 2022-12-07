@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
 import {Router} from "@angular/router";
+import {min} from "rxjs";
 
 @Component({
   selector: 'app-calendar',
@@ -152,5 +153,29 @@ export class CalendarComponent implements OnInit {
 
   isToday(day: number): boolean {
     return this.selectedMonth == this.todayMonth && this.selectedYear == this.todayYear && day == this.todayday;
+  }
+
+  isOtherMonth(day: number): boolean {
+    let firstArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[0];
+    let lastArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[this.currentCalendarMonth?.calendar.length -1];
+
+    if (firstArrayOfCurrentCalendar === undefined || lastArrayOfCurrentCalendar === undefined) {
+      console.warn("Erreur dans le chargement du calendrier");
+      return false;
+    }
+
+    // @ts-ignore
+    if (lastArrayOfCurrentCalendar.indexOf(day) > this.currentCalendarMonth?.lastWeekday) {
+      return true;
+    }
+
+    // @ts-ignore
+    if (firstArrayOfCurrentCalendar.indexOf(day) !== -1 && firstArrayOfCurrentCalendar.some(days => day >= firstArrayOfCurrentCalendar[0] && day > firstArrayOfCurrentCalendar[firstArrayOfCurrentCalendar?.length -1])) {
+      return true;
+    }
+
+
+
+    return false;
   }
 }
