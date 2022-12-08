@@ -1,7 +1,7 @@
-import { Component, OnInit, Renderer2 } from '@angular/core';
-import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
-import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
-import { NavbarService } from 'src/app/services/navbar/navbar.service';
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {ChartConfiguration, ChartOptions} from 'chart.js';
+import {faArrowTrendDown, faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
+import {NavbarService} from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-statistics',
@@ -10,8 +10,8 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
 })
 export class StatisticsComponent implements OnInit {
   workRateTxt: string = "Augmentation de 5% ";
-  faArrowTrendUp: any = faArrowTrendUp;
-  faArrowTrendDown: any = faArrowTrendDown;
+  faArrowTrendUp = faArrowTrendUp;
+  faArrowTrendDown = faArrowTrendDown;
 
 
   // Weekly session line chart
@@ -45,15 +45,15 @@ export class StatisticsComponent implements OnInit {
 
   // Session type doughnut chart
   public typeDoughnutChartLabels: string[] = [
-    'Science / Math', 
-    'Economie', 
+    'Science / Math',
+    'Economie',
     'Allemand',
     'Autre'
   ]
 
   public typeDoughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
     {
-      data: [5, 7, 9, 11], 
+      data: [5, 7, 9, 11],
       label: "Serie A",
       borderColor: 'rgba(239, 247, 247, 1)',
       backgroundColor: 'rgba(51, 87, 108, 0.85)'
@@ -68,8 +68,8 @@ export class StatisticsComponent implements OnInit {
   //Session time bar chart
   public timeBarChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [
-      'Science / Math', 
-      'Economie', 
+      'Science / Math',
+      'Economie',
       'Allemand',
       'Autre'
     ],
@@ -90,7 +90,7 @@ export class StatisticsComponent implements OnInit {
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor(public nav: NavbarService, private renderer: Renderer2) { 
+  constructor(public nav: NavbarService, private renderer: Renderer2) {
     this.nav.showBackButton();
   }
 
