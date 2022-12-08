@@ -209,7 +209,7 @@ namespace Kairos.API
                     var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
                     
                     // On crée un groupe privé
-                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId);
+                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId, true);
                     context.Groups.Add(devGroupPrivate);
                     await context.SaveChangesAsync();
                     

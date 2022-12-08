@@ -16,6 +16,8 @@ public class LiveStudies
 
    public LiveStudies()
    {
+      StartTime = DateTime.UtcNow;
+      LastRefresh = DateTime.UtcNow;
    }
 
    public int UserId {get; set; }
