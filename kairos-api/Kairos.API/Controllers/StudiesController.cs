@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Models;
-using Kairos.API.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -16,6 +15,8 @@ namespace Kairos.API.Controllers;
 [Route(("studies"))]
 public class StudiesController : SecurityController
 {
+    private const int MinutesMinimumHeatbeat = 2;
+    
     private readonly IMemoryCache _memoryCache;
     private readonly KairosContext _context;
 
@@ -25,12 +26,88 @@ public class StudiesController : SecurityController
         _context = context;
     }
 
+    
+    [HttpPost("start")]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> StartStudies()
+    {
+        var user = (User) HttpContext.Items["User"];
+
+        // Si l'utilisateur n'est pas connecté,
+        if (user == null)
+        {
+            return Forbid("Not access");
+        }
+
+        var liveStudy = (LiveStudies) _memoryCache.Get(user.UserId);
+        if (liveStudy != null)
+        {
+            // S'il a été actualisé il y a moins de 2 {MinutesMinimumHeatbeat} minutes
+            if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) > DateTime.UtcNow)
+            {
+                return NotFound(new ErrorMessage("This user has already an session started, please end the last one before.", StatusCodes.Status406NotAcceptable));
+            }
+            
+            // S'il a été actualisé il y a plus de 2 {MinutesMinimumHeatbeat} minutes
+            if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
+            {
+                // On supprime l'ancienne session
+                _memoryCache.Remove(user.UserId);
+                
+                // On la sauvegarde dans la base de données
+                var study = new Studies(System.Guid.NewGuid().ToString(),(liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds.ToString(CultureInfo.InvariantCulture), liveStudy.StartTime, 2);
+                _context.Studies.Add(study);
+
+                return NotFound(new ErrorMessage("This user has already an session started, this session has been stoped and saved.", StatusCodes.Status406NotAcceptable));
+            }
+        }
+        
+        
+        var startStudy = new LiveStudies
+        {
+            UserId = user.UserId,
+            TimePlanned = 2,
+            Labels = new List<LabelDto>()
+        };
+
+        _memoryCache.Set(user.UserId, startStudy);
+        
+        return Ok(new ErrorMessage("Session started", StatusCodes.Status200OK));
+    }
+    
+    [HttpPost("stop")]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> StopStudies()
+    {
+        var user = (User) HttpContext.Items["User"];
+
+        // Si l'utilisateur n'est pas connecté,
+        if (user == null)
+        {
+            return Forbid("Not access");
+        }
+
+        var liveStudy = _memoryCache.Get(user.UserId);
+        if (liveStudy == null)
+        {
+            return NotFound(new ErrorMessage("This user has no session to stop.", StatusCodes.Status406NotAcceptable));
+        }
+        
+        _memoryCache.Remove(user.UserId);
+        
+        return Ok(new ErrorMessage("Session ended", StatusCodes.Status200OK));
+    }
+
+
     /// <summary>
     /// send heatbeat to check if user is still studying
     /// </summary>
     /// <returns></returns>
     [HttpPost("heartbeat")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> HeartBeat()
     {
         var user = (User) HttpContext.Items["User"];
@@ -41,15 +118,29 @@ public class StudiesController : SecurityController
             return Forbid("Not access");
         }
 
-        var encryptMicrosoftId = CryptoUtils.Encrypt(user.ServiceId);
-        if (!_memoryCache.TryGetValue(encryptMicrosoftId, out DateTime outState))
+        var liveStudy = (LiveStudies) _memoryCache.Get(user.UserId);
+        if (liveStudy == null)
         {
-            RefreshMemory(encryptMicrosoftId);
-            return Ok("Started studies");
+            return NotFound(new ErrorMessage("This user has no session to give an heatbeat.", StatusCodes.Status406NotAcceptable));
+        }
+        
+        // S'il a été actualisé il y a plus de 2 {MinutesMinimumHeatbeat} minutes
+        if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
+        {
+            // On supprime l'ancienne session
+            _memoryCache.Remove(user.UserId);
+                
+            // On la sauvegarde dans la base de données
+            var study = new Studies(System.Guid.NewGuid().ToString(),(liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds.ToString(CultureInfo.InvariantCulture), liveStudy.StartTime, 2);
+            _context.Studies.Add(study);
+
+            return NotFound(new ErrorMessage("The last session was unactive for more than " + MinutesMinimumHeatbeat + " minutes. The session has been saved.", StatusCodes.Status406NotAcceptable));
         }
 
-        RefreshMemory(encryptMicrosoftId);
-        return Ok("Continue studies");
+        liveStudy.LastRefresh = DateTime.UtcNow;
+        _memoryCache.Set(user.UserId, liveStudy);
+
+        return Ok(new ErrorMessage("Heartbeat sent", StatusCodes.Status200OK));
     }
 
     /// <summary>
