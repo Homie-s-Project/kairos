@@ -10,12 +10,11 @@
     .profile-container {
       padding: 15px;
       background-color: vars.$first-color;
+      border-radius: 15px;
       .profile-content{
         display: flex;
         justify-content: space-between;
         flex-direction: column;
-        // .profile-label{
-        // }
       }
     }
     .profile-bottom-part {
@@ -30,6 +29,7 @@
       .label-container {
         background-color: vars.$first-color;
         padding: 15px;
+        border-radius: 15px;
         button {
           font-size: 18px;
           border-style: none;
@@ -72,6 +72,7 @@
       .group-container {
         padding: 15px;
         background-color: vars.$first-color;
+        border-radius: 15px;
         button {
           font-size: 18px;
           border-style: none;
