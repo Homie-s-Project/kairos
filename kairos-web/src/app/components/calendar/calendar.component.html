@@ -14,7 +14,7 @@
     <tbody class="calendar-date">
     <tr *ngFor="let day of currentCalendarMonth.calendar">
       <ng-container *ngFor="let date of day">
-        <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date, day), 'selected': isSelectedDay(date, day)}" (click)="selectDay(date)">
+        <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date, day), 'selected': isSelectedDay(date, day)}" (click)="selectDay(date, day)">
           <span>{{ date }}</span>
         </td>
       </ng-container>

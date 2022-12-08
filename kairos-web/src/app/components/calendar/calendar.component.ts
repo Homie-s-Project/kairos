@@ -111,6 +111,7 @@ export class CalendarComponent implements OnInit {
 
   updateCalendar(month: number, year: number) {
     this.isLoadingCalendar = true;
+    this.selectedDay = undefined;
 
     let date = new Date();
     date.setDate(1);
@@ -183,7 +184,11 @@ export class CalendarComponent implements OnInit {
     return false;
   }
 
-  selectDay(day: number) {
+  selectDay(day: number, daysOfWeeks: number[]) {
+    if (this.isOtherMonth(day, daysOfWeeks)) {
+      return;
+    }
+
     this.selectedDay = day;
   }
 
