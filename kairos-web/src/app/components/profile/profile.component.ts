@@ -1,14 +1,15 @@
-import {Component, Input, OnInit, Renderer2} from '@angular/core';
-import { faPencil, faTrashCan,faSquarePlus  } from '@fortawesome/free-solid-svg-icons'
+import {Component, OnInit, Renderer2} from '@angular/core';
+import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  faPencil : any = faPencil;
-  faTrashCan : any = faTrashCan;
-  faSquarePlus :any = faSquarePlus  ;
+  faPencil = faPencil;
+  faTrashCan = faTrashCan;
+  faSquarePlus = faSquarePlus  ;
   labels = [
     {name : 'Science / Math'},
     {name : 'Economie'},
