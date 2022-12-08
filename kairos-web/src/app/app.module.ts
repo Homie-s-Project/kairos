@@ -4,7 +4,7 @@ import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgChartsModule} from 'ng2-charts';
-import {CookieService} from 'ngx-cookie-service'
+import {CookieService} from 'ngx-cookie-service';
 import {ShareButtonModule} from "ngx-sharebuttons/button";
 
 import {AppRoutingModule} from './app-routing.module';
