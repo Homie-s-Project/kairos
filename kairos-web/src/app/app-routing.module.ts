@@ -6,9 +6,9 @@ import { LandingComponent } from './components/landing/landing.component';
 import { StatisticsComponent } from './components/statistics/statistics.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ErrorComponent } from './components/error/error.component';
-import { EventEditComponent } from './components/event-edit/event-edit.component';
+import { EventEditComponent } from './components/event-edit/event-edit.component'; 
+import {ProfileComponent} from "./components/profile/profile.component";
 
- 
 const routes: Routes = [
   {
     path: 'timer',
@@ -32,6 +32,10 @@ const routes: Routes = [
       component: EventEditComponent } 
     ],
     canActivate: [IsLoggedGuard]
+  },
+  {
+    path:'profile',
+    component: ProfileComponent
   },
   {
     path: '',

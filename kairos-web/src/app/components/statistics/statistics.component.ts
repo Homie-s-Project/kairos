@@ -47,15 +47,15 @@ export class StatisticsComponent {
 
   // Session type doughnut chart
   public typeDoughnutChartLabels: string[] = [
-    'Science / Math', 
-    'Economie', 
+    'Science / Math',
+    'Economie',
     'Allemand',
     'Autre'
   ]
 
   public typeDoughnutChartDatasets: ChartConfiguration<'doughnut'>['data']['datasets'] = [
     {
-      data: [5, 7, 9, 11], 
+      data: [5, 7, 9, 11],
       label: "Serie A",
       borderColor: 'rgba(239, 247, 247, 1)',
       backgroundColor: 'rgba(51, 87, 108, 0.85)'
@@ -71,8 +71,8 @@ export class StatisticsComponent {
   //Session time bar chart
   public timeBarChartData: ChartConfiguration<'bar'>['data'] = {
     labels: [
-      'Science / Math', 
-      'Economie', 
+      'Science / Math',
+      'Economie',
       'Allemand',
       'Autre'
     ],
