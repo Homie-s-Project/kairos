@@ -340,7 +340,8 @@ public class Authentification : BaseController
         var googleId = client.ResourceName.Replace("people/", "");
         var googleName = client.Names.First();
         var googleEmail = client.EmailAddresses.First();
-        var googleBirthday = client.Birthdays.Count > 0 ? new DateTime(client.Birthdays.First().Date.Year, client.Birthdays.First().Date.Month, client.Birthdays.First().Date.Day) : (DateTime?) null;
+        var birthdays = client.Birthdays.First();
+        var googleBirthday = birthdays != null ? new DateTime(birthdays.Date.Year == 0 ? DateTime.UtcNow.Year : birthdays.Date.Year, birthdays.Date.Month, birthdays.Date.Day) : (DateTime?) null;
         
         // Si le compte google n'a qu'un pseudo
         if (googleName.FamilyName == null)
