@@ -1,6 +1,15 @@
-.calendar {
+@use '/src/styles/variables.scss' as vars;
+
+.calendar-wrapper {
   margin: 0 auto;
   width: min(100%, 800px);
+  padding: 20px;
+  border-radius: 30px;
+  background: vars.$first-color;
+}
+
+.calendar {
+  background: vars.$first-color;
 
   border: 1px solid #162741;
 
