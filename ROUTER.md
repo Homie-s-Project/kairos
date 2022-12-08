@@ -40,11 +40,13 @@ Dans cette section, vous retrouvez toutes les routes.
 
 | HTTP Method | Path               | Description                                                                                                                          |
 | ----------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
-| GET         | /studies/heartbeat | Cette route permet d'envoyer un message au backend pour informer que l'utilisateur est toujours en train de faire sa séance d'étude. |
+| POST         | /studies/heartbeat | Cette route permet d'envoyer un message au backend pour informer que l'utilisateur est toujours en train de faire sa séance d'étude. |
+| POST         | /studies/start`?time={temps en seconde}&labelsId={les ids des labels utilisé séparer par ',' EX: =23,42,64}` | Cette route permet de créer une session de travail avec le temps désiré et les labels.. |
+| POST        | /studies/stop | Cette route permet d'arrêter la session de travail en cours. |
 | GET         | /studies/`{studiesId}` | Cette route permet de recevoir des informations sur une studies en particulier. |
-| GET         | studies/lastWeek/hoursStudied | Cette route permet de recevoir le nombre d'heures étudié par jour durant la semaine dernière. |
-| GET         | studies/lastWeek/hoursPerLabel | Cette route permet de recevoir le nombre d'heures étudié par label durant la semaine dernière. |
-| GET         | studies/lastWeek/rate | Cette route permet de recevoir le taux d'étude des derniers 7 jours comparant la semaine d'avant. |
+| GET         | /studies/lastWeek/hoursStudied | Cette route permet de recevoir le nombre d'heures étudié par jour durant la semaine dernière. |
+| GET         | /studies/lastWeek/hoursPerLabel | Cette route permet de recevoir le nombre d'heures étudié par label durant la semaine dernière. |
+| GET         | /studies/lastWeek/rate | Cette route permet de recevoir le taux d'étude des derniers 7 jours comparant la semaine d'avant. |
 
 ### User
 
