@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
 import {Router} from "@angular/router";
-import {min} from "rxjs";
 
 @Component({
   selector: 'app-calendar',
@@ -13,6 +12,7 @@ export class CalendarComponent implements OnInit {
 
   private selectedMonth?: number;
   private selectedYear?: number;
+  private selectedDay?: number;
 
   private calendar = calendar({
     months: [
@@ -181,5 +181,13 @@ export class CalendarComponent implements OnInit {
     }
 
     return false;
+  }
+
+  selectDay(day: number) {
+    this.selectedDay = day;
+  }
+
+  isSelectedDay(date: number, daysOfWeek: number[]) {
+    return this.selectedDay === date && daysOfWeek.includes(date);
   }
 }

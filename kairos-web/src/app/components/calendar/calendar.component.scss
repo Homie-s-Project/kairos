@@ -47,7 +47,7 @@
         color: #fff;
       }
 
-      &.selected {
+      &.selected:not(.not) {
         background-color: #162741;
         color: #fff;
       }
