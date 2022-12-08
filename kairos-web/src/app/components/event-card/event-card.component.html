@@ -1,0 +1,11 @@
+<div class="card-container" (click)="goToEvent(event?.id)">
+    <h1 class="card-title">{{ event?.title }}</h1>
+    <hr />
+    <!-- <p class="card-description">
+        {{ event?.description }}
+    </p> -->
+    <div class="card-data">
+        <p class="event-date"><fa-icon [icon]="faCalendar"></fa-icon> {{ event?.sessionDate }}</p>
+        <p class="event-label"><fa-icon [icon]="faTag"></fa-icon> {{ event?.label }}</p>
+    </div>
+</div>

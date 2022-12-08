@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { Router } from '@angular/router';
+import { faGoogle, faMicrosoft } from '@fortawesome/free-brands-svg-icons';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
@@ -8,6 +9,10 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   styleUrls: ['./landing.component.scss']
 })
 export class LandingComponent implements OnInit, OnDestroy {
+  faGoogle = faGoogle;
+  faMicrosoft = faMicrosoft;
+
+
   title: string = 'KAIROS';
   subTitle: string = 'Prenez contrôle de votre temps';
   subTitleDico: string[];
@@ -22,8 +27,8 @@ export class LandingComponent implements OnInit, OnDestroy {
     this.nav.hideNavbar();
     this.subTitle = this.subTitleDico[this.getRandomInt(this.subTitleDico.length)];
 
-    let textDiv = document.getElementById("text-div");
-    let buttonDiv = document.getElementById("button-div");
+    let textDiv = document.getElementById("title-container");
+    let buttonDiv = document.getElementById("auth-container");
 
     if(textDiv) {
       textDiv.style.animationPlayState = "running";

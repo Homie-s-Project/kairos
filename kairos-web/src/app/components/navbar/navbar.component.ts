@@ -10,12 +10,12 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent{
-  faCircleLeft: any = faCircleLeft;
-  faCalendar: any = faCalendar;
-  faChartLine: any = faChartLine;
-  faPaw: any = faPaw;
-  faUser: any = faUser;
-  faEllipsis: any = faEllipsis;
+  faCircleLeft = faCircleLeft;
+  faCalendar = faCalendar;
+  faChartLine = faChartLine;
+  faPaw = faPaw;
+  faUser = faUser;
+  faEllipsis = faEllipsis;
 
   constructor(public nav: NavbarService, private _router: Router) { }
 
