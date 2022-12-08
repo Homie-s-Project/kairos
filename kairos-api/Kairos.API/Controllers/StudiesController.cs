@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +7,7 @@ using Kairos.API.Context;
 using Kairos.API.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Kairos.API.Controllers;
@@ -65,6 +65,16 @@ public class StudiesController : SecurityController
                     ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo
                         .InvariantCulture),
                     liveStudy.StartTime, GetPersonalGroup());
+                
+                study.Labels = new List<Label>();
+                liveStudy.Labels.ForEach(label =>
+                {
+                    var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                    if (labelDb != null)
+                    {
+                        study.Labels.Add(labelDb);
+                    }
+                });
 
                 _context.Studies.Add(study);
                 await _context.SaveChangesAsync();
@@ -88,38 +98,28 @@ public class StudiesController : SecurityController
 
         if (!string.IsNullOrEmpty(labelsId))
         {
-            var labels = labelsId.Split(',').ToList();
+            var labels = labelsId.Split(',');
             List<LabelDto> labelsForStudy = new List<LabelDto>();
 
-            ActionResult exception = null;
-            labels.ForEach(async label =>
+            foreach (var label in labels)
             {
                 var labelsParsed = Int32.TryParse(label, out var labelInt);
                 if (!labelsParsed)
                 {
-                    exception = BadRequest(new ErrorMessage("The timer is not a number.",
+                    return BadRequest(new ErrorMessage("The timer is not a number.",
                         StatusCodes.Status500InternalServerError));
-                    return;
                 }
 
                 var labelDb = await _context.Labels.FirstOrDefaultAsync(l => l.LabelId == labelInt && l.UserId == userContext.UserId);
-
                 if (labelDb == null)
                 {
-                    exception = Unauthorized(new ErrorMessage("This user is not allowed to use this label.",
+                    return Unauthorized(new ErrorMessage("This user is not allowed to use this label.",
                         StatusCodes.Status401Unauthorized));
-                    return;
                 }
 
-                labelsForStudy.Add(new LabelDto(labelDb));
-            });
-
-            // S'il y a eu une exception
-            if (exception != null)
-            {
-                return exception;
+                labelsForStudy.Add(new LabelDto(labelDb, false));
             }
-            
+
             var startStudyWithLabel = new LiveStudies
             {
                 UserId = userContext.UserId,
@@ -131,17 +131,19 @@ public class StudiesController : SecurityController
 
             _memoryCache.Set(userContext.UserId, startStudyWithLabel);
         }
-        
-        var startStudyWithoutLabels = new LiveStudies
+        else
         {
-            UserId = userContext.UserId,
-            TimePlanned = timerInt,
-            Labels = new List<LabelDto>(),
-            StartTime = DateTime.UtcNow,
-            LastRefresh = DateTime.UtcNow
-        };
+            var startStudyWithoutLabels = new LiveStudies
+            {
+                UserId = userContext.UserId,
+                TimePlanned = timerInt,
+                Labels = new List<LabelDto>(),
+                StartTime = DateTime.UtcNow,
+                LastRefresh = DateTime.UtcNow
+            };
 
-        _memoryCache.Set(userContext.UserId, startStudyWithoutLabels);
+            _memoryCache.Set(userContext.UserId, startStudyWithoutLabels);
+        }
 
         return Ok(new ErrorMessage("Session started", StatusCodes.Status200OK));
     }
@@ -180,6 +182,16 @@ public class StudiesController : SecurityController
                 ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo.InvariantCulture),
                 liveStudy.StartTime, GetPersonalGroup());
             
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
+            
             _context.Studies.Add(study);
             await _context.SaveChangesAsync();
         }
@@ -189,6 +201,16 @@ public class StudiesController : SecurityController
             var study = new Studies(Guid.NewGuid().ToString(),
                 ((int) (DateTime.UtcNow - liveStudy.LastRefresh).TotalSeconds).ToString(CultureInfo.InvariantCulture),
                 liveStudy.StartTime, GetPersonalGroup());
+
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
             
             _context.Studies.Add(study);
             await _context.SaveChangesAsync();
@@ -231,6 +253,16 @@ public class StudiesController : SecurityController
             var study = new Studies(Guid.NewGuid().ToString(),
                 ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo.InvariantCulture)
                 , liveStudy.StartTime, GetPersonalGroup());
+            
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
             
             _context.Studies.Add(study);
             await _context.SaveChangesAsync();
