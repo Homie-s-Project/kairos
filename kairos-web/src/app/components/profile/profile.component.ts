@@ -1,12 +1,13 @@
-import {Component, OnInit, Renderer2} from '@angular/core';
+import {Component} from '@angular/core';
 import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent{
   faPencil = faPencil;
   faTrashCan = faTrashCan;
   faSquarePlus = faSquarePlus  ;
@@ -28,12 +29,7 @@ export class ProfileComponent implements OnInit {
     {name : 'Alexandre'},
     {name : 'Clyve'},
   ]
-  constructor(private renderer: Renderer2) {
-    this.renderer.removeClass(document.body, 'landing-background');
-    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
+  constructor (public nav: NavbarService) {
+    nav.showBackButton();
   }
-
-  ngOnInit(): void {
-  }
-
 }
