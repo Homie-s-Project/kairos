@@ -7,8 +7,8 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { ErrorComponent } from './components/error/error.component';
 import { EventEditComponent } from './components/event-edit/event-edit.component';
+import {ProfileComponent} from "./components/profile/profile.component";
 
- 
 const routes: Routes = [
   {
     path: 'timer',
@@ -31,6 +31,11 @@ const routes: Routes = [
       { path: ':eventId',
       component: EventEditComponent } 
     ],
+    canActivate: [IsLoggedGuard]
+  },
+  {
+    path:'profile',
+    component: ProfileComponent,
     canActivate: [IsLoggedGuard]
   },
   {

@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Models;
-using Kairos.API.Utils;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Kairos.API.Controllers;
@@ -16,6 +15,8 @@ namespace Kairos.API.Controllers;
 [Route(("studies"))]
 public class StudiesController : SecurityController
 {
+    private const int MinutesMinimumHeatbeat = 2;
+    
     private readonly IMemoryCache _memoryCache;
     private readonly KairosContext _context;
 
@@ -26,30 +27,253 @@ public class StudiesController : SecurityController
     }
 
     /// <summary>
-    /// send heatbeat to check if user is still studying
+    /// Permet de commencer une session de travail
     /// </summary>
     /// <returns></returns>
-    [HttpPost("heartbeat")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
-    public async Task<IActionResult> HeartBeat()
+    [HttpPost("start")]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> StartStudies(string timer, string labelsId)
     {
-        var user = (User) HttpContext.Items["User"];
+        var userContext = (User) HttpContext.Items["User"];
 
         // Si l'utilisateur n'est pas connecté,
-        if (user == null)
+        if (userContext == null)
         {
             return Forbid("Not access");
         }
 
-        var encryptMicrosoftId = CryptoUtils.Encrypt(user.ServiceId);
-        if (!_memoryCache.TryGetValue(encryptMicrosoftId, out DateTime outState))
+        var liveStudy = (LiveStudies) _memoryCache.Get(userContext.UserId);
+        if (liveStudy != null)
         {
-            RefreshMemory(encryptMicrosoftId);
-            return Ok("Started studies");
+            // S'il a été actualisé il y a moins de 2 {MinutesMinimumHeatbeat} minutes
+            if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) > DateTime.UtcNow)
+            {
+                return NotFound(new ErrorMessage(
+                    "This user has already an session started, please end the last one before.",
+                    StatusCodes.Status406NotAcceptable));
+            }
+
+            // S'il a été actualisé il y a plus de 2 {MinutesMinimumHeatbeat} minutes
+            if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
+            {
+                // On supprime l'ancienne session
+                _memoryCache.Remove(userContext.UserId);
+
+                // On la sauvegarde dans la base de données
+                var study = new Studies(Guid.NewGuid().ToString(),
+                    ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo
+                        .InvariantCulture),
+                    liveStudy.StartTime, GetPersonalGroup());
+                
+                study.Labels = new List<Label>();
+                liveStudy.Labels.ForEach(label =>
+                {
+                    var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                    if (labelDb != null)
+                    {
+                        study.Labels.Add(labelDb);
+                    }
+                });
+
+                _context.Studies.Add(study);
+                await _context.SaveChangesAsync();
+
+                return NotFound(new ErrorMessage(
+                    "This user has already an session started, this session has been stoped and saved.",
+                    StatusCodes.Status406NotAcceptable));
+            }
         }
 
-        RefreshMemory(encryptMicrosoftId);
-        return Ok("Continue studies");
+        if (string.IsNullOrEmpty(timer))
+        {
+            return BadRequest(new ErrorMessage("The timer is required.", StatusCodes.Status406NotAcceptable));
+        }
+        
+        var timerParsed = Int32.TryParse(timer, out var timerInt);
+        if (!timerParsed)
+        {
+            return BadRequest(new ErrorMessage("The timer is not a number.", StatusCodes.Status500InternalServerError));
+        }
+
+        if (!string.IsNullOrEmpty(labelsId))
+        {
+            var labels = labelsId.Split(',');
+            List<LabelDto> labelsForStudy = new List<LabelDto>();
+
+            foreach (var label in labels)
+            {
+                var labelsParsed = Int32.TryParse(label, out var labelInt);
+                if (!labelsParsed)
+                {
+                    return BadRequest(new ErrorMessage("The timer is not a number.",
+                        StatusCodes.Status500InternalServerError));
+                }
+
+                var labelDb = await _context.Labels.FirstOrDefaultAsync(l => l.LabelId == labelInt && l.UserId == userContext.UserId);
+                if (labelDb == null)
+                {
+                    return Unauthorized(new ErrorMessage("This user is not allowed to use this label.",
+                        StatusCodes.Status401Unauthorized));
+                }
+
+                labelsForStudy.Add(new LabelDto(labelDb, false));
+            }
+
+            var startStudyWithLabel = new LiveStudies
+            {
+                UserId = userContext.UserId,
+                TimePlanned = timerInt,
+                Labels = labelsForStudy,
+                StartTime = DateTime.UtcNow,
+                LastRefresh = DateTime.UtcNow
+            };
+
+            _memoryCache.Set(userContext.UserId, startStudyWithLabel);
+        }
+        else
+        {
+            var startStudyWithoutLabels = new LiveStudies
+            {
+                UserId = userContext.UserId,
+                TimePlanned = timerInt,
+                Labels = new List<LabelDto>(),
+                StartTime = DateTime.UtcNow,
+                LastRefresh = DateTime.UtcNow
+            };
+
+            _memoryCache.Set(userContext.UserId, startStudyWithoutLabels);
+        }
+
+        return Ok(new ErrorMessage("Session started", StatusCodes.Status200OK));
+    }
+    
+    
+    /// <summary>
+    /// Permet d'arrêter une session de travail
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("stop")]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> StopStudies()
+    {
+        var userContext = (User) HttpContext.Items["User"];
+
+        // Si l'utilisateur n'est pas connecté,
+        if (userContext == null)
+        {
+            return Forbid("Not access");
+        }
+
+        var liveStudy = (LiveStudies) _memoryCache.Get(userContext.UserId);
+        if (liveStudy == null)
+        {
+            return NotFound(new ErrorMessage("This user has no session to stop.", StatusCodes.Status406NotAcceptable));
+        }
+        
+        // On supprime l'ancienne session
+        _memoryCache.Remove(userContext.UserId);
+
+        if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
+        {
+            // On la sauvegarde dans la base de données avec le temps du dernier battement
+            var study = new Studies(Guid.NewGuid().ToString(),
+                ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo.InvariantCulture),
+                liveStudy.StartTime, GetPersonalGroup());
+            
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
+            
+            _context.Studies.Add(study);
+            await _context.SaveChangesAsync();
+        }
+        else
+        {
+            // On la sauvegarde dans la base de données avec le temps actuel
+            var study = new Studies(Guid.NewGuid().ToString(),
+                ((int) (DateTime.UtcNow - liveStudy.LastRefresh).TotalSeconds).ToString(CultureInfo.InvariantCulture),
+                liveStudy.StartTime, GetPersonalGroup());
+
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
+            
+            _context.Studies.Add(study);
+            await _context.SaveChangesAsync();
+        }
+        
+        return Ok(new ErrorMessage("Session ended", StatusCodes.Status200OK));
+    }
+
+
+    /// <summary>
+    /// send heatbeat to check if user is still studying
+    /// </summary>
+    /// <returns></returns>
+    [HttpPost("heartbeat")]
+    [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
+    public async Task<IActionResult> HeartBeat()
+    {
+        var userContext = (User) HttpContext.Items["User"];
+
+        // Si l'utilisateur n'est pas connecté,
+        if (userContext == null)
+        {
+            return Forbid("Not access");
+        }
+
+        var liveStudy = (LiveStudies) _memoryCache.Get(userContext.UserId);
+        if (liveStudy == null)
+        {
+            return NotFound(new ErrorMessage("This user has no session to give an heatbeat.", StatusCodes.Status406NotAcceptable));
+        }
+        
+        // S'il a été actualisé il y a plus de 2 {MinutesMinimumHeatbeat} minutes
+        if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
+        {
+            // On supprime l'ancienne session
+            _memoryCache.Remove(userContext.UserId);
+                
+            // On la sauvegarde dans la base de données
+            var study = new Studies(Guid.NewGuid().ToString(),
+                ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo.InvariantCulture)
+                , liveStudy.StartTime, GetPersonalGroup());
+            
+            study.Labels = new List<Label>();
+            liveStudy.Labels.ForEach(label =>
+            {
+                var labelDb = _context.Labels.FirstOrDefault(l => l.LabelId == label.LabelId && l.UserId == userContext.UserId);
+                if (labelDb != null)
+                {
+                    study.Labels.Add(labelDb);
+                }
+            });
+            
+            _context.Studies.Add(study);
+            await _context.SaveChangesAsync();
+                
+            return NotFound(new ErrorMessage("The last session was unactive for more than " + MinutesMinimumHeatbeat + " minutes. The session has been saved.", StatusCodes.Status406NotAcceptable));
+        }
+
+        liveStudy.LastRefresh = DateTime.UtcNow;
+        _memoryCache.Set(userContext.UserId, liveStudy);
+
+        return Ok(new ErrorMessage("Heartbeat sent", StatusCodes.Status200OK));
     }
 
     /// <summary>
@@ -230,23 +454,15 @@ public class StudiesController : SecurityController
         return Ok(rate);
     }
 
-    /// <summary>
-    /// refresh memory cache
-    /// </summary>
-    /// <param name="encryptServiceId">the encrypted service id from the oauth provider (google, microsoft)</param>
-    private void RefreshMemory(string encryptServiceId)
+    private int GetPersonalGroup()
     {
-        // Entrée du cache qui est égale à 5min.
-        var cacheEntryOption = new MemoryCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromMinutes(5));
+        var userConterxt = (User) HttpContext.Items["User"];
 
-        _memoryCache.Set(encryptServiceId, DateTime.Now, cacheEntryOption);
-    }
+        var groups = _context.Groups.Where(g => g.GroupsIsPrivate && g.OwnerId == userConterxt.UserId)
+            .Select(g => new GroupDto(g))
+            .ToList();
 
-    private int GenerateNumberBetween(int min, int max)
-    {
-        Random random = new Random();
-        return random.Next(min, max);
+        return groups.First().GroupId;
     }
 }
 
