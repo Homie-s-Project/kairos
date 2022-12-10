@@ -1,41 +1,55 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { UserModel } from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private token: string;
 
-  //constructor() { }
-  constructor(private cookie: CookieService, private http: HttpClient) { }
-
-  isLoggedIn = (): boolean => {
-    if (this.cookie.get('jwt') != "") {
-      return true;
-    }
-    
-    return false;
+  constructor(private http: HttpClient, private cookie: CookieService) {
+    this.token = this.cookie.get('jwt');
   }
 
-  // getProfileAsync = (): any => {
-  //   var currentUser: any;
-  //   const auth_token = this.cookie.get('jwt')
-  //   const headers = new HttpHeaders ( {
-  //     "Content-Type": "application/json",
-  //     "Authorization": `Bearer ${auth_token}`
-  //   })
-    
-  //   const requestOptions = { headers: headers };
+  isLoggedIn = (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (this.token) {
+        // Création du header
+        const header = new HttpHeaders({
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.token}`,
+        });
 
-  //   this.http
-  //     .get('http://localhost:5000/User/me', requestOptions)
-  //     .subscribe(response => {
-  //       currentUser = response;
-  //       console.log(currentUser)
-  //     })
+        this.http
+          .get('http://localhost:5000/User/me', {
+            headers: header,
+            observe: 'response',
+          })
+          .subscribe(
+            response => {
+              resolve(response.status === 200);
+            },
+            error => {
+              reject(error);
+            }
+          );
+      } else {
+        resolve(false);
+      }
+    });
+  }
 
-  //   return (currentUser)
-  // }
+  getProfile = () => {
+    const header = new HttpHeaders ({
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${this.token}`
+    });
+
+    this.http
+      .get('http://localhost:5000/User/me', {headers: header, observe: 'response'})
+      .subscribe(response => {
+        console.log(response);
+      });
+  }
 }

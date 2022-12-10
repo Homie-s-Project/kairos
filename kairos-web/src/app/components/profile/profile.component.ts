@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
@@ -29,7 +30,9 @@ export class ProfileComponent{
     {name : 'Alexandre'},
     {name : 'Clyve'},
   ]
-  constructor (public nav: NavbarService) {
+
+  constructor (public nav: NavbarService, private auth: AuthService) {
     nav.showBackButton();
+    auth.getProfile();
   }
 }
