@@ -149,6 +149,11 @@ public class LabelController : SecurityController
             return BadRequest(new ErrorMessage("No name specified", StatusCodes.Status400BadRequest));
         }
 
+        if (labelName.Length > 50)
+        {
+            return BadRequest(new ErrorMessage("Label name is too long", StatusCodes.Status400BadRequest));
+        }
+
         var label = new Label(labelName, userConterxt.UserId);
         _context.Labels.Add(label);
         await _context.SaveChangesAsync();
