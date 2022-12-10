@@ -21,6 +21,7 @@ import {EventCardComponent} from './components/event-card/event-card.component';
 import {EventEditComponent} from './components/event-edit/event-edit.component';
 import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
 import {ProfileComponent} from './components/profile/profile.component';
+import { LogoutDialogComponent } from './components/dialog/logout-dialog/logout-dialog.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,7 @@ import {ProfileComponent} from './components/profile/profile.component';
     EventEditComponent,
     TinyTimerComponent,
     NavbarComponent,
-    ProfileComponent
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

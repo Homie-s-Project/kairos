@@ -1,6 +1,8 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
+import { map } from 'rxjs';
+import { UserModel } from 'src/app/models/user.model';
 
 @Injectable({
   providedIn: 'root'
@@ -45,11 +47,16 @@ export class AuthService {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${this.token}`
     });
-
-    this.http
+  
+    return this.http
       .get('http://localhost:5000/User/me', {headers: header, observe: 'response'})
-      .subscribe(response => {
-        console.log(response);
-      });
+      .pipe(
+        map(response => response.body),
+        map(body => new UserModel(body))
+      );
+  }
+
+  logout = () => {
+    this.cookie.delete('jwt');
   }
 }
