@@ -32,7 +32,7 @@ public class GroupController : SecurityController
         var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
         var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.OwnerId == userContext.UserId)
             .AsSplitQuery()
-            .Include(g => g.Event)
+            .Include(g => g.Events)
             .Include(g => g.Labels)
             .Include(g => g.Users)
             .Select(g => new GroupDto(g))
