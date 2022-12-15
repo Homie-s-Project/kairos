@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Kairos.API.Context;
-using Kairos.API.Controllers;
 using Kairos.API.Middleware;
 using Kairos.API.Models;
 using Kairos.API.Utils;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Kairos.API
 {
@@ -96,7 +98,7 @@ namespace Kairos.API
             // évite la boucle infinie lors de la sérialisation des objets
             services.AddControllers().AddNewtonsoftJson(options =>
             {
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
         }
 
@@ -110,9 +112,15 @@ namespace Kairos.API
             
             if (env.IsDevelopment())
             {
+                app.UseStaticFiles();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kairos.API v1"));
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Kairos.API v1");
+                    c.InjectStylesheet("/swagger-ui/SwaggerDark.css");
+                    c.InjectJavascript("/swagger-auto-auth/SwaggerAutoAuth.js");
+                });
             }
 
             app.UseAuthentication();
@@ -152,24 +160,24 @@ namespace Kairos.API
                     _logger.LogInformation("Lancement de l'ajout des données fictives dans la base de données");
                     // Si on trouve l'utilisateur, on le supprime. (le reste des éléments devrait aussi se remove étant donné qu'ils sont config en cascade)
                     var devUserExisting = await context.Users.FirstOrDefaultAsync(u => u.ServiceId == serviceIdDev && u.Email == emailDev);
-                    var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
-                    var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
-                        .ToList();
-                    
-                    if (eventsDev.Count > 0)
-                    {
-                        _logger.LogWarning("{} event détecté. Lancement de la suppression", eventsDev.Count);
-                        context.Events.RemoveRange(eventsDev);
-                    }
-
-                    if (groupsDev.Count > 0)
-                    {
-                        _logger.LogWarning("{} group détecté. Lancement de la suppression", groupsDev.Count);
-                        context.Groups.RemoveRange(groupsDev);
-                    }
-                    
                     if (devUserExisting != null)
                     {
+                        var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
+                        var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
+                            .ToList();
+                    
+                        if (eventsDev.Count > 0)
+                        {
+                            _logger.LogWarning("{} event détecté. Lancement de la suppression", eventsDev.Count);
+                            context.Events.RemoveRange(eventsDev);
+                        }
+
+                        if (groupsDev.Count > 0)
+                        {
+                            _logger.LogWarning("{} group détecté. Lancement de la suppression", groupsDev.Count);
+                            context.Groups.RemoveRange(groupsDev);
+                        }
+                        
                         _logger.LogWarning("L'utilisateur (id: {}) de développement détecté, Lancement de sa suppression", devUserExisting.UserId);
                         context.Users.Remove(devUserExisting);
                     }
@@ -201,7 +209,7 @@ namespace Kairos.API
                     var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
                     
                     // On crée un groupe privé
-                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId);
+                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId, true);
                     context.Groups.Add(devGroupPrivate);
                     await context.SaveChangesAsync();
                     
@@ -275,20 +283,44 @@ namespace Kairos.API
                     _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe publique (id: {})", devGroupPublic.Event.EventId, devGroupPublic.GroupId);
                     
                     // Création d'un studies pour le groupe privé
-                    Studies studiesPrivateDev = new Studies("3482741_prv", "3050", DateTime.Today, devGroupPrivate.GroupId);
-                    context.Studies.Add(studiesPrivateDev);
-                    await context.SaveChangesAsync();
+                    List<Studies> studies = new List<Studies>();
+                    studies.Add(new Studies("3482741_prv", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-1), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-2), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-3), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Allemand", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-4), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Anglais", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-5), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-6), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Révision", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-7), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Informatique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-8), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Math", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-9), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Physique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-10), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Chimie", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-11), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Histoire", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-12), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Science", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-13), devGroupPrivate.GroupId));
+                    studies.Add(new Studies("Informatique", GenerateTimeStudiesInSeconds(5, 120), DateTime.Today.AddDays(-14), devGroupPrivate.GroupId));
                     
-                    _logger.LogInformation("Création d'une nouvelle session d'étude privé (id: {})", studiesPrivateDev.StudiesId);
-
-                    studiesPrivateDev.Labels = new List<Label>();
-                    labelsExisting.ForEach(l =>
+                    studies.ForEach(s =>
                     {
-                        studiesPrivateDev.Labels.Add(l);
+                        s.Labels = new List<Label>();
+                        s.Labels.Add(labelsExisting[GenerateNumberBetweenValues(0, labelsExisting.Count - 1)]);
+                    });
+                    
+                    studies.ForEach(s =>
+                    {
+                        context.Studies.Add(s);
                     });
                     await context.SaveChangesAsync();
                     
-                    _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studiesPrivateDev.Labels.Count, studiesPrivateDev.StudiesNumber, studiesPrivateDev.StudiesId);
+                    _logger.LogInformation("Création de {} nouvelles sessions d'étude privé (id: {})", studies.Count, studies[0].StudiesId);
+
+                    studies[0].Labels = new List<Label>();
+                    labelsExisting.ForEach(l =>
+                    {
+                        studies[0].Labels.Add(l);
+                    });
+                    await context.SaveChangesAsync();
+                    
+                    _logger.LogInformation("Ajout de {} labels pr la session d'étude privé {} (id: {})", studies[0].Labels.Count, studies[0].StudiesNumber, studies[0].StudiesId);
                     
                     // Création d'un studies pour le groupe publique
                     Studies studiesPublicDev = new Studies("3482741_pub", "3050", DateTime.Today, devGroupPublic.GroupId);
@@ -312,8 +344,46 @@ namespace Kairos.API
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Création d'un nouveau companion (id: {})", devCompanion.CompanionId);
-                    _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}",devUser.UserId,  JwtUtils.GenerateJsonWebToken(devUser));
+                    
+                    var generateJsonWebToken = JwtUtils.GenerateJsonWebToken(devUser);
+                    _logger.LogInformation("New DevUser (id:{}) created with the JWT: \n\n{}\n\n",devUser.UserId,  generateJsonWebToken);
+
+                    // Essaye de lancer le navigateur par défaut
+                    var linkSwagger = "http://localhost:5000/swagger/index.html?token="+generateJsonWebToken;
+                    OpenBrowser(linkSwagger);
                 }
+            }
+        }
+
+        private string GenerateTimeStudiesInSeconds(int minutesDepart, int minutesFin)
+        {
+            Random random = new Random();
+            return (random.Next(minutesDepart, minutesFin) * 60).ToString();
+        }
+        
+        private int GenerateNumberBetweenValues(int min, int max)
+        {
+            Random random = new Random();
+            return random.Next(min, max);
+        }
+        
+        private static void OpenBrowser(string url)
+        {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                Process.Start("xdg-open", url);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                Process.Start("open", url);
+            }
+            else
+            {
+                Console.WriteLine("Le navigateur par défaut n'a pas pu être ouvert");
             }
         }
     }

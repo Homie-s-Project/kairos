@@ -1,0 +1,119 @@
+@use '/src/styles/variables.scss' as vars;
+
+.profile-app-container {
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: auto;
+  gap: 30px;
+    .profile-container {
+      padding: 15px;
+      background-color: vars.$first-color;
+      border-radius: 15px;
+
+      .profile-content{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+    }
+    .profile-bottom-part {
+      display: flex;
+      gap: 30px;
+      li{
+        list-style: none;
+      }
+      div {
+        width: 50%;
+      }
+      .label-container {
+        background-color: vars.$first-color;
+        padding: 15px;
+        border-radius: 15px;
+
+        button {
+          font-size: 18px;
+          border-style: none;
+          background-color: transparent;
+        }
+        .label-title-content{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: auto;
+        }
+
+        .label-content {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+          .label-input {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: auto;
+            input {
+              font-size: 18px;
+              border-radius: 8px;
+              gap: 10px 20px;
+              margin-bottom: 4px;
+              &:disabled {
+                border-style: none;
+                background-color: transparent;
+              }
+            }
+            .label-edit-controller {
+              display: flex;
+              justify-content: space-between;
+              width: 60px;
+            }
+          }
+        }
+      }
+      .group-container {
+        padding: 15px;
+        background-color: vars.$first-color;
+        border-radius: 15px;
+
+        button {
+          font-size: 18px;
+          border-style: none;
+          background-color: transparent;
+        }
+        .group-content{
+          width: 100%;
+          .group-name-container{
+            display: flex;
+            justify-content: space-between ;
+            flex-direction: row;
+            width: 100%;
+            gap: 20px;
+          }
+        }
+        ul{
+          width: 100%;
+        }
+        li{
+          width: 100%;
+        }
+        .group-title-content{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: 100%;
+        }
+        .group-name{
+          font-size: x-large ;
+          width: 100%;
+        }
+        .group-member-container{
+          display: flex;
+          justify-content: space-between ;
+          flex-direction: row;
+          width: 100%;
+        }
+      }
+    }
+}
+

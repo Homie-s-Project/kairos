@@ -9,6 +9,7 @@ using Kairos.API.Utils.Microsoft;
 using Kairos.API.Utils.Microsoft.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
@@ -153,23 +154,22 @@ public class Authentification : BaseController
                     _logger.LogWarning("Error when trying connecting user.\n\n" + error + ": " + errorDescription);
                 }
 
-                return BadRequest("Error: '" + error +
-                                  "', Please contact the admin.");
+                return BadRequest(new ErrorMessage("Error: '" + error + "', Please contact the admin.", StatusCodes.Status500InternalServerError));
             }
 
-            return NotFound("No code parameter to connect to your account found.");
+            return NotFound(new ErrorMessage("No code parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // Si aucun "state" n'est retourné
         if (state == null)
         {
-            return NotFound("State parameter not found.");
+            return NotFound(new ErrorMessage("No state parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // On check si la connexion n'a demande de connexion n'a pas été faite il y a plus de 5 mintues grâce au state.
         if (!_memoryCache.TryGetValue(state, out DateTime outState))
         {
-            return Unauthorized("State not valid");
+            return Unauthorized(new ErrorMessage("Your connection is too old, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         OAuthResponse token = null;
@@ -182,12 +182,12 @@ public class Authentification : BaseController
         }
         catch
         {
-            return Unauthorized("We can't acces to your account.");
+            return Unauthorized(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         if (token == null)
         {
-            return BadRequest("We can't access to your account.");
+            return BadRequest(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         var accessToken = token.AccessToken;
@@ -296,23 +296,22 @@ public class Authentification : BaseController
                     _logger.LogWarning("Error when trying connecting user.\n\n" + error);
                 }
 
-                return BadRequest("Error: '" + error +
-                                  "', Please contact the admin.");
+                return BadRequest(new ErrorMessage("Error: '" + error + "', Please contact the admin.", StatusCodes.Status500InternalServerError));
             }
 
-            return NotFound("No code parameter to connect to your account found.");
+            return NotFound(new ErrorMessage("No code parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // Si aucun "state" n'est retourné
         if (state == null)
         {
-            return NotFound("State parameter not found.");
+            return NotFound(new ErrorMessage("No state parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // On check si la connexion n'a demande de connexion n'a pas été faite il y a plus de 5 mintues grâce au state.
         if (!_memoryCache.TryGetValue(state, out DateTime outState))
         {
-            return Unauthorized("State not valid");
+            return Unauthorized(new ErrorMessage("Your connection is too old, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         Utils.Google.Models.OAuthResponse token = null;
@@ -324,12 +323,12 @@ public class Authentification : BaseController
         }
         catch
         {
-            return Unauthorized("We can't acces to your account.");
+            return Unauthorized(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         if (token == null)
         {
-            return BadRequest("We can't access to your account.");
+            return BadRequest(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         var accessToken = token.AccessToken;
@@ -340,7 +339,8 @@ public class Authentification : BaseController
         var googleId = client.ResourceName.Replace("people/", "");
         var googleName = client.Names.First();
         var googleEmail = client.EmailAddresses.First();
-        var googleBirthday = client.Birthdays.Count > 0 ? new DateTime(client.Birthdays.First().Date.Year, client.Birthdays.First().Date.Month, client.Birthdays.First().Date.Day) : (DateTime?) null;
+        var birthdays = client.Birthdays.First();
+        var googleBirthday = birthdays != null ? new DateTime(birthdays.Date.Year == 0 ? DateTime.UtcNow.Year : birthdays.Date.Year, birthdays.Date.Month, birthdays.Date.Day) : (DateTime?) null;
         
         // Si le compte google n'a qu'un pseudo
         if (googleName.FamilyName == null)
