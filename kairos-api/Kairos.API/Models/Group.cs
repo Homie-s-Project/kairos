@@ -19,12 +19,8 @@ public class Group
 
     [MaxLength(50)] public string GroupName { get; set; }
     public bool GroupsIsPrivate { get; set; }
-
     public int OwnerId { get; set; }
-
-    [ForeignKey("Event")] public int? EventId { get; set; }
-    public Event Event { get; set; }
-
     public ICollection<User> Users { get; set; }
     public ICollection<Label> Labels { get; set; }
+    public ICollection<Event> Events { get; set; }
 }

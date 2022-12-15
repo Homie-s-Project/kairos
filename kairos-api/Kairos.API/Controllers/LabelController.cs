@@ -72,18 +72,16 @@ public class LabelController : SecurityController
             return BadRequest(new ErrorMessage("Event id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        var groupEvent = _context.Groups
-            .Include(g => g.Event)
-            .Include(g => g.Event.Labels)
-            .FirstOrDefault(g => g.OwnerId == userConterxt.UserId && g.Event.EventId == eventIdParsed);
+        var eventDb = _context.Events
+            .Include(e => e.Labels)
+            .FirstOrDefault(e => e.EventId == eventIdParsed);
 
-        if (groupEvent == null)
+        if (eventDb == null)
         {
             return NotFound(new ErrorMessage("No event found with this id: " + eventIdParsed, StatusCodes.Status404NotFound));
         }
-        
-        var eventDto = new GroupDto(groupEvent, true);
-        return Ok(eventDto.Event);
+
+        return Ok(new EventDto(eventDb, true));
     }
 
     /// <summary>
