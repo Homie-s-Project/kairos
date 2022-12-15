@@ -32,7 +32,7 @@ public class EventController : SecurityController
         }
         
         var groupEvent = _context.Groups
-            .Include(g => g.Event)
+            .Include(g => g.Events)
             .Where(g => g.OwnerId == userContext.UserId)
             .Select(g => new GroupDto(g, true, false))
             .ToList();
