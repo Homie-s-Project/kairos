@@ -86,6 +86,11 @@ public class GroupController : SecurityController
             return BadRequest(new ErrorMessage("Can't create a group", StatusCodes.Status400BadRequest));
         }
 
+        if (groupName.Length > 50)
+        {
+            return BadRequest(new ErrorMessage("The name of the group is too long", StatusCodes.Status400BadRequest));
+        }
+
         var group = new Group(groupName, userConterxt.UserId);
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
