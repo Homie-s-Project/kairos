@@ -22,7 +22,8 @@ public class EventController : SecurityController
     /// <summary>
     /// Return the event of an certain group.
     /// </summary>
-    /// <param name="groupId">the id of the group you want to see the event's</param>
+    /// <param name="
+    /// groupId">the id of the group you want to see the event's</param>
     /// <returns></returns>
     [HttpGet("{groupId}", Name = "Get the events of a group")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
@@ -63,20 +64,20 @@ public class EventController : SecurityController
     {
         if (string.IsNullOrEmpty(groupId))
         {
-            return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Event id not specified", StatusCodes.Status400BadRequest));
         }
         
         var isGroupIdParsed = Int32.TryParse(groupId, out int groupIdParsed);
         if (!isGroupIdParsed)
         {
-            return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Event id is not valid", StatusCodes.Status400BadRequest));
         }
 
         var userContext = (User) HttpContext.Items["User"];
 
         if (userContext == null)
         {
-            return Unauthorized(new ErrorMessage("Can't create a group", StatusCodes.Status401Unauthorized));
+            return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));
         }
 
         if (string.IsNullOrEmpty(title))
