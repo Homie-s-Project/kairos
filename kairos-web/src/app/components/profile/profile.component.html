@@ -33,6 +33,7 @@
       <div class="group-content" *ngFor="let group of groups">
         <div class="group-name-container">
         <p class="group-name" (click)="isEditable()">{{group.name}}</p>
+        <button *ngIf="!visible"><fa-icon [icon]="faChevronDown"></fa-icon></button>
         <button *ngIf="visible"><fa-icon [icon]="faCheck"></fa-icon></button>
         <button *ngIf="visible"><fa-icon [icon]="faSquarePlus"></fa-icon></button>
         </div>
