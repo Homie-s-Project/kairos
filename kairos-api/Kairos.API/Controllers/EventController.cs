@@ -18,7 +18,33 @@ public class EventController : SecurityController
     {
         _context = context;
     }
+    
+    [HttpGet("/me", Name = "Get the events from a user")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public IActionResult GetEvents()
+    {
+        
+        var userContext = (User) HttpContext.Items["User"];
+        if (userContext == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));
+        }
+        
+        var groupEvent = _context.Groups
+            .Include(g => g.Event)
+            .Where(g => g.OwnerId == userContext.UserId)
+            .Select(g => new GroupDto(g, true, false))
+            .ToList();
 
+        if (groupEvent.Count == 0)
+        {
+            return NotFound(new ErrorMessage("No group found where we can look after your events.", StatusCodes.Status404NotFound));
+        }
+
+        return Ok(groupEvent);
+    }
+    
     /// <summary>
     /// Return the event of an certain group.
     /// </summary>
@@ -56,7 +82,6 @@ public class EventController : SecurityController
         return Ok(events);
     }
 
-
     [HttpPost("/create", Name = "Create an event")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
@@ -74,7 +99,6 @@ public class EventController : SecurityController
         }
 
         var userContext = (User) HttpContext.Items["User"];
-
         if (userContext == null)
         {
             return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));
