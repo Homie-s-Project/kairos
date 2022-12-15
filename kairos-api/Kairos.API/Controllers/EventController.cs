@@ -42,10 +42,10 @@ public class EventController : SecurityController
             return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
         }
 
-        var events = _context.Groups
-            .Where(g => g.GroupId == groupIdParsed)
-            .Include(g => g.Event.Labels)
-            .Select(g => new EventDto(g.Event))
+        var events = _context.Events
+            .Where(e => e.GroupId == groupIdParsed)
+            .Include(e => e.Labels)
+            .Select(e => new EventDto(e))
             .ToList();
 
         if (events.Count == 0)
@@ -150,7 +150,8 @@ public class EventController : SecurityController
         }
 
         _context.Events.Add(createEvent);
-        groupDb.Event = createEvent;
+        createEvent.Group = groupDb;
+        
         await _context.SaveChangesAsync();
 
         return Ok(new EventDto(createEvent));
