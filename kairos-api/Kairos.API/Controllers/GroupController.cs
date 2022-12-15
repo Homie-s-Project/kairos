@@ -87,6 +87,7 @@ public class GroupController : SecurityController
         }
 
 
+        
         var group = new Group(groupName, userContext.UserId);
         if (groupName.Length > 50)
         {
