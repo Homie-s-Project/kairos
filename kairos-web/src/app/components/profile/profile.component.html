@@ -32,14 +32,14 @@
       </div>
       <div class="group-content" *ngFor="let group of groups">
         <div class="group-name-container">
-        <p class="group-name">{{group.name}}</p>
-        <button><fa-icon [icon]="faPencil"></fa-icon></button>
-        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+        <p class="group-name" (click)="isEditable()">{{group.name}}</p>
+        <button *ngIf="visible"><fa-icon [icon]="faCheck"></fa-icon></button>
+        <button *ngIf="visible"><fa-icon [icon]="faSquarePlus"></fa-icon></button>
         </div>
         <ul>
-          <li *ngFor="let member of members">
-            <div class="group-member-container">
-              <p>{{member.name}}</p>
+          <li *ngFor="let member of group.members">
+            <div class="group-member-container" *ngIf="visible">
+              <p>{{member}}</p>
               <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
             </div>
           </li>

@@ -1,5 +1,5 @@
 import {Component, OnInit, Renderer2} from '@angular/core';
-import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import {faPencil, faSquarePlus, faTrashCan, faCheck} from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'app-profile',
@@ -9,31 +9,52 @@ import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-ic
 export class ProfileComponent implements OnInit {
   faPencil = faPencil;
   faTrashCan = faTrashCan;
-  faSquarePlus = faSquarePlus  ;
+  faSquarePlus = faSquarePlus;
+  faCheck = faCheck;
   labels = [
-    {name : 'Science / Math'},
-    {name : 'Economie'},
-    {name : 'Allemand'},
-    {name : 'Anglais'},
-    {name : 'Informatique'},
+    {
+      id : 1,
+      name : 'Science / Math'
+    },
+    {
+      id : 2,
+      name : 'Economie'
+    },
   ]
   groups = [
-    {name : 'Skt t1'},
-    {name : 'Los pollos hermanos'},
+    { 
+      id : 1,
+      name : 'Groupe name',
+      members  : [
+        'Chris',
+        'William',
+        'Romain'
+      ]
+    },
+    { 
+      id : 2,
+      name : 'Groupe kaka',
+      members  : [
+        'Chris',
+        'William',
+        'Romain'
+      ]
+    }
   ]
-  members  = [
-    {name : 'Chris'},
-    {name : 'William'},
-    {name : 'Romain'},
-    {name : 'Alexandre'},
-    {name : 'Clyve'},
-  ]
+  visible:boolean = false
+
+  isEditable()
+  {
+    this.visible = !this.visible;
+  }
+
   constructor(private renderer: Renderer2) {
     this.renderer.removeClass(document.body, 'landing-background');
     this.renderer.removeClass(document.getElementById('app-container'), 'centered');
   }
 
   ngOnInit(): void {
+    
   }
 
 }
