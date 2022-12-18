@@ -19,9 +19,12 @@ public class Event
     public int EventId { get; set; }
 
     public DateTime EventDate { get; set; }
+    [MaxLength(25)]
     public string EventTitle { get; set; }
+    [MaxLength(250)]
     public string EventDescription { get; set; }
     public DateTime EventCreatedDate { get; set; }
-    
+    [ForeignKey("Group")] public int? GroupId { get; set; }
+    public Group Group { get; set; }
     public ICollection<Label> Labels { get; set; }
 }

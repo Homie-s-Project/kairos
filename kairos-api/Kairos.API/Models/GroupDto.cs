@@ -27,9 +27,9 @@ public class GroupDto
         
         if (loadMore)
         {
-            if (group.Event != null)
+            if (group.Events != null)
             {
-                Event = new EventDto(group.Event);
+                Events = group.Events.Select(e => new EventDto(e)).ToList();
             }
 
             if (group.Labels != null)
@@ -47,7 +47,7 @@ public class GroupDto
     public int GroupId { get; set; }
     public string GroupName { get; set; }
     public bool GroupsIsPrivate { get; set; }
-    public EventDto Event { get; set; }
+    public List<EventDto> Events { get; set; }
     public List<LabelDto> Labels { get; set; }
     public List<UserDto> Users { get; set; }
 }

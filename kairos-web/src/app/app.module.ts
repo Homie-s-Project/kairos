@@ -36,7 +36,6 @@ import {ErrorComponent} from "./components/error/error.component";
     ErrorNotFoundComponent,
     EventEditComponent,
     TinyTimerComponent,
-    NavbarComponent,
     ProfileComponent
   ],
   imports: [

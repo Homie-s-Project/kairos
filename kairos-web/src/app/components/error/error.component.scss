@@ -1,11 +1,27 @@
 @use '/src/styles/variables.scss' as vars;
-
 .error-container {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center;
     width: 100%;
     height: 100%;
+    gap: 15px;
+    .smiley-icon {
+        font-size: 120px;
+    }
+    .text-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: left;
+        a {
+            color: vars.$fourth-color;
+            font-size: 24px;
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
 }

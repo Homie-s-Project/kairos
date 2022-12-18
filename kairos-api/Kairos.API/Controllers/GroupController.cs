@@ -32,7 +32,7 @@ public class GroupController : SecurityController
         var user = _context.Users.FirstOrDefault(u => u.UserId == userContext.UserId);
         var groups = _context.Groups.Where(g => g.Users.Contains(user) || g.OwnerId == userContext.UserId)
             .AsSplitQuery()
-            .Include(g => g.Event)
+            .Include(g => g.Events)
             .Include(g => g.Labels)
             .Include(g => g.Users)
             .Select(g => new GroupDto(g))
@@ -74,9 +74,9 @@ public class GroupController : SecurityController
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> CreateGroup(string groupName)
     {
-        var userConterxt = (User) HttpContext.Items["User"];
+        var userContext = (User) HttpContext.Items["User"];
 
-        if (userConterxt == null)
+        if (userContext == null)
         {
             return Unauthorized(new ErrorMessage("Can't create a group", StatusCodes.Status401Unauthorized));
         }
@@ -85,8 +85,14 @@ public class GroupController : SecurityController
         {
             return BadRequest(new ErrorMessage("Can't create a group", StatusCodes.Status400BadRequest));
         }
-
-        var group = new Group(groupName, userConterxt.UserId);
+        
+        if (groupName.Length > 50)
+        {
+            return BadRequest(new ErrorMessage("The name of the group is too long", StatusCodes.Status400BadRequest));
+        }
+        
+        var group = new Group(groupName, userContext.UserId);
+        
         _context.Groups.Add(group);
         await _context.SaveChangesAsync();
 

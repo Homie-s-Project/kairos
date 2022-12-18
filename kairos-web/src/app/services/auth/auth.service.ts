@@ -7,35 +7,60 @@ import { UserModel } from 'src/app/models/user.model';
   providedIn: 'root'
 })
 export class AuthService {
+  private token: string;
 
-  //constructor() { }
-  constructor(private cookie: CookieService, private http: HttpClient) { }
-
-  isLoggedIn = (): boolean => {
-    if (this.cookie.get('jwt') != "") {
-      return true;
-    }
-    
-    return false;
+  constructor(private http: HttpClient, private cookie: CookieService) {
+    this.token = this.cookie.get('jwt');
   }
 
-  // getProfileAsync = (): any => {
-  //   var currentUser: any;
-  //   const auth_token = this.cookie.get('jwt')
-  //   const headers = new HttpHeaders ( {
-  //     "Content-Type": "application/json",
-  //     "Authorization": `Bearer ${auth_token}`
-  //   })
-    
-  //   const requestOptions = { headers: headers };
+  // Contrôle du Token JWT
+  isLoggedIn = (): Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+      if (this.token) {
+        // Création du header
+        const header = new HttpHeaders ({
+          "Content-Type": "application/json",
+          "Authorization": `${this.getToken()}`
+        });
 
-  //   this.http
-  //     .get('http://localhost:5000/User/me', requestOptions)
-  //     .subscribe(response => {
-  //       currentUser = response;
-  //       console.log(currentUser)
-  //     })
+        this.http
+          .get('http://localhost:5000/User/me', {
+            headers: header,
+            observe: 'response',
+          })
+          .subscribe(
+            response => {
+              resolve(response.status === 200);
+            },
+            error => {
+              reject(error);
+            }
+          );
+      } else {
+        resolve(false);
+      }
+    });
+  }
 
-  //   return (currentUser)
-  // }
+  // Récupèration de l'user selon le Token JWT
+  getProfile = () => {
+    // Création du header
+    const header = new HttpHeaders ({
+      "Content-Type": "application/json",
+      "Authorization": `${this.getToken()}`
+    });
+  
+    return this.http
+      .get<UserModel>('http://localhost:5000/User/me', {headers: header, observe: 'response'})
+  }
+
+  // Retourne Bearer Token
+  getToken = ():string => {
+    return `Bearer ${this.token}`;
+  }
+
+  // Supprime le JWT des cookies
+  logout = () => {
+    this.cookie.delete('jwt');
+  }
 }

@@ -4,10 +4,10 @@ export class UserModel {
     firstName: string;
     email: string;
 
-    constructor(userId: number, lastName: string, firstName: string, email: string) {
-        this.userId = userId;
-        this.lastName = lastName
-        this.firstName = firstName
-        this.email = email;
+    constructor(data: any) {
+        this.userId = data.userId;
+        this.lastName = data.lastName;
+        this.firstName = data.firstName
+        this.email = data.email;
     }
 }

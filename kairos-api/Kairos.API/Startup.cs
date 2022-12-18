@@ -163,7 +163,7 @@ namespace Kairos.API
                     if (devUserExisting != null)
                     {
                         var groupsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId).ToList();
-                        var eventsDev = context.Groups.Where(g => g.OwnerId == devUserExisting.UserId && g.Event != null).Select(g => g.Event)
+                        var eventsDev = context.Events.Where(e => e.Group.OwnerId == devUserExisting.UserId)
                             .ToList();
                     
                         if (eventsDev.Count > 0)
@@ -209,7 +209,7 @@ namespace Kairos.API
                     var labelsExisting = context.Labels.Where(l => l.UserId == devUser.UserId).ToList();
                     
                     // On crée un groupe privé
-                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId);
+                    var devGroupPrivate = new Group("Dev Group Private", devUser.UserId, true);
                     context.Groups.Add(devGroupPrivate);
                     await context.SaveChangesAsync();
                     
@@ -241,10 +241,10 @@ namespace Kairos.API
                     
                     _logger.LogInformation("Ajout de {} labels pr l'event privé {} (id: {})", eventPrivateDev.Labels.Count, eventPrivateDev.EventTitle, eventPrivateDev.EventId);
 
-                    devGroupPrivate.Event = eventPrivateDev;
+                    eventPrivateDev.Group = devGroupPrivate;
                     await context.SaveChangesAsync();
                     
-                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe privé (id: {})", devGroupPrivate.Event.EventId, devGroupPrivate.GroupId);
+                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe privé (id: {})", eventPrivateDev.EventId, devGroupPrivate.GroupId);
                     
                     // On crée un groupe publique
                     var devGroupPublic = new Group("Dev Group Public", devUser.UserId);
@@ -277,10 +277,10 @@ namespace Kairos.API
                     
                     _logger.LogInformation("Ajout de {} labels pr l'event publique {} (id: {})", eventPublicDev.Labels.Count, eventPublicDev.EventTitle, eventPublicDev.EventId);
 
-                    devGroupPublic.Event = eventPublicDev;
+                    eventPublicDev.Group = devGroupPublic;
                     await context.SaveChangesAsync();
                     
-                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe publique (id: {})", devGroupPublic.Event.EventId, devGroupPublic.GroupId);
+                    _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe publique (id: {})", eventPublicDev.EventId, devGroupPublic.GroupId);
                     
                     // Création d'un studies pour le groupe privé
                     List<Studies> studies = new List<Studies>();

@@ -9,10 +9,12 @@ import { CalendarService } from 'src/app/services/calendar/calendar.service';
 })
 export class EventListComponent implements OnInit {
 
-  @Input() events: EventModel[] = [];
+  events: EventModel[];
   @Output() onRemoveEventClicked: EventEmitter<EventModel> = new EventEmitter<EventModel>();
 
-  constructor(private calendarService: CalendarService) { }
+  constructor(private calendarService: CalendarService) { 
+    this.events = calendarService.getEvents();
+  }
 
   ngOnInit(): void {
   }
