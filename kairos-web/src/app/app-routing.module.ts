@@ -12,6 +12,11 @@ import {ProfileComponent} from "./components/profile/profile.component";
 const routes: Routes = [
   {
     path: '',
+    redirectTo: '/timer',
+    pathMatch: 'full',
+  },
+  {
+    path: '',
     canActivateChild: [IsLoggedGuard],
     children: [
       {
