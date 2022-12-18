@@ -9,6 +9,7 @@
             <a class="nav-button" [routerLink]="['/statistics']"><fa-icon class="navbar-icon" [icon]="faChartLine"></fa-icon></a>
             <a class="nav-button" [routerLink]="['/companion']"><fa-icon class="navbar-icon" [icon]="faPaw"></fa-icon></a>
             <a class="nav-button" [routerLink]="['/profile']"><fa-icon class="navbar-icon" [icon]="faUser"></fa-icon></a>
+            <a class="nav-button" [routerLink]="['/landing']" (click)="auth.logout()"><fa-icon class="navbar-icon" [icon]="faArrowRightFromBracket"></fa-icon></a>
         </div>
     </div>
 </nav>

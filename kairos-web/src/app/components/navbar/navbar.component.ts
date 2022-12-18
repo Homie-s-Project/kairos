@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { faCircleLeft, faCalendar, faChartLine, faPaw, faUser, faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import { faCircleLeft, faCalendar, faChartLine, faPaw, faUser, faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { AuthService } from 'src/app/services/auth/auth.service';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 
@@ -15,8 +16,8 @@ export class NavbarComponent{
   faChartLine = faChartLine;
   faPaw = faPaw;
   faUser = faUser;
-  faEllipsis = faEllipsis;
+  faArrowRightFromBracket = faArrowRightFromBracket;
 
-  constructor(public nav: NavbarService, private _router: Router) { }
+  constructor(public nav: NavbarService, public auth: AuthService, private _router: Router) { }
 
 }
