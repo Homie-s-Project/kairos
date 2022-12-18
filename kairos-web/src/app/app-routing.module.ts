@@ -1,10 +1,10 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { TimerComponent } from './components/timer/timer.component';
-import { LandingComponent } from './components/landing/landing.component';
-import { StatisticsComponent } from './components/statistics/statistics.component';
-import { CalendarComponent } from './components/calendar/calendar.component';
-import { ErrorComponent } from './components/error/error.component';
+import {NgModule} from '@angular/core';
+import {RouterModule, Routes} from '@angular/router';
+import {TimerComponent} from './components/timer/timer.component';
+import {LandingComponent} from './components/landing/landing.component';
+import {StatisticsComponent} from './components/statistics/statistics.component';
+import {CalendarComponent} from './components/calendar/calendar.component';
+import {ErrorComponent} from './components/error/error.component';
 import {ProfileComponent} from "./components/profile/profile.component";
 
 const routes: Routes = [
@@ -22,10 +22,16 @@ const routes: Routes = [
   },
   {
     path: 'calendar',
-    component: CalendarComponent
+    component: CalendarComponent,
+    children: [
+      {
+        path: ':day/:month/:year',
+        component: CalendarComponent
+      }
+    ]
   },
   {
-    path:'profile',
+    path: 'profile',
     component: ProfileComponent
   },
   {
@@ -43,4 +49,5 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+}

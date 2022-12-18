@@ -1,19 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
-import {Router} from "@angular/router";
+import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {EventService} from "../../services/event/event.service";
 import {IEventModel} from "../../models/IEventModel";
 import {IGroupModel} from "../../models/IGroupModel";
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
 
-  public groups?: IGroupModel[];
+  private subscriptions: Subscription[] = [];
 
   private selectedMonth?: number;
   private selectedYear?: number;
@@ -62,10 +63,19 @@ export class CalendarComponent implements OnInit {
   public currentYearName?: string;
 
   public isLoadingCalendar: boolean = true;
-  public sidePanelOpen: boolean = true;
+  public sidePanelOpen: boolean = false;
 
-  constructor(public nav: NavbarService, private eventService: EventService) {
+  public groups?: IGroupModel[];
+
+  constructor(public nav: NavbarService,
+              private eventService: EventService,
+              private router: Router,
+              private route: ActivatedRoute) {
     this.nav.showBackButton();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
   }
 
   ngOnInit(): void {
@@ -75,6 +85,27 @@ export class CalendarComponent implements OnInit {
       console.log(this.groups)
       this.isLoadingCalendar = false;
     });
+
+    this.subscriptions.push(
+      this.route.paramMap.subscribe((map: ParamMap) => {
+        let day = map.get('day');
+        let month = map.get('month');
+        let year = map.get('year');
+
+        console.log(day, month, year);
+        if (day && month && year) {
+          this.selectedDay = parseInt(day);
+          this.selectedMonth = parseInt(month);
+          this.selectedYear = parseInt(year);
+
+          this.updateCalendar(this.selectedMonth, this.selectedYear);
+        }
+
+        if (this.selectedDay && this.selectedMonth && this.selectedYear) {
+          this.sidePanelOpen = true;
+        }
+      })
+    )
   }
 
   prevMonthCalendar() {
@@ -200,9 +231,16 @@ export class CalendarComponent implements OnInit {
     }
 
     this.selectedDay = day;
+    this.navigateToDate();
   }
 
   isSelectedDay(date: number, daysOfWeek: number[]) {
     return this.selectedDay === date && daysOfWeek.includes(date);
+  }
+
+  navigateToDate(){
+    if (this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined) {
+      this.router.navigate(['/calendar', this.selectedDay, this.selectedMonth + 1, this.selectedYear]);
+    }
   }
 }

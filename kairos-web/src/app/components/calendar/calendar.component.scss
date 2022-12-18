@@ -46,6 +46,7 @@
       padding: 10px;
       border: 1px solid #162741;
       cursor: pointer;
+      width: calc(100% / 7);
 
       &.not {
         background: #c3d2d7;

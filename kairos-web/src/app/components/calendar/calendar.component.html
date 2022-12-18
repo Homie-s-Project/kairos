@@ -8,18 +8,18 @@
 
     <table *ngIf="currentCalendarMonth" class="calendar-table">
       <thead class="calendar-weekday">
-      <td *ngFor="let weekday of currentCalendarMonth.weekdays">
-        {{ weekday }}
-      </td>
+        <td *ngFor="let weekday of currentCalendarMonth.weekdays">
+          {{ weekday }}
+        </td>
       </thead>
       <tbody class="calendar-date">
-      <tr *ngFor="let day of currentCalendarMonth.calendar">
-        <ng-container *ngFor="let date of day">
-          <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date, day), 'selected': isSelectedDay(date, day)}" (click)="selectDay(date, day)">
-            <span>{{ date }}</span>
-          </td>
-        </ng-container>
-      </tr>
+        <tr *ngFor="let day of currentCalendarMonth.calendar">
+          <ng-container *ngFor="let date of day">
+            <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date, day), 'selected': isSelectedDay(date, day)}" (click)="selectDay(date, day)">
+              <span>{{ date }}</span>
+            </td>
+          </ng-container>
+        </tr>
       </tbody>
     </table>
   </div>
