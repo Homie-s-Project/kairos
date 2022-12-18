@@ -25,6 +25,24 @@
   </div>
 </div>
 
+<div *ngIf="groups" class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px;display: grid;gap: 30px">
+  <div *ngFor="let group of groups">
+    <div>
+      <h2>{{group.groupName}}</h2>
+
+    </div>
+    <hr />
+    <div style="display: grid;gap: 15px">
+      <div *ngFor="let event of group.events">
+        <h3>{{event.eventTitle}}
+          <span style="padding: 0 4px; color: #33576c">|</span>
+          {{event.eventDate | date: 'dd.MM.yyyy' }}</h3>
+        <p>{{event.eventDescription}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="sidePanelOpen">
   <router-outlet></router-outlet>
 </div>

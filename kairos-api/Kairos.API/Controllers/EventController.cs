@@ -19,7 +19,7 @@ public class EventController : SecurityController
         _context = context;
     }
     
-    [HttpGet("/me", Name = "Get the events from a user")]
+    [HttpGet("me", Name = "Get the events from a user")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetEvents()

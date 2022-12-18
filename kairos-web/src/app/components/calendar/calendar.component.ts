@@ -2,6 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
 import {Router} from "@angular/router";
+import {EventService} from "../../services/event/event.service";
+import {IEventModel} from "../../models/IEventModel";
+import {IGroupModel} from "../../models/IGroupModel";
 
 @Component({
   selector: 'app-calendar',
@@ -9,6 +12,8 @@ import {Router} from "@angular/router";
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit {
+
+  public groups?: IGroupModel[];
 
   private selectedMonth?: number;
   private selectedYear?: number;
@@ -59,12 +64,17 @@ export class CalendarComponent implements OnInit {
   public isLoadingCalendar: boolean = true;
   public sidePanelOpen: boolean = true;
 
-  constructor(public nav: NavbarService, private router: Router) {
+  constructor(public nav: NavbarService, private eventService: EventService) {
     this.nav.showBackButton();
   }
 
   ngOnInit(): void {
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
+    this.eventService.getEvent().subscribe((groups) => {
+      this.groups = groups;
+      console.log(this.groups)
+      this.isLoadingCalendar = false;
+    });
   }
 
   prevMonthCalendar() {
