@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { catchError, from, map, of, Observable } from 'rxjs';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
@@ -7,10 +7,10 @@ import { AuthService } from 'src/app/services/auth/auth.service';
   providedIn: 'root'
 })
 
-export class IsLoggedGuard implements CanActivate {
+export class IsLoggedGuard implements CanActivateChild {
   constructor(private auth: AuthService, private router: Router) { }
 
-  canActivate = (
+  canActivateChild = (
     route: ActivatedRouteSnapshot, 
     state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> => {
     return from(this.auth.isLoggedIn()).pipe(

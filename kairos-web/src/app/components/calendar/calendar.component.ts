@@ -12,7 +12,7 @@ export class CalendarComponent implements OnInit {
   faPencil = faPencil;
   faXmark = faXmark;
 
-  constructor(public nav: NavbarService, public CalendarService: CalendarService, private renderer: Renderer2) { 
+  constructor(public nav: NavbarService, public calendar: CalendarService, private renderer: Renderer2) { 
     this.renderer.removeClass(document.body, 'landing-background');
     this.renderer.removeClass(document.getElementById('app-container'), 'centered');
     this.nav.showBackButton();

@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import { map } from 'rxjs';
 import { UserModel } from 'src/app/models/user.model';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
@@ -10,7 +11,6 @@ import { NavbarService } from 'src/app/services/navbar/navbar.service';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent{
-  currentUser: UserModel = new UserModel();
   faPencil = faPencil;
   faTrashCan = faTrashCan;
   faSquarePlus = faSquarePlus;
@@ -32,11 +32,16 @@ export class ProfileComponent{
     {name : 'Alexandre'},
     {name : 'Clyve'},
   ]
+  currentUser?: UserModel;
 
-  constructor (public nav: NavbarService, private auth: AuthService) {
+  constructor (private nav: NavbarService, private auth: AuthService) {
     nav.showBackButton();
-    auth.getProfile().subscribe(user => {
-      this.currentUser = new UserModel(user);
-    });
+    auth.getProfile().subscribe(resp => {
+      if (resp.status != 200) {
+        console.log(resp.statusText);
+      }
+  
+      this.currentUser = new UserModel(resp.body);
+    })
   }
 }

@@ -1,7 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
-import { map } from 'rxjs';
 import { UserModel } from 'src/app/models/user.model';
 
 @Injectable({
@@ -14,13 +13,14 @@ export class AuthService {
     this.token = this.cookie.get('jwt');
   }
 
+  // Contrôle du Token JWT
   isLoggedIn = (): Promise<boolean> => {
     return new Promise((resolve, reject) => {
       if (this.token) {
         // Création du header
-        const header = new HttpHeaders({
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${this.token}`,
+        const header = new HttpHeaders ({
+          "Content-Type": "application/json",
+          "Authorization": `${this.getToken()}`
         });
 
         this.http
@@ -42,20 +42,24 @@ export class AuthService {
     });
   }
 
+  // Récupèration de l'user selon le Token JWT
   getProfile = () => {
+    // Création du header
     const header = new HttpHeaders ({
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${this.token}`
+      "Authorization": `${this.getToken()}`
     });
   
     return this.http
-      .get('http://localhost:5000/User/me', {headers: header, observe: 'response'})
-      .pipe(
-        map(response => response.body),
-        map(body => new UserModel(body))
-      );
+      .get<UserModel>('http://localhost:5000/User/me', {headers: header, observe: 'response'})
   }
 
+  // Retourne Bearer Token
+  getToken = ():string => {
+    return `Bearer ${this.token}`;
+  }
+
+  // Supprime le JWT des cookies
   logout = () => {
     this.cookie.delete('jwt');
   }

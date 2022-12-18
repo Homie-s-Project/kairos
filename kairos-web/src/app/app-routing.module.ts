@@ -11,42 +11,38 @@ import {ProfileComponent} from "./components/profile/profile.component";
 
 const routes: Routes = [
   {
-    path: 'timer',
-    component: TimerComponent,
-    canActivate: [IsLoggedGuard]
+    path: '',
+    canActivateChild: [IsLoggedGuard],
+    children: [
+      {
+        path: 'timer',
+        component: TimerComponent
+      },
+      {
+        path: 'statistics',
+        component: StatisticsComponent
+      },
+      {
+        path: 'calendar',
+        component: CalendarComponent,
+        children : [
+          { path: ':eventId',
+          component: EventEditComponent } 
+        ]
+      },
+      {
+        path:'profile',
+        component: ProfileComponent
+      },
+    ]
   },
   {
     path: 'landing',
     component: LandingComponent
   },
   {
-    path: 'statistics',
-    component: StatisticsComponent,
-    canActivate: [IsLoggedGuard]
-  },
-  {
-    path: 'calendar',
-    component: CalendarComponent,
-    children : [
-      { path: ':eventId',
-      component: EventEditComponent } 
-    ],
-    canActivate: [IsLoggedGuard]
-  },
-  {
-    path:'profile',
-    component: ProfileComponent,
-    canActivate: [IsLoggedGuard]
-  },
-  {
-    path: '',
-    redirectTo: 'timer',
-    pathMatch: 'full' 
-  },
-  {
     path: '**',
-    component: ErrorComponent,
-    canActivate: [IsLoggedGuard]
+    component: ErrorComponent
   }
 ];
 
