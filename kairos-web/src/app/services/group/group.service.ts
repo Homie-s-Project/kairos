@@ -10,11 +10,11 @@ export class GroupService {
   groupUrl="api/groups"
   
     constructor( private http:HttpClient) { }
-    getbookbyid(groupid:string){
+    GetGroupById(groupid:string){
       return this.http.get<IGroupModel>(this.groupUrl+"/"+groupid)
     }
   
-    createbook(group:IGroupModel):Observable<IGroupModel>{
+    CreateGroups(group:IGroupModel):Observable<IGroupModel>{
       let httpheaders=new HttpHeaders()
       .set('Content-type','application/Json');
       let options={
@@ -33,7 +33,7 @@ export class GroupService {
       return this.http.delete<number>(this.groupUrl+"/"+groupid);
     }
   
-    getGroups():Observable<IGroupModel[]>{
+    GetGroups():Observable<IGroupModel[]>{
       return this.http.get<IGroupModel[]>(this.groupUrl);
     }
 }

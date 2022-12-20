@@ -91,6 +91,13 @@
             gap: 20px;
           }
         }
+        .group-form{
+          display: flex;
+            justify-content: space-between ;
+            flex-direction: row;
+            width: 100%;
+            gap: 20px;
+        }
         ul{
           width: 100%;
         }

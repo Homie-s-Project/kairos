@@ -30,18 +30,30 @@
         <h2>Groupe</h2>
         <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
-      <div class="group-content" *ngFor="let group of allbooks| async">
+      <div class="group-form" *ngIf="!datasaved">
+        <form [formGroup]='groupForm' (ngSubmit)='onFormSubmit()'>
+          <table>
+              <tr>
+                  <td>Titre:</td>
+                  <td> <input formControlName="title"> </td>
+              </tr>
+          </table>
+        </form>
+        <button><fa-icon [icon]="faCheck"></fa-icon></button>
+      </div>
+      <div class="group-content" *ngFor="let group of allgroups| async">
         <div class="group-name-container">
-        <p class="group-name" (click)="IsEditable()">{{group.name}}</p>
+        <p class="group-name" (click)="IsEditable()">{{group.groupName}}</p>
         <button *ngIf="!visible"><fa-icon [icon]="faChevronDown"></fa-icon></button>
         <button *ngIf="visible"><fa-icon [icon]="faCheck"></fa-icon></button>
         <button *ngIf="visible"><fa-icon [icon]="faSquarePlus"></fa-icon></button>
         </div>
+        
         <ul>
-          <li *ngFor="let member of group.members">
+          <li *ngFor="let member of group.users">
             <div class="group-member-container" *ngIf="visible">
               <p>{{member}}</p>
-              <button (click)="GroupDelete(group.id)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
+              <button (click)="GroupDelete(group.groupId)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
             </div>
           </li>
         </ul>

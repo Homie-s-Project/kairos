@@ -2,6 +2,7 @@ import {HttpClientModule} from "@angular/common/http"
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgChartsModule} from 'ng2-charts';
 import {CookieService} from 'ngx-cookie-service';
@@ -45,7 +46,9 @@ import {ErrorComponent} from "./components/error/error.component";
     BrowserAnimationsModule,
     ShareButtonModule,
     FontAwesomeModule,
-    NgChartsModule
+    NgChartsModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [
     CookieService
