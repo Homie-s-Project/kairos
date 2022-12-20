@@ -124,12 +124,19 @@ namespace Kairos.API.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("EventDescription")
-                        .HasColumnType("text");
+                        .HasMaxLength(250)
+                        .HasColumnType("character varying(250)");
 
                     b.Property<string>("EventTitle")
-                        .HasColumnType("text");
+                        .HasMaxLength(25)
+                        .HasColumnType("character varying(25)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("integer");
 
                     b.HasKey("EventId");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Events");
                 });
@@ -142,9 +149,6 @@ namespace Kairos.API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("GroupId"));
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("GroupName")
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
@@ -156,8 +160,6 @@ namespace Kairos.API.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("GroupId");
-
-                    b.HasIndex("EventId");
 
                     b.ToTable("Groups");
                 });
@@ -394,13 +396,13 @@ namespace Kairos.API.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Kairos.API.Models.Group", b =>
+            modelBuilder.Entity("Kairos.API.Models.Event", b =>
                 {
-                    b.HasOne("Kairos.API.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
+                    b.HasOne("Kairos.API.Models.Group", "Group")
+                        .WithMany("Events")
+                        .HasForeignKey("GroupId");
 
-                    b.Navigation("Event");
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("Kairos.API.Models.Label", b =>
@@ -460,6 +462,11 @@ namespace Kairos.API.Migrations
                         .HasForeignKey("StudiesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Kairos.API.Models.Group", b =>
+                {
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }
