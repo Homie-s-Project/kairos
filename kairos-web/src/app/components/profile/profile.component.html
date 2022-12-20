@@ -37,9 +37,11 @@
                   <td>Titre:</td>
                   <td> <input formControlName="title"> </td>
               </tr>
+              <tr>
+                <td> <button [disabled]="groupForm.invalid"><fa-icon [icon]="faCheck"></fa-icon></button> </td>
+              </tr>
           </table>
         </form>
-        <button><fa-icon [icon]="faCheck"></fa-icon></button>
       </div>
       <div class="group-content" *ngFor="let group of allgroups| async">
         <div class="group-name-container">
@@ -52,7 +54,7 @@
         <ul>
           <li *ngFor="let member of group.users">
             <div class="group-member-container" *ngIf="visible">
-              <p>{{member}}</p>
+              <p>{{member.firstName}} {{member.lastName}}</p>
               <button (click)="GroupDelete(group.groupId)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
             </div>
           </li>
