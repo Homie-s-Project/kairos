@@ -1,4 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class TimerService {
   isStarted: boolean = false;
   isCollapsed: boolean = false;
 
-  constructor() {
+  constructor(private http: HttpClient, private auth: AuthService) {
     this.getValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
@@ -48,6 +50,11 @@ export class TimerService {
     if (this.minute == 0 && this.second == 0) {
       throw new Error("Valeur du temps à 0");
     }
+
+    this.postStartStudies((this.minute + this.second).toString(), "")
+      .subscribe(response => {
+        console.log(response)
+      })
 
     this.base = setInterval(this.timerCountdown, 1000);
   }
@@ -120,5 +127,19 @@ export class TimerService {
     return (i == null) ? false : true;
   }
 
-  // Heartbeat call
+  // API Call
+  postStartStudies = (timerValue: string, labelsId: string) => {
+    // Création du header
+    const headers = new Headers ({
+      "Content-Type": "application/json",
+      "Authorization": `${this.auth.getToken()}`
+    })
+
+    const data = {
+      timer: timerValue,
+      labelsId: labelsId
+    }
+
+    return this.http.post('http://localhost:5000/studies/start', {headers: headers, observe: 'response'})
+  }
 }
