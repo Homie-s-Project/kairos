@@ -82,7 +82,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
     this.eventService.getEvent().subscribe((groups) => {
       this.groups = groups;
-      console.log(this.groups)
       this.isLoadingCalendar = false;
     });
 
@@ -92,13 +91,10 @@ export class CalendarComponent implements OnInit, OnDestroy {
         let month = map.get('month');
         let year = map.get('year');
 
-        console.log(day, month, year);
         if (day && month && year) {
           this.selectedDay = parseInt(day);
-          this.selectedMonth = parseInt(month);
+          this.selectedMonth = parseInt(month) - 1;
           this.selectedYear = parseInt(year);
-
-          this.updateCalendar(this.selectedMonth, this.selectedYear);
         }
 
         if (this.selectedDay && this.selectedMonth && this.selectedYear) {
@@ -106,7 +102,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
         }
       })
     )
-  }
+  };
 
   prevMonthCalendar() {
     if (this.selectedMonth === undefined){
@@ -131,6 +127,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (this.selectedYear === undefined){
       this.selectedYear = new Date().getFullYear();
     }
+
+    this.selectedDay = new Date().getUTCDate();
+    this.selectedMonth = new Date().getUTCMonth();
+    this.selectedYear = new Date().getFullYear();
+    this.navigateToDate();
 
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
   }

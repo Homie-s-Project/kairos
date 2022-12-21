@@ -22,8 +22,11 @@ const routes: Routes = [
   },
   {
     path: 'calendar',
-    component: CalendarComponent,
     children: [
+      {
+        path: '',
+        component: CalendarComponent,
+      },
       {
         path: ':day/:month/:year',
         component: CalendarComponent
