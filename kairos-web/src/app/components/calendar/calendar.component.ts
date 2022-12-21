@@ -5,7 +5,7 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {EventService} from "../../services/event/event.service";
 import {IEventModel} from "../../models/IEventModel";
 import {IGroupModel} from "../../models/IGroupModel";
-import { Subscription } from 'rxjs';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
@@ -97,19 +97,17 @@ export class CalendarComponent implements OnInit, OnDestroy {
           this.selectedYear = parseInt(year);
         }
 
-        if (this.selectedDay && this.selectedMonth && this.selectedYear) {
-          this.sidePanelOpen = true;
-        }
+        this.sidePanelOpen = this.router.url.includes('add');
       })
     )
   };
 
   prevMonthCalendar() {
-    if (this.selectedMonth === undefined){
+    if (this.selectedMonth === undefined) {
       this.selectedMonth = new Date().getMonth();
     }
 
-    if (this.selectedYear === undefined){
+    if (this.selectedYear === undefined) {
       this.selectedYear = new Date().getFullYear();
     }
 
@@ -120,11 +118,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   currentMonthCalendar() {
-    if (this.selectedMonth === undefined){
+    if (this.selectedMonth === undefined) {
       this.selectedMonth = new Date().getMonth();
     }
 
-    if (this.selectedYear === undefined){
+    if (this.selectedYear === undefined) {
       this.selectedYear = new Date().getFullYear();
     }
 
@@ -137,11 +135,11 @@ export class CalendarComponent implements OnInit, OnDestroy {
   }
 
   nextMonthCalendar() {
-    if (this.selectedMonth === undefined){
+    if (this.selectedMonth === undefined) {
       this.selectedMonth = new Date().getMonth();
     }
 
-    if (this.selectedYear === undefined){
+    if (this.selectedYear === undefined) {
       this.selectedYear = new Date().getFullYear();
     }
 
@@ -176,7 +174,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.currentYearName = this.currentCalendarMonth?.year.toString();
 
     // Ajouter des dates avant le mois courant
-    this.currentCalendarMonth.calendar[0] = this.previousCalendarMonth.calendar[this.previousCalendarMonth.calendar.length -1]
+    this.currentCalendarMonth.calendar[0] = this.previousCalendarMonth.calendar[this.previousCalendarMonth.calendar.length - 1]
       .slice(0, this.currentCalendarMonth.firstWeekday)
       .concat(this.currentCalendarMonth.calendar[0]
         .slice(this.currentCalendarMonth.firstWeekday, this.currentCalendarMonth.calendar[0].length))
@@ -184,7 +182,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     // Ajouter des dates après le mois courant seulement si la dernière semaine n'est pas complète
     // On vérifie ça en regardant si le jour du départ du mois suivant n'est pas lundi
     if (this.nextCalendarMonth.firstWeekday > 0) {
-      this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1] = this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1]
+      this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length - 1] = this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length - 1]
         .slice(0, this.nextCalendarMonth.firstWeekday)
         .concat(this.nextCalendarMonth.calendar[0]
           .slice(this.nextCalendarMonth.firstWeekday, this.nextCalendarMonth.calendar[0].length));
@@ -200,7 +198,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   isOtherMonth(day: number, daysOfWeeks: number[]): boolean {
     let firstArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[0];
-    let lastArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[this.currentCalendarMonth?.calendar.length -1];
+    let lastArrayOfCurrentCalendar = this.currentCalendarMonth?.calendar[this.currentCalendarMonth?.calendar.length - 1];
 
     if (!this.nextCalendarMonth || !this.previousCalendarMonth || !this.currentCalendarMonth || !firstArrayOfCurrentCalendar || !lastArrayOfCurrentCalendar) {
       console.warn("Erreur dans le chargement du calendrier");
@@ -210,8 +208,8 @@ export class CalendarComponent implements OnInit, OnDestroy {
     // Détermine si le jour est dans le mois précédent
     if (firstArrayOfCurrentCalendar.indexOf(day) !== -1 &&
       firstArrayOfCurrentCalendar.indexOf(day) < this.currentCalendarMonth.firstWeekday &&
-      daysOfWeeks[daysOfWeeks.length -1] <= (7 - this.currentCalendarMonth.firstWeekday) &&
-      daysOfWeeks[this.previousCalendarMonth?.lastWeekday +1] === 1) {
+      daysOfWeeks[daysOfWeeks.length - 1] <= (7 - this.currentCalendarMonth.firstWeekday) &&
+      daysOfWeeks[this.previousCalendarMonth?.lastWeekday + 1] === 1) {
       return true;
     }
 
@@ -219,7 +217,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (lastArrayOfCurrentCalendar.indexOf(day) !== -1 &&
       lastArrayOfCurrentCalendar.indexOf(day) > this.currentCalendarMonth?.lastWeekday &&
       daysOfWeeks[0] > 1 &&
-      daysOfWeeks[this.nextCalendarMonth?.firstWeekday -1 ] === this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length -1][this.currentCalendarMonth.lastWeekday]) {
+      daysOfWeeks[this.nextCalendarMonth?.firstWeekday - 1] === this.currentCalendarMonth.calendar[this.currentCalendarMonth.calendar.length - 1][this.currentCalendarMonth.lastWeekday]) {
       return true;
     }
 
@@ -239,7 +237,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
     return this.selectedDay === date && daysOfWeek.includes(date);
   }
 
-  navigateToDate(){
+  navigateToDate() {
     if (this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined) {
       this.router.navigate(['/calendar', this.selectedDay, this.selectedMonth + 1, this.selectedYear]);
     }

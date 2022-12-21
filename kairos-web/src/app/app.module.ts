@@ -16,6 +16,8 @@ import { StatisticsComponent } from './components/statistics/statistics.componen
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { HttpClientModule } from '@angular/common/http';
+import { EventCalendarComponent } from './components/event-calendar/event-calendar.component';
+import {ReactiveFormsModule} from "@angular/forms";
 @NgModule({
   declarations: [
     AppComponent,
@@ -27,17 +29,19 @@ import { HttpClientModule } from '@angular/common/http';
     ErrorComponent,
     TinyTimerComponent,
     NavbarComponent,
-    ProfileComponent
+    ProfileComponent,
+    EventCalendarComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    HttpClientModule,
-    ShareButtonModule,
-    FontAwesomeModule,
-    NgChartsModule,
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        HttpClientModule,
+        ShareButtonModule,
+        FontAwesomeModule,
+        NgChartsModule,
+        ReactiveFormsModule,
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

@@ -1,4 +1,8 @@
 <div class="calendar-wrapper kairos-box-shadow" style="margin-top: 50px">
+  <a [routerLink]="'add'">
+    Add event to calendar
+  </a>
+
   <div class="calendar">
     <div class="calendar-controls">
       <button (click)="prevMonthCalendar()">Previous</button>
@@ -25,6 +29,10 @@
   </div>
 </div>
 
+<div *ngIf="sidePanelOpen" class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px">
+  <router-outlet></router-outlet>
+</div>
+
 <div *ngIf="groups" class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px;display: grid;gap: 30px">
   <div *ngFor="let group of groups">
     <div>
@@ -41,8 +49,4 @@
       </div>
     </div>
   </div>
-</div>
-
-<div *ngIf="sidePanelOpen">
-  <router-outlet></router-outlet>
 </div>

@@ -6,6 +6,7 @@ import {StatisticsComponent} from './components/statistics/statistics.component'
 import {CalendarComponent} from './components/calendar/calendar.component';
 import {ErrorComponent} from './components/error/error.component';
 import {ProfileComponent} from "./components/profile/profile.component";
+import {EventCalendarComponent} from "./components/event-calendar/event-calendar.component";
 
 const routes: Routes = [
   {
@@ -29,7 +30,13 @@ const routes: Routes = [
       },
       {
         path: ':day/:month/:year',
-        component: CalendarComponent
+        component: CalendarComponent,
+        children: [
+          {
+            path: ':mode',
+            component: EventCalendarComponent,
+          }
+        ]
       }
     ]
   },
