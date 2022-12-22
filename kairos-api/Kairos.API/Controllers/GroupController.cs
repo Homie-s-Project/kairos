@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
 using Kairos.API.Models;
@@ -98,4 +99,41 @@ public class GroupController : SecurityController
 
         return Ok(new GroupDto(group, false));
     }
+
+    [HttpDelete("delete/{groupId}", Name = "Delete a group")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
+    public async Task<IActionResult> DeleteGroup(string groupId)
+    {
+        if (string.IsNullOrEmpty(groupId))
+        {
+            return BadRequest(new ErrorMessage("No group id found", StatusCodes.Status400BadRequest));
+        }
+        
+        var userContext = (User) HttpContext.Items["User"];
+        if (userContext == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't delete a group", StatusCodes.Status401Unauthorized));
+        }
+        
+        bool isParsed = Int32.TryParse(groupId, out var groupIdParsed);
+        if (!isParsed)
+        {
+            return BadRequest(new ErrorMessage("Can't parse the group id", StatusCodes.Status400BadRequest));
+        }
+        
+        var group = await _context.Groups
+            .Include(g => g.Events)
+            .FirstOrDefaultAsync(g => g.GroupId == groupIdParsed && g.OwnerId == userContext.UserId);
+        if (group == null)
+        {
+            return NotFound(new ErrorMessage("Can't delete a group", StatusCodes.Status404NotFound));
+        }
+
+        _context.Groups.Remove(group);
+        await _context.SaveChangesAsync();
+
+        return Ok(new GroupDto(group, false));
+    }
+
 }
