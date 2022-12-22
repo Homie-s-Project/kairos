@@ -1,0 +1,13 @@
+<div class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px">
+  <h2>Add an event</h2>
+
+  <form [formGroup]="eventForm">
+    <select formControlName="group">
+      <option *ngFor="let group of groups" [value]="group.groupId" [selected]="group.groupIsPrivate">{{group.groupName}}</option>
+    </select>
+    <input formControlName="title" placeholder="Title">
+    <textarea formControlName="description" placeholder="Description"></textarea>
+    <input formControlName="date" type="date" placeholder="Date">
+    <button [disabled]="!eventForm.valid" type="button" (click)="addEvent()">Add</button>
+  </form>
+</div>

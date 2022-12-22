@@ -63,7 +63,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
   public currentYearName?: string;
 
   public isLoadingCalendar: boolean = true;
-  public sidePanelOpen: boolean = false;
 
   public groups?: IGroupModel[];
 
@@ -96,8 +95,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
           this.selectedMonth = parseInt(month) - 1;
           this.selectedYear = parseInt(year);
         }
-
-        this.sidePanelOpen = this.router.url.includes('add');
       })
     )
   };
@@ -241,5 +238,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     if (this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined) {
       this.router.navigate(['/calendar', this.selectedDay, this.selectedMonth + 1, this.selectedYear]);
     }
+  }
+
+  hasSelectedDate() {
+    return this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined;
   }
 }
