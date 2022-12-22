@@ -25,6 +25,9 @@ Dans cette section, vous retrouvez toutes les routes.
 | HTTP Method | Path            | Description                                                                                                                                                 |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET         | /event/`{groupId}`       | Cette route permet d'avoir l'event d'un group. |
+| CREATE         | /create/       | Cette route permet de crée un event. |
+| DELETE         | /delete/`{eventId}`       | Cette route permet de pouvoir supprimer un event, seleument si elle nous appartient. |
+| PUT         | /update/`{eventId}`       | Cette route permet de pouvoir modifier un event, seleument si elle nous appartient. |
 
 
 ### Label
