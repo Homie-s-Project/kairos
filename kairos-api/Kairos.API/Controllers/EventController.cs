@@ -35,8 +35,7 @@ public class EventController : SecurityController
             return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
         }
 
-        int groupIdParsed;
-        bool isParsed = int.TryParse(groupId, out groupIdParsed);
+        bool isParsed = int.TryParse(groupId, out int groupIdParsed);
         if (!isParsed)
         {
             return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
@@ -61,7 +60,7 @@ public class EventController : SecurityController
     /// </summary>
     /// <param name="eventId">Id of an event</param>
     /// <returns></returns>
-    [HttpDelete("/delete/{eventId}", Name = "Delete an event")]
+    [HttpDelete("delete/{eventId}", Name = "Delete an event")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> DeleteEvent(string eventId)
@@ -77,6 +76,7 @@ public class EventController : SecurityController
         {
             return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));
         }
+        
         bool isParsed = int.TryParse(eventId, out int eventIdParsed);
         if (!isParsed)
         {
@@ -95,10 +95,12 @@ public class EventController : SecurityController
         return Ok(new EventDto(eventToDelete));
     }
 
-    [HttpPost("/create", Name = "Create an event")]
+    [HttpPost("create", Name = "Create an event")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
-    public async Task<IActionResult> CreateEvent(string groupId, string title, string description, string labels, string sessionDate)
+    [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorMessage))]
+    public async Task<IActionResult> CreateEvent([FromForm] string groupId, [FromForm] string title, [FromForm] string description, [FromForm] string labels, [FromForm] string sessionDate)
     {
         if (string.IsNullOrEmpty(groupId))
         {
@@ -203,10 +205,10 @@ public class EventController : SecurityController
     /// <param name="description">Description of the event</param>
     /// <param name="labels">All the labels id</param>
     /// <returns></returns>
-    [HttpPut("/update/{eventId}", Name = "Update an event")]
+    [HttpPut("update/{eventId}", Name = "Update an event")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
-    public async Task<ActionResult> UpdateEvent(string eventId, string title, string description, string labels)
+    public async Task<ActionResult> UpdateEvent(string eventId, [FromForm] string title, [FromForm] string description, [FromForm] string labels)
     {
         if (string.IsNullOrEmpty(eventId))
         {
@@ -259,7 +261,6 @@ public class EventController : SecurityController
         _context.Entry(eventToUpdate).Collection(e => e.Labels).Load();
 
         var labelsSplitted = labels.Split(',');
-        
         if (eventToUpdate.Labels.Count > 0)
         {
             var arrayOfIds = eventToUpdate.Labels.Select(l => l.LabelId).ToArray();

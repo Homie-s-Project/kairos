@@ -1,3 +1,5 @@
+using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
@@ -18,13 +20,13 @@ public class JwtMiddleware
 
     public async Task Invoke(HttpContext context, KairosContext kairosContext)
     {
-        const string BEARER = "Bearer";
+        const string bearer = "Bearer";
 
         string token = context.Request.Headers.Authorization;
 
-        if (token != null && token.Contains(BEARER))
+        if (token != null && token.Contains(bearer))
         {
-            token = token.Remove(0, BEARER.Length + 1);
+            token = token.Remove(0, bearer.Length + 1);
         }
 
         // Récupère l'id de l'utilisateur
