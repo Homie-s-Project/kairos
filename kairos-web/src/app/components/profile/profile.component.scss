@@ -51,6 +51,7 @@
           .label-input {
             display: flex;
             flex-direction: row;
+            border-width: 0.5em;
             justify-content: space-between;
             width: auto;
             input {
@@ -83,6 +84,9 @@
         }
         .group-content{
           width: 100%;
+          .group-form {
+            width: 100%;
+          }
           .group-name-container{
             display: flex;
             justify-content: space-between ;

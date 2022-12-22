@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import {faPencil, faSquarePlus, faTrashCan, faCheck, faChevronDown} from '@fortawesome/free-solid-svg-icons'
 import { map, Observable } from 'rxjs';
 import { IGroupModel } from 'src/app/models/IGroupModel';
@@ -21,55 +22,30 @@ export class ProfileComponent{
   faSquarePlus = faSquarePlus;
   faCheck = faCheck;
   faChevronDown = faChevronDown;
-  /*Variable de label*/
+  /*Variable de groupe*/
   allgroups:Observable<IGroupModel[]> | undefined;
-  title='';
   groupDatasaved=false;
   groupForm!: FormGroup;
   GroupUpdate=null;
-  /*Variable de groupe*/
-  allLabels:Observable<ILabelModel[]> | undefined;
-  name='';
+  groupVisible:boolean = false
+
+  /*Variable de label*/
+  allLabels?:ILabelModel[];
   labelDatasaved=false;
   labelForm!: FormGroup;
   LabelUpdate=null;
-
-  labels = [
-    {
-      id : 1,
-      name : 'Science / Math'
-    },
-    {
-      id : 2,
-      name : 'Economie'
-    },
-  ]
-  groups = [
-    { 
-      id : 1,
-      name : 'Groupe name',
-      members  : [
-        'Chris',
-        'William',
-        'Romain'
-      ]
-    },
-    { 
-      id : 2,
-      name : 'Groupe kaka',
-      members  : [
-        'Chris',
-        'William',
-        'Romain'
-      ]
-    }
-  ]
-  groupVisible:boolean = false
   labelVisible:boolean = false
+
 
   currentUser?: UserModel;
 
-  constructor (private nav: NavbarService, private auth: AuthService, private formbuilder:FormBuilder, private groupservice:GroupService, private labelservice:LabelService) {
+  constructor (
+    private nav: NavbarService, 
+    private auth: AuthService,
+    private router: Router,
+    private formbuilder:FormBuilder, 
+    private groupservice:GroupService, 
+    private labelservice:LabelService) {
     nav.showBackButton();
     auth.getProfile().subscribe(resp => {
       if (resp.status != 200) {
@@ -84,10 +60,11 @@ export class ProfileComponent{
   ngOnInit(){
     this.groupForm=this.formbuilder.group({
       title:[' ',[Validators.required]]
-  });
+    });
     this.labelForm=this.formbuilder.group({
       name:[' ',[Validators.required]]
-  });}    
+    });
+  }    
 
   IsLabelEditable()
   {
@@ -118,17 +95,19 @@ export class ProfileComponent{
   
 
   GetLabels(){
-    this.allLabels=this.labelservice.GetLabels();
+    this.labelservice.GetLabels().subscribe(resp => {
+      console.log(resp);
+      this.allLabels = resp;
+    });
     }
     
 
   LabelDelete(labelid:number)
   {
-    this.labelservice.LabelDelete(labelid)
-   .subscribe(label=>{
-     this.GetGroups();
-   })
-
+    this.labelservice.LabelDelete(labelid).subscribe(resp => {
+      console.log(resp);
+      this.updateLabels(resp.labelId);
+    })
   }
 
   /*Méthode des groupes*/
@@ -152,9 +131,20 @@ export class ProfileComponent{
       this.GetGroups();
   
     });
+    }
   }
-}
   
+  updateLabels(deleteId: number) {
+    var subLabels = this.allLabels;
+    this.allLabels = [];
+
+    subLabels?.forEach(element => {
+      if (element.labelId != deleteId)
+      {
+        this.allLabels?.push(element)
+      }
+    });
+  }
 
   GetGroups(){
     this.allgroups=this.groupservice.GetGroups();

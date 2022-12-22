@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ILabelModel } from 'src/app/models/ILabelModel';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { ILabelModel } from 'src/app/models/ILabelModel';
 export class LabelService {
   labelUrl="api/labels"
   
-    constructor( private http:HttpClient) { }
+    constructor( private http:HttpClient, private auth: AuthService) { }
+
     GetLabelById(labelid:string){
       return this.http.get<ILabelModel>(this.labelUrl+"/"+labelid)
     }
@@ -24,16 +26,26 @@ export class LabelService {
     }
   
   
-    LabelDelete (labelid:number):Observable<number>{
-      let httpheaders=new HttpHeaders()
-      .set('Content-type','application/Json');
-      let options={
-        headers:httpheaders
-      };
-      return this.http.delete<number>(this.labelUrl+"/"+labelid);
+    LabelDelete (labelid:number){
+      const headers = new HttpHeaders ({
+        "Content-Type": "application/json",
+        "Authorization": `${this.auth.getToken()}`
+      });
+      return this.http.delete<ILabelModel>(`http://localhost:5000/Label/delete/${labelid}`, {headers});
     }
   
-    GetLabels():Observable<ILabelModel[]>{
+    GetLabelsBis():Observable<ILabelModel[]>{
       return this.http.get<ILabelModel[]>(this.labelUrl);
+    }
+
+    GetLabels = () => {
+      // Création du header
+      const headers = new HttpHeaders ({
+        "Content-Type": "application/json",
+        "Authorization": `${this.auth.getToken()}`
+      });
+    
+      return this.http
+        .get<ILabelModel[]>('http://localhost:5000/Label/me', {headers})
     }
 }
