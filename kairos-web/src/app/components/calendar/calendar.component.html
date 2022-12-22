@@ -35,6 +35,11 @@
 <router-outlet></router-outlet>
 
 <div *ngIf="groups" class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px;display: grid;gap: 30px">
+
+  <ng-container *ngIf="groups.length === 0">
+    No groups found in your profile
+  </ng-container>
+
   <div *ngFor="let group of groups">
     <div>
       <h2>{{group.groupName}}</h2>
@@ -42,6 +47,9 @@
     </div>
     <hr />
     <div style="display: grid;gap: 15px">
+      <div *ngIf="!group.events || group.events.length === 0">
+        No events found in this group
+      </div>
       <div *ngFor="let event of group.events">
         <h3>{{event.eventTitle}}
           <span style="padding: 0 4px; color: #33576c">|</span>

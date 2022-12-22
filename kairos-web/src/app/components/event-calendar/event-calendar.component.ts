@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IGroupModel} from "../../models/IGroupModel";
 import {EventService} from "../../services/event/event.service";
@@ -9,7 +9,7 @@ import {ILabelModel} from "../../models/ILabelModel";
   templateUrl: './event-calendar.component.html',
   styleUrls: ['./event-calendar.component.scss']
 })
-export class EventCalendarComponent {
+export class EventCalendarComponent implements OnInit {
 
   groups?: IGroupModel[];
   labels?: ILabelModel[];
@@ -51,6 +51,9 @@ export class EventCalendarComponent {
         labelTitle: "Label #2",
       }
     ];
+  }
+
+  ngOnInit(): void {
   }
 
   addEvent() {
