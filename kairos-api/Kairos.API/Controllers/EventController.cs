@@ -82,20 +82,20 @@ public class EventController : SecurityController
         return Ok(events);
     }
 
-    [HttpPost("/create", Name = "Create an event")]
+    [HttpPost("create", Name = "Create an event")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(EventDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public async Task<IActionResult> CreateEvent(string groupId, string title, string description, string labels, string sessionDate)
     {
         if (string.IsNullOrEmpty(groupId))
         {
-            return BadRequest(new ErrorMessage("Event id not specified", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
         }
         
         var isGroupIdParsed = Int32.TryParse(groupId, out int groupIdParsed);
         if (!isGroupIdParsed)
         {
-            return BadRequest(new ErrorMessage("Event id is not valid", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
         }
 
         var userContext = (User) HttpContext.Items["User"];
