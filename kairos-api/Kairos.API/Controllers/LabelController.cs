@@ -123,6 +123,45 @@ public class LabelController : SecurityController
         return Ok(new LabelDto(labelDb, true, true));
     }
 
+    [HttpPut("update/{labelId}", Name = "Update a label")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> UpdateLabel(string labelId, string labelName)
+    {
+        if (string.IsNullOrEmpty(labelId))
+        {
+            return BadRequest(new ErrorMessage("Label id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userContext = (User) HttpContext.Items["User"];
+        if (userContext == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't update the label", StatusCodes.Status401Unauthorized));
+        }
+
+        bool isParsed = int.TryParse(labelId, out int labelIdParsed);
+        if (!isParsed)
+        {
+            return BadRequest(new ErrorMessage("Label id is not valid", StatusCodes.Status400BadRequest));
+        }
+
+        var labelDb = await _context.Labels
+            .Include(l => l.Events)
+            .Include(l => l.Groups)
+            .Include(l => l.Studies)
+            .FirstOrDefaultAsync(l => l.LabelId == labelIdParsed && l.User.UserId == userContext.UserId);
+
+        if (labelDb == null)
+        {
+            return NotFound(new ErrorMessage("No label found with this id: " + labelIdParsed, StatusCodes.Status404NotFound));
+        }
+
+        labelDb.LabelTitle = labelName;
+        await _context.SaveChangesAsync();
+
+        return Ok(new LabelDto(labelDb));
+    }
+
     /// <summary>
     /// Get the labels from a grroup
     /// </summary>
