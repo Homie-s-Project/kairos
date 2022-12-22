@@ -27,7 +27,7 @@ export class ProfileComponent{
   allgroups:Observable<IGroupModel[]> | undefined;
   groupDatasaved=false;
   groupForm!: FormGroup;
-  GroupUpdate=null;
+  groupUpdate=null;
   groupVisible:boolean = false
 
   /*Variable de label*/
@@ -55,8 +55,8 @@ export class ProfileComponent{
   
       this.currentUser = new UserModel(resp.body);
     })
-    this.GetLabels();
-    this.GetGroups();
+    this.getLabels();
+    this.getGroups();
   }
   ngOnInit(){
     this.groupForm=this.formbuilder.group({
@@ -67,7 +67,7 @@ export class ProfileComponent{
     });
   }    
 
-  IsLabelEditable()
+  isLabelEditable()
   {
     this.labelVisible = !this.labelVisible;
   }
@@ -77,14 +77,14 @@ export class ProfileComponent{
     this.labelVisible = !this.labelVisible;
     this.labelservice.updateLabel(labelid).subscribe(resp => {
       console.log(resp);
-      this.GetLabels();
+      this.getLabels();
     })
   }
 
   onLabelFormSubmit(){
     this.labelDatasaved=false;
     let label=this.labelForm.value;
-    this.CreateLabels(label);
+    this.createLabels(label);
     this.labelForm.reset();
   }
   newLabel()
@@ -92,12 +92,12 @@ export class ProfileComponent{
     this.createLabel = true;
     var inputLabel = document.getElementById('newLabel');
   }
-  CreateLabels(label:ILabelModel){
+  createLabels(label:ILabelModel){
     if(this.LabelUpdate==null){
   
-    this.labelservice.CreateLabels(label).subscribe(label=>{
+    this.labelservice.createLabels(label).subscribe(label=>{
       this.labelDatasaved=true;
-      this.GetLabels();
+      this.getLabels();
       
     });
   }
@@ -108,17 +108,17 @@ cancelCreation()
 }
   
 
-  GetLabels(){
-    this.labelservice.GetLabels().subscribe(resp => {
+  getLabels(){
+    this.labelservice.getLabels().subscribe(resp => {
       console.log(resp);
       this.allLabels = resp;
     });
     }
     
 
-  LabelDelete(labelid:number)
+  labelDelete(labelid:number)
   {
-    this.labelservice.LabelDelete(labelid).subscribe(resp => {
+    this.labelservice.labelDelete(labelid).subscribe(resp => {
       console.log(resp);
       this.updateLabels(resp.labelId);
     })
@@ -126,7 +126,7 @@ cancelCreation()
 
   /*Méthode des groupes*/
 
-  IsGroupEditable()
+  isGroupEditable()
   {
     this.groupVisible = !this.groupVisible;
   }
@@ -138,11 +138,11 @@ cancelCreation()
     this.groupForm.reset();
   }
   CreateGroups(group:IGroupModel){
-    if(this.GroupUpdate==null){
+    if(this.groupUpdate==null){
   
-    this.groupservice.CreateGroups(group).subscribe(group=>{
+    this.groupservice.createGroups(group).subscribe(group=>{
       this.groupDatasaved=true;
-      this.GetGroups();
+      this.getGroups();
   
     });
     }
@@ -160,16 +160,16 @@ cancelCreation()
     });
   }
 
-  GetGroups(){
-    this.allgroups=this.groupservice.GetGroups();
+  getGroups(){
+    this.allgroups=this.groupservice.getGroups();
     }
     
 
   GroupDelete(groupid:number)
   {
-    this.groupservice.GroupDelete(groupid)
+    this.groupservice.groupDelete(groupid)
    .subscribe(group=>{
-     this.GetGroups();
+     this.getGroups();
    })
 
   }

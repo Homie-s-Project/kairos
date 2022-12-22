@@ -10,11 +10,11 @@ export class GroupService {
   groupUrl="api/groups"
   
     constructor( private http:HttpClient) { }
-    GetGroupById(groupid:string){
+    getGroupById(groupid:string){
       return this.http.get<IGroupModel>(this.groupUrl+"/"+groupid)
     }
   
-    CreateGroups(group:IGroupModel):Observable<IGroupModel>{
+    createGroups(group:IGroupModel):Observable<IGroupModel>{
       let httpheaders=new HttpHeaders()
       .set('Content-type','application/Json');
       let options={
@@ -24,7 +24,7 @@ export class GroupService {
     }
   
   
-    GroupDelete (groupid:number):Observable<number>{
+    groupDelete (groupid:number):Observable<number>{
       let httpheaders=new HttpHeaders()
       .set('Content-type','application/Json');
       let options={
@@ -33,7 +33,7 @@ export class GroupService {
       return this.http.delete<number>(this.groupUrl+"/"+groupid);
     }
   
-    GetGroups():Observable<IGroupModel[]>{
+    getGroups():Observable<IGroupModel[]>{
       return this.http.get<IGroupModel[]>(this.groupUrl);
     }
 }

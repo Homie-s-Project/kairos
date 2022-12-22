@@ -29,10 +29,10 @@
         <div class="label-input" *ngFor="let label of allLabels">
           <input value="{{label.labelTitle}}" [disabled]="!labelVisible">
           <div class="label-edit-controller">
-            <button *ngIf="!labelVisible else saveButton" (click)="IsLabelEditable()"><fa-icon [icon]="faPencil"></fa-icon></button>
+            <button *ngIf="!labelVisible else saveButton" (click)="isLabelEditable()"><fa-icon [icon]="faPencil"></fa-icon></button>
             <ng-template #saveButton>
               <button *ngIf="labelVisible" (click)="updateLabel(label.labelId)"><fa-icon [icon]="faCheck"></fa-icon></button>
-              <button *ngIf="labelVisible" (click)='LabelDelete(label.labelId)'><fa-icon [icon]="faTrashCan"></fa-icon></button>
+              <button *ngIf="labelVisible" (click)='labelDelete(label.labelId)'><fa-icon [icon]="faTrashCan"></fa-icon></button>
             </ng-template>
           </div>
         </div>

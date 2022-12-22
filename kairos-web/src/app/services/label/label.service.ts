@@ -12,11 +12,11 @@ export class LabelService {
   
     constructor( private http:HttpClient, private auth: AuthService) { }
 
-    GetLabelById(labelid:string){
+    getLabelById(labelid:string){
       return this.http.get<ILabelModel>(this.labelUrl+"/"+labelid)
     }
   
-    CreateLabels(label:ILabelModel):Observable<ILabelModel>{
+    createLabels(label:ILabelModel):Observable<ILabelModel>{
       const headers = new HttpHeaders ({
         "Content-Type": "application/json",
         "Authorization": `${this.auth.getToken()}`
@@ -36,7 +36,7 @@ export class LabelService {
     }
   
   
-    LabelDelete (labelid:number){
+    labelDelete (labelid:number){
       const headers = new HttpHeaders ({
         "Content-Type": "application/json",
         "Authorization": `${this.auth.getToken()}`
@@ -44,11 +44,7 @@ export class LabelService {
       return this.http.delete<ILabelModel>(`http://localhost:5000/Label/delete/${labelid}`, {headers});
     }
   
-    GetLabelsBis():Observable<ILabelModel[]>{
-      return this.http.get<ILabelModel[]>(this.labelUrl);
-    }
-
-    GetLabels = () => {
+    getLabels = () => {
       // Création du header
       const headers = new HttpHeaders ({
         "Content-Type": "application/json",
