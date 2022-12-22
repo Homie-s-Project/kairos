@@ -83,6 +83,45 @@ public class LabelController : SecurityController
 
         return Ok(new EventDto(eventDb, true));
     }
+    
+    [HttpDelete("delete/{labelId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public async Task<IActionResult> DeleteLabel(string labelId)
+    {
+        if (string.IsNullOrEmpty(labelId))
+        {
+            return BadRequest(new ErrorMessage("Label id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't delete the label", StatusCodes.Status401Unauthorized));
+        }
+
+        bool isParsed = int.TryParse(labelId, out int labelIdParsed);
+        if (!isParsed)
+        {
+            return BadRequest(new ErrorMessage("Label id is not valid", StatusCodes.Status400BadRequest));
+        }
+
+        var labelDb = await _context.Labels
+            .Include(l => l.Events)
+            .Include(l => l.Groups)
+            .Include(l => l.Studies)
+            .FirstOrDefaultAsync(l => l.LabelId == labelIdParsed && l.User.UserId == userConterxt.UserId);
+
+        if (labelDb == null)
+        {
+            return NotFound(new ErrorMessage("No label found with this id: " + labelIdParsed, StatusCodes.Status404NotFound));
+        }
+
+        _context.Labels.Remove(labelDb);
+        await _context.SaveChangesAsync();
+
+        return Ok(new LabelDto(labelDb, true, true));
+    }
 
     /// <summary>
     /// Get the labels from a grroup
