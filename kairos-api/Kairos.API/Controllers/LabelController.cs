@@ -49,7 +49,7 @@ public class LabelController : SecurityController
     /// </summary>
     /// <param name="eventId">the id of the event</param>
     /// <returns>the labels</returns>
-    [HttpGet("/label/event/{eventId}")]
+    [HttpGet("event/{eventId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetEventLabel(string eventId)
@@ -126,7 +126,7 @@ public class LabelController : SecurityController
     [HttpPut("update/{labelId}", Name = "Update a label")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
-    public async Task<ActionResult> UpdateLabel(string labelId, string labelName)
+    public async Task<ActionResult> UpdateLabel(string labelId, [FromForm]  string labelName)
     {
         if (string.IsNullOrEmpty(labelId))
         {
@@ -167,7 +167,7 @@ public class LabelController : SecurityController
     /// </summary>
     /// <param name="groupId">the id of the group</param>
     /// <returns>the labels</returns>
-    [HttpGet("/label/group/{groupId}")]
+    [HttpGet("group/{groupId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetGroupLabel(string groupId)
@@ -211,7 +211,7 @@ public class LabelController : SecurityController
     [HttpPost("create", Name = "Create a label")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
-    public async Task<IActionResult> CreateLabel(string labelName)
+    public async Task<IActionResult> CreateLabel([FromForm] string labelName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
 
