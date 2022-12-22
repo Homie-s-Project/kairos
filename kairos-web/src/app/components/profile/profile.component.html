@@ -44,30 +44,11 @@
     <div class="kairos-box-shadow group-container">
       <div class="group-title-content">
         <h2>Groupe</h2>
-        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
-      <div class="group-form" *ngIf="!groupDatasaved">
-        <form [formGroup]='groupForm' (ngSubmit)='onGroupFormSubmit()'>
-          <input formControlName="title">
-          <button [disabled]="groupForm.invalid"><fa-icon [icon]="faCheck"></fa-icon></button>
-        </form>
-      </div>
-      <div class="group-content" *ngFor="let group of allgroups| async">
+      <div class="group-content">
         <div class="group-name-container">
-        <p class="group-name" (click)="IsGroupEditable()">{{group.groupName}}</p>
-        <button *ngIf="!groupVisible"><fa-icon [icon]="faChevronDown"></fa-icon></button>
-        <button *ngIf="groupVisible"><fa-icon [icon]="faCheck"></fa-icon></button>
-        <button *ngIf="groupVisible"><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+        <p class="group-name"> En développement...</p>
         </div>
-        
-        <ul>
-          <li *ngFor="let member of group.users">
-            <div class="group-member-container" *ngIf="groupVisible">
-              <p>{{member.firstName}} {{member.lastName}}</p>
-              <button (click)="GroupDelete(group.groupId)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
-            </div>
-          </li>
-        </ul>
       </div>
     </div>
   </div>
