@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IGroupModel} from "../../models/IGroupModel";
-import {IEventForm} from "../../services/event/event.service";
+import {EventService} from "../../services/event/event.service";
 import {ILabelModel} from "../../models/ILabelModel";
 
 @Component({
@@ -15,14 +15,14 @@ export class EventCalendarComponent {
   labels?: ILabelModel[];
 
   eventForm: FormGroup<any> = new FormGroup<any>({
-    group: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]),
+    group: new FormControl('', [Validators.required]),
     label: new FormControl('', [Validators.required]),
-    title: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(250)]),
-    description: new FormControl('', [Validators.required]),
+    title: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]),
+    description: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(250)]),
     date: new FormControl('', [Validators.required]),
   });
 
-  constructor() {
+  constructor(private eventService: EventService) {
     this.groups = [
       {
         groupId: 1,
@@ -55,5 +55,6 @@ export class EventCalendarComponent {
 
   addEvent() {
     console.log(this.eventForm.value);
+    this.eventService.createEvent(this.eventForm.value).subscribe();
   }
 }

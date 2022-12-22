@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IGroupModel} from "../../models/IGroupModel";
+import {IEventModel} from "../../models/IEventModel";
 
 function getOauth() {
 
-  let t = "ho6g1ytIOz5V61AmDmoZIlzI+M09awac1zPLDG5+erWJ6wgUVdG1oOTvmY1B0pMQ5CrQ/4oLRL18EZmyHH1XNwZIFkvVscVOnbTQnvH765uCEDY061+T4G+YMEYrkCe53TBeyQN3WLy5+D5lalCnH8jZl8F1VEr2KG7qOdjx+12XU8Ixraxc3Lhs1ntPWPJOZwTrrqRbmIjm3f+2+jpKKguuEiSZ0NWl/qbtgByzOJ7PsWa+iN+UVH4uyiQtBURCRquQxa6e2WDQoXbw+82HS5WqTVe40zWzJRz/JjI7NsG5RzBII49ekPGwtDlRzItymDSiNF9EfyIoqMsjbG0seF8zm/68VGLVp2Pion9xAq6cdHbcjBhp7YZ8MPLHXxWYnJB/FFAPSpONfxHl8pQa5fNYePFV6G0zPsNhz5E9E8BghJJoTrPIMAQJv68rJxfuW8skzKLXPs9/Xh0Fj05oPlGhFeUDxBPIgvxgOJA8sc3J6K3ZCqYbo60Tul2Da4qu"
+  let t = "ho6g1ytIOz5V61AmDmoZIlzI+M09awac1zPLDG5+erWeC0n06xdFrt/RlVdiaDEqFHBsYkbMcPQYuzKf2MsWRgZIFkvVscVOnbTQnvH765uCEDY061+T4G+YMEYrkCe53TBeyQN3WLy5+D5lalCnH8jZl8F1VEr2KG7qOdjx+11b5N1PqrX4VcV1B9aiEBbvKmfKHUnX/OZlrJ+c1vSJYcsVaiv7iwt4w2qOjaJh7yONC6w3NIzVlq2WXWUDq36IW1W9TGlW2H7lgscfPYUh+mv1XdMuFgiSf+d/Y3oXAkbdBfqRBMVLIVdp+cmHLmWnIsdR4krBl5cA6xnnktsZ/AGlejZIPG4irQDa0Fu+M3ycdHbcjBhp7YZ8MPLHXxWYnJB/FFAPSpONfxHl8pQa5fNYePFV6G0zPsNhz5E9E8C5gLgLGms15N6MRvJFoMEqUh+4Xz+b8kFuZT0AsEkyr1TsyVq8+47F7UGVQh9JW2mIENfpaFhZjbVKRxCMeKLG"
 
   return t || prompt('getOauth');
 }
@@ -26,27 +27,27 @@ export class EventService {
     return this.http.get<IGroupModel[]>('http://localhost:5000/Event/me', {headers: header});
   }
 
-  createEvent(event: IEventForm) : Observable<IEventForm> {
-    const header = new HttpHeaders({
+  createEvent(event: IEventForm) : Observable<IEventModel> {
+    const headers = new HttpHeaders({
       "Content-Type": "application",
       "Authorization": `Bearer ` + getOauth()
     });
 
-    let data = {
-      groupId: event.group,
-      labelId: event.label,
-      title: event.title,
-      description: event.description,
-      sessionDate: event.date
-    }
+    const formData = new FormData();
+    formData.append('groupId', event.group);
+    formData.append('labels', event.label);
+    formData.append('title', event.title);
+    formData.append('description', event.description);
+    formData.append('sessionDate', event.date.toString());
 
-    return this.http.post<IEventForm>('http://localhost:5000/Event/create', event, {headers: header});
+
+    return this.http.post<IEventModel>('http://localhost:5000/Event/create', formData, {headers});
   };
 }
 
 export interface IEventForm {
-  group: number;
-  label: number;
+  group: string;
+  label: string;
   title: string;
   description: string;
   date: Date;

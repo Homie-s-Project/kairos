@@ -27,7 +27,7 @@
       <input formControlName="date" type="datetime-local" placeholder="Date">
     </div>
     <div class="calendar-form-control">
-      <button type="button" (click)="addEvent()">Create this event</button>
+      <button [disabled]="!eventForm.valid" type="button" (click)="addEvent()">Create this event</button>
     </div>
   </form>
 </div>
