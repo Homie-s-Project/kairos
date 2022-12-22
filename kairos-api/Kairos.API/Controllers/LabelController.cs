@@ -49,7 +49,7 @@ public class LabelController : SecurityController
     /// </summary>
     /// <param name="eventId">the id of the event</param>
     /// <returns>the labels</returns>
-    [HttpGet("/label/event/{eventId}")]
+    [HttpGet("event/{eventId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetEventLabel(string eventId)
@@ -83,13 +83,91 @@ public class LabelController : SecurityController
 
         return Ok(new EventDto(eventDb, true));
     }
+    
+    [HttpDelete("delete/{labelId}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public async Task<IActionResult> DeleteLabel(string labelId)
+    {
+        if (string.IsNullOrEmpty(labelId))
+        {
+            return BadRequest(new ErrorMessage("Label id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userConterxt = (User) HttpContext.Items["User"];
+        if (userConterxt == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't delete the label", StatusCodes.Status401Unauthorized));
+        }
+
+        bool isParsed = int.TryParse(labelId, out int labelIdParsed);
+        if (!isParsed)
+        {
+            return BadRequest(new ErrorMessage("Label id is not valid", StatusCodes.Status400BadRequest));
+        }
+
+        var labelDb = await _context.Labels
+            .Include(l => l.Events)
+            .Include(l => l.Groups)
+            .Include(l => l.Studies)
+            .FirstOrDefaultAsync(l => l.LabelId == labelIdParsed && l.User.UserId == userConterxt.UserId);
+
+        if (labelDb == null)
+        {
+            return NotFound(new ErrorMessage("No label found with this id: " + labelIdParsed, StatusCodes.Status404NotFound));
+        }
+
+        _context.Labels.Remove(labelDb);
+        await _context.SaveChangesAsync();
+
+        return Ok(new LabelDto(labelDb, true, true));
+    }
+
+    [HttpPut("update/{labelId}", Name = "Update a label")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public async Task<ActionResult> UpdateLabel(string labelId, [FromForm]  string labelName)
+    {
+        if (string.IsNullOrEmpty(labelId))
+        {
+            return BadRequest(new ErrorMessage("Label id not specified", StatusCodes.Status400BadRequest));
+        }
+        
+        var userContext = (User) HttpContext.Items["User"];
+        if (userContext == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't update the label", StatusCodes.Status401Unauthorized));
+        }
+
+        bool isParsed = int.TryParse(labelId, out int labelIdParsed);
+        if (!isParsed)
+        {
+            return BadRequest(new ErrorMessage("Label id is not valid", StatusCodes.Status400BadRequest));
+        }
+
+        var labelDb = await _context.Labels
+            .Include(l => l.Events)
+            .Include(l => l.Groups)
+            .Include(l => l.Studies)
+            .FirstOrDefaultAsync(l => l.LabelId == labelIdParsed && l.User.UserId == userContext.UserId);
+
+        if (labelDb == null)
+        {
+            return NotFound(new ErrorMessage("No label found with this id: " + labelIdParsed, StatusCodes.Status404NotFound));
+        }
+
+        labelDb.LabelTitle = labelName;
+        await _context.SaveChangesAsync();
+
+        return Ok(new LabelDto(labelDb));
+    }
 
     /// <summary>
     /// Get the labels from a grroup
     /// </summary>
     /// <param name="groupId">the id of the group</param>
     /// <returns>the labels</returns>
-    [HttpGet("/label/group/{groupId}")]
+    [HttpGet("group/{groupId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetGroupLabel(string groupId)
@@ -133,7 +211,7 @@ public class LabelController : SecurityController
     [HttpPost("create", Name = "Create a label")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LabelDto))]
     [ProducesResponseType(StatusCodes.Status401Unauthorized, Type = typeof(ErrorMessage))]
-    public async Task<IActionResult> CreateLabel(string labelName)
+    public async Task<IActionResult> CreateLabel([FromForm] string labelName)
     {
         var userConterxt = (User) HttpContext.Items["User"];
 

@@ -33,7 +33,7 @@ public class StudiesController : SecurityController
     [HttpPost("start")]
     [ProducesResponseType(StatusCodes.Status406NotAcceptable, Type = typeof(ErrorMessage))]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ErrorMessage))]
-    public async Task<ActionResult> StartStudies(string timer, string labelsId)
+    public async Task<ActionResult> StartStudies([FromForm] string timer, [FromForm] string labelsId)
     {
         var userContext = (User) HttpContext.Items["User"];
 
@@ -281,7 +281,7 @@ public class StudiesController : SecurityController
     /// </summary>
     /// <param name="studiesId">the studies number</param>
     /// <returns></returns>
-    [HttpGet("/{studiesId}")]
+    [HttpGet("{studiesId}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(StudiesDto))]
     [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
     public IActionResult GetStudies(string studiesId)
@@ -337,14 +337,13 @@ public class StudiesController : SecurityController
             .Where(s =>
                 (s.Group.Users.FirstOrDefault(u => u.UserId == userConterxt.UserId) != null ||
                  s.Group.OwnerId == userConterxt.UserId) &&
-                s.StudiesCreatedDate >= DateTime.Now.AddDays(-7))
+                s.StudiesCreatedDate >= DateTime.Now.AddDays(-6))
             .ToList();
 
         Dictionary<string, float> data = new Dictionary<string, float>();
         studiesLastWeeks.ForEach((s) =>
         {
-            int studiedTime;
-            bool isParsed = int.TryParse(s.StudiesTime, out studiedTime);
+            bool isParsed = int.TryParse(s.StudiesTime, out int studiedTime);
             if (isParsed)
             {
                 data.Add(s.StudiesCreatedDate.DayOfWeek.ToString(), (float) studiedTime / 3_600);

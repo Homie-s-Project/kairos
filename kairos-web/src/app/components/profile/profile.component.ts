@@ -1,15 +1,19 @@
-import {Component, OnInit, Renderer2} from '@angular/core';
+import {Component} from '@angular/core';
 import {faPencil, faSquarePlus, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import { map } from 'rxjs';
+import { UserModel } from 'src/app/models/user.model';
+import { AuthService } from 'src/app/services/auth/auth.service';
+import { NavbarService } from 'src/app/services/navbar/navbar.service';
 
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
-export class ProfileComponent implements OnInit {
+export class ProfileComponent{
   faPencil = faPencil;
   faTrashCan = faTrashCan;
-  faSquarePlus = faSquarePlus  ;
+  faSquarePlus = faSquarePlus;
   labels = [
     {name : 'Science / Math'},
     {name : 'Economie'},
@@ -28,12 +32,16 @@ export class ProfileComponent implements OnInit {
     {name : 'Alexandre'},
     {name : 'Clyve'},
   ]
-  constructor(private renderer: Renderer2) {
-    this.renderer.removeClass(document.body, 'landing-background');
-    this.renderer.removeClass(document.getElementById('app-container'), 'centered');
-  }
+  currentUser?: UserModel;
 
-  ngOnInit(): void {
+  constructor (private nav: NavbarService, private auth: AuthService) {
+    nav.showBackButton();
+    auth.getProfile().subscribe(resp => {
+      if (resp.status != 200) {
+        console.log(resp.statusText);
+      }
+  
+      this.currentUser = new UserModel(resp.body);
+    })
   }
-
 }
