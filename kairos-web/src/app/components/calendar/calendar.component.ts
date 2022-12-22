@@ -1,20 +1,16 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../services/event/event.service";
-import {IEventModel} from "../../models/IEventModel";
 import {IGroupModel} from "../../models/IGroupModel";
-import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit, OnDestroy {
-
-  private subscriptions: Subscription[] = [];
+export class CalendarComponent implements OnInit {
 
   private selectedMonth?: number;
   private selectedYear?: number;
@@ -73,30 +69,12 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.nav.showBackButton();
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe());
-  }
-
   ngOnInit(): void {
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
     this.eventService.getEvent().subscribe((groups) => {
       this.groups = groups;
       this.isLoadingCalendar = false;
     });
-
-    this.subscriptions.push(
-      this.route.paramMap.subscribe((map: ParamMap) => {
-        let day = map.get('day');
-        let month = map.get('month');
-        let year = map.get('year');
-
-        if (day && month && year) {
-          this.selectedDay = parseInt(day);
-          this.selectedMonth = parseInt(month) - 1;
-          this.selectedYear = parseInt(year);
-        }
-      })
-    )
   };
 
   prevMonthCalendar() {
@@ -126,7 +104,6 @@ export class CalendarComponent implements OnInit, OnDestroy {
     this.selectedDay = new Date().getUTCDate();
     this.selectedMonth = new Date().getUTCMonth();
     this.selectedYear = new Date().getFullYear();
-    this.navigateToDate();
 
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
   }
@@ -227,20 +204,9 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
 
     this.selectedDay = day;
-    this.navigateToDate();
   }
 
   isSelectedDay(date: number, daysOfWeek: number[]) {
     return this.selectedDay === date && daysOfWeek.includes(date);
-  }
-
-  navigateToDate() {
-    if (this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined) {
-      this.router.navigate(['/calendar', this.selectedDay, this.selectedMonth + 1, this.selectedYear]);
-    }
-  }
-
-  hasSelectedDate() {
-    return this.selectedDay !== undefined && this.selectedMonth !== undefined && this.selectedYear !== undefined;
   }
 }

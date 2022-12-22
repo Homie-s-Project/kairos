@@ -27,14 +27,10 @@ const routes: Routes = [
       {
         path: '',
         component: CalendarComponent,
-      },
-      {
-        path: ':day/:month/:year',
-        component: CalendarComponent,
         children: [
           {
-            path: ':mode',
-            component: EventCalendarComponent,
+            path: 'add',
+            component: EventCalendarComponent
           }
         ]
       }

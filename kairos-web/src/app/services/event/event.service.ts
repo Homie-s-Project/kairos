@@ -5,7 +5,7 @@ import {IGroupModel} from "../../models/IGroupModel";
 
 function getOauth() {
 
-  let t = "ho6g1ytIOz5V61AmDmoZIlzI+M09awac1zPLDG5+erWJ6wgUVdG1oOTvmY1B0pMQFHBsYkbMcPQYuzKf2MsWRgZIFkvVscVOnbTQnvH765uCEDY061+T4G+YMEYrkCe53TBeyQN3WLy5+D5lalCnH8jZl8F1VEr2KG7qOdjx+11Bm+5PgJeUggdGa4oipf/U2tpsUk19snnMI9pbMWfUOT+dHi3AImR+v50WQWQgk7pTwrgF4xMCAtwU+3qoZ3zFAcAtat3YIOlA+91iJAwktZDlY/rzwU8B6oJO34SCBiS5RzBII49ekPGwtDlRzItyEo8k9IU8njLm4m5UEON7DUyzE1w5Uz2Tp5iIs4mablicdHbcjBhp7YZ8MPLHXxWYnJB/FFAPSpONfxHl8pQa5fNYePFV6G0zPsNhz5E9E8BCSswWcwzJI3j51umo69bOM6hWR/+pZNtgyLurppLFPpA+u0fWZSfwUtu3xr5+hBeDjDr5Qg7u8jHXzW/LT1go"
+  let t = "ho6g1ytIOz5V61AmDmoZIlzI+M09awac1zPLDG5+erWJ6wgUVdG1oOTvmY1B0pMQ5CrQ/4oLRL18EZmyHH1XNwZIFkvVscVOnbTQnvH765uCEDY061+T4G+YMEYrkCe53TBeyQN3WLy5+D5lalCnH8jZl8F1VEr2KG7qOdjx+12XU8Ixraxc3Lhs1ntPWPJOZwTrrqRbmIjm3f+2+jpKKguuEiSZ0NWl/qbtgByzOJ7PsWa+iN+UVH4uyiQtBURCRquQxa6e2WDQoXbw+82HS5WqTVe40zWzJRz/JjI7NsG5RzBII49ekPGwtDlRzItymDSiNF9EfyIoqMsjbG0seF8zm/68VGLVp2Pion9xAq6cdHbcjBhp7YZ8MPLHXxWYnJB/FFAPSpONfxHl8pQa5fNYePFV6G0zPsNhz5E9E8BghJJoTrPIMAQJv68rJxfuW8skzKLXPs9/Xh0Fj05oPlGhFeUDxBPIgvxgOJA8sc3J6K3ZCqYbo60Tul2Da4qu"
 
   return t || prompt('getOauth');
 }
@@ -25,4 +25,29 @@ export class EventService {
 
     return this.http.get<IGroupModel[]>('http://localhost:5000/Event/me', {headers: header});
   }
+
+  createEvent(event: IEventForm) : Observable<IEventForm> {
+    const header = new HttpHeaders({
+      "Content-Type": "application",
+      "Authorization": `Bearer ` + getOauth()
+    });
+
+    let data = {
+      groupId: event.group,
+      labelId: event.label,
+      title: event.title,
+      description: event.description,
+      sessionDate: event.date
+    }
+
+    return this.http.post<IEventForm>('http://localhost:5000/Event/create', event, {headers: header});
+  };
+}
+
+export interface IEventForm {
+  group: number;
+  label: number;
+  title: string;
+  description: string;
+  date: Date;
 }

@@ -7,3 +7,16 @@
   border-radius: 30px;
   background: vars.$first-color;
 }
+
+.calendar-form {
+  display: grid;
+  gap: 15px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  & .calendar-form-control {
+    display: flex;
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IGroupModel} from "../../models/IGroupModel";
+import {IEventForm} from "../../services/event/event.service";
+import {ILabelModel} from "../../models/ILabelModel";
 
 @Component({
   selector: 'app-event-calendar',
@@ -10,10 +12,12 @@ import {IGroupModel} from "../../models/IGroupModel";
 export class EventCalendarComponent {
 
   groups?: IGroupModel[];
+  labels?: ILabelModel[];
 
   eventForm: FormGroup<any> = new FormGroup<any>({
-    group: new FormControl('', [Validators.required, Validators.maxLength(50)]),
-    title: new FormControl('', [Validators.required, Validators.maxLength(250)]),
+    group: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(50)]),
+    label: new FormControl('', [Validators.required]),
+    title: new FormControl('', [Validators.required, Validators.minLength(5), Validators.maxLength(250)]),
     description: new FormControl('', [Validators.required]),
     date: new FormControl('', [Validators.required]),
   });
@@ -35,7 +39,18 @@ export class EventCalendarComponent {
         groupName: "Group #3",
         groupIsPrivate: false,
       }
-    ]
+    ];
+
+    this.labels = [
+      {
+        labelId: 1,
+        labelTitle: "Label #1",
+      },
+      {
+        labelId: 2,
+        labelTitle: "Label #2",
+      }
+    ];
   }
 
   addEvent() {
