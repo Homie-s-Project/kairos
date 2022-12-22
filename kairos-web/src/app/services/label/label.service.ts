@@ -17,12 +17,19 @@ export class LabelService {
     }
   
     CreateLabels(label:ILabelModel):Observable<ILabelModel>{
-      let httpheaders=new HttpHeaders()
-      .set('Content-type','application/Json');
-      let options={
-        headers:httpheaders
-      };
-      return this.http.post<ILabelModel>(this.labelUrl,label,options);
+      const headers = new HttpHeaders ({
+        "Content-Type": "application/json",
+        "Authorization": `${this.auth.getToken()}`
+      });
+      return this.http.post<ILabelModel>(`http://localhost:5000/Label/create/`, label, {headers});
+    }
+    
+    updateLabel(labelid:number) {
+      const headers = new HttpHeaders ({
+        "Content-Type": "application/json",
+        "Authorization": `${this.auth.getToken()}`
+      });
+      return this.http.put(`http://localhost:5000/Label/update/${labelid}`, {headers});
     }
   
   

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import {faPencil, faSquarePlus, faTrashCan, faCheck, faChevronDown} from '@fortawesome/free-solid-svg-icons'
+import {faPencil, faSquarePlus, faTrashCan, faCheck, faChevronDown, faTimes} from '@fortawesome/free-solid-svg-icons'
 import { map, Observable } from 'rxjs';
 import { IGroupModel } from 'src/app/models/IGroupModel';
 import { ILabelModel } from 'src/app/models/ILabelModel';
@@ -22,6 +22,7 @@ export class ProfileComponent{
   faSquarePlus = faSquarePlus;
   faCheck = faCheck;
   faChevronDown = faChevronDown;
+  faTimes = faTimes;
   /*Variable de groupe*/
   allgroups:Observable<IGroupModel[]> | undefined;
   groupDatasaved=false;
@@ -35,7 +36,7 @@ export class ProfileComponent{
   labelForm!: FormGroup;
   LabelUpdate=null;
   labelVisible:boolean = false
-
+  createLabel:boolean = false
 
   currentUser?: UserModel;
 
@@ -71,9 +72,13 @@ export class ProfileComponent{
     this.labelVisible = !this.labelVisible;
   }
 
-  SaveLabel()
+  updateLabel(labelid:number)
   {
     this.labelVisible = !this.labelVisible;
+    this.labelservice.updateLabel(labelid).subscribe(resp => {
+      console.log(resp);
+      this.GetLabels();
+    })
   }
 
   onLabelFormSubmit(){
@@ -82,15 +87,24 @@ export class ProfileComponent{
     this.CreateLabels(label);
     this.labelForm.reset();
   }
+  newLabel()
+  {
+    this.createLabel = true;
+    var inputLabel = document.getElementById('newLabel');
+  }
   CreateLabels(label:ILabelModel){
     if(this.LabelUpdate==null){
   
     this.labelservice.CreateLabels(label).subscribe(label=>{
       this.labelDatasaved=true;
       this.GetLabels();
-  
+      
     });
   }
+}
+cancelCreation()
+{
+  this.createLabel = false;
 }
   
 
