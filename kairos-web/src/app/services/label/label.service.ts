@@ -21,7 +21,10 @@ export class LabelService {
         "Content-Type": "application/json",
         "Authorization": `${this.auth.getToken()}`
       });
-      return this.http.post<ILabelModel>(`http://localhost:5000/Label/create/`, label, {headers});
+      const formLabel = new FormData();
+      formLabel.append('labelName', label.labelTitle);
+    
+      return this.http.post<ILabelModel>(`http://localhost:5000/Label/create`, formLabel, {headers});
     }
     
     updateLabel(labelid:number) {
