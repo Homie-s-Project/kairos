@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 
@@ -130,7 +130,7 @@ export class TimerService {
   // API Call
   postStartStudies = (timerValue: string, labelsId: string) => {
     // Création du header
-    const headers = new Headers ({
+    const headers = new HttpHeaders ({
       "Content-Type": "application/json",
       "Authorization": `${this.auth.getToken()}`
     })
@@ -140,6 +140,6 @@ export class TimerService {
       labelsId: labelsId
     }
 
-    return this.http.post('http://localhost:5000/studies/start', {headers: headers, observe: 'response'})
+    return this.http.post('http://localhost:5000/studies/start', data, {headers})
   }
 }
