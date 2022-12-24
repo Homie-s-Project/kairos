@@ -10,10 +10,10 @@ public class UserController : SecurityController
     /// <summary>
     /// Retourne les informations de l'utilisateur s'il est connecté
     /// </summary>
-    /// <response code="200">Return user info</response>
-    /// <response code="403">If no user is not connected</response>   
+    /// <response code="200">Retourne les informations de l'utilisateur</response>
+    /// <response code="403">Si aucun utilisateur n'est connecté on retourne une erreur</response>   
     /// <returns>Retourne l'utilisateur connecté</returns>
-    [HttpGet("me", Name = "Get Current User Info")]
+    [HttpGet("me", Name = "Récupère le status de connexion de l'utilisateur")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public IActionResult GetMe()
@@ -26,6 +26,6 @@ public class UserController : SecurityController
             return Ok(new UserDto(userContext));
         }
 
-        return Forbid("No user connected");
+        return Unauthorized(new ErrorMessage("No user connected", StatusCodes.Status401Unauthorized));
     }
 }
