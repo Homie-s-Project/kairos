@@ -9,9 +9,13 @@
 
   <div class="calendar" style="margin-top: 15px">
     <div class="calendar-controls">
-      <button (click)="prevMonthCalendar()">Previous</button>
+      <button (click)="prevMonthCalendar()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+      </button>
       <button (click)="currentMonthCalendar()">{{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}</button>
-      <button (click)="nextMonthCalendar()">Next</button>
+      <button (click)="nextMonthCalendar()">
+        <fa-icon [icon]="faArrowRight"></fa-icon>
+      </button>
     </div>
 
     <table *ngIf="currentCalendarMonth" class="calendar-table">

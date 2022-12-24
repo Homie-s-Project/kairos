@@ -5,6 +5,7 @@ import {EventService} from "../../services/event/event.service";
 import {IGroupModel} from "../../models/IGroupModel";
 import {NavigationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
+import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-calendar',
@@ -12,6 +13,9 @@ import {Subscription} from "rxjs";
   styleUrls: ['./calendar.component.scss']
 })
 export class CalendarComponent implements OnInit, OnDestroy {
+
+  public faArrowRight = faArrowRight;
+  public faArrowLeft = faArrowLeft;
 
   private subscription: Subscription[] = [];
 
