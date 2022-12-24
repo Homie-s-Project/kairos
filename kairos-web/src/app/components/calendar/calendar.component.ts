@@ -6,6 +6,7 @@ import {IGroupModel} from "../../models/IGroupModel";
 import {NavigationEnd, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {faArrowLeft, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 @Component({
   selector: 'app-calendar',
@@ -16,6 +17,7 @@ export class CalendarComponent implements OnInit, OnDestroy {
 
   public faArrowRight = faArrowRight;
   public faArrowLeft = faArrowLeft;
+  public faTrashCan = faTrashCan;
 
   private subscription: Subscription[] = [];
 
@@ -241,5 +243,23 @@ export class CalendarComponent implements OnInit, OnDestroy {
     }
 
     return false;
+  }
+
+  deleteEvent(eventId: number) {
+    this.eventService.deleteEvent(eventId).subscribe((event) => {
+
+      if (!this.groups){
+        console.warn("Erreur lors de la suppression de l'événement");
+        return;
+      }
+
+      this.groups = this.groups.map(group => {
+        if (group.events) {
+          group.events = group.events.filter(event => event.eventId !== eventId);
+        }
+
+        return group;
+      });
+    });
   }
 }

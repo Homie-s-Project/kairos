@@ -56,10 +56,15 @@
         No events found in this group
       </div>
       <div *ngFor="let event of group.events">
-        <h3>{{event.eventTitle}}
-          <span style="padding: 0 4px; color: #33576c">|</span>
-          {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
-        <p>{{event.eventDescription}}</p>
+        <div class="title-event">
+          <h3>{{event.eventTitle}}
+            <span style="padding: 0 4px; color: #33576c">|</span>
+            {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
+          <button class="icon-event" (click)="deleteEvent(event.eventId)">
+            <fa-icon [icon]="faTrashCan"></fa-icon>
+          </button>
+        </div>
+        <h5>{{event.eventDescription}}</h5>
         <div class="label-group" *ngIf="event.labels">
           <span class="label" *ngFor="let label of event.labels">{{label.labelTitle}}</span>
         </div>

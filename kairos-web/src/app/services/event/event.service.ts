@@ -20,6 +20,14 @@ export class EventService {
     return this.http.get<IGroupModel[]>('http://localhost:5000/Event/me', {headers: header});
   }
 
+  deleteEvent(eventId: number): Observable<IEventModel> {
+    const headers = new HttpHeaders({
+      "Authorization": this.authService.getToken()
+    });
+
+    return this.http.delete<IEventModel>('http://localhost:5000/Event/delete/' + eventId, {headers});
+  }
+
   createEvent(event: IEventForm) : Observable<IEventModel> {
     const headers = new HttpHeaders({
       "Authorization": this.authService.getToken()
