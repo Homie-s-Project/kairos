@@ -23,6 +23,10 @@ public class OAuth2Microsoft
 
         public const string AuthorizeEndpoint = "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize";
 
+        /// <summary>
+        /// On crée une url pour rediriger l'utilisateur vers la page de connexion de Microsoft
+        /// </summary>
+        /// <param name="opts">Les options de </param>
         public static string GetAuthorizeUrl(AuthorizeOptions opts)
         {
             var url = AuthorizeEndpoint.Replace("{tenant}", opts.TenantId)
@@ -36,6 +40,14 @@ public class OAuth2Microsoft
             return url;
         }
 
+        /// <summary>
+        /// On récupère le token d'accès à partir du code de connexion
+        /// </summary>
+        /// <param name="code">Code reçu après la connexion</param>
+        /// <param name="clientId">Le clientId de notre application</param>
+        /// <param name="clientSecret">Le clientSecret de notre application</param>
+        /// <param name="tenantId">L'id de notre application micrcosoft</param>
+        /// <param name="redirectUri">Où souhaite le rediriger</param>
         public static Task<OAuthResponse> GetAccessTokenAsync(string code, string clientId, string clientSecret,
             string tenantId,
             string redirectUri)
@@ -49,6 +61,7 @@ public class OAuth2Microsoft
                 code,
             };
 
+            // On remplace le tenant dans l'url par l'id de notre application
             return OAuthEndpoint.Replace("{tenant}", tenantId)
                 .PostUrlEncodedAsync(form)
                 .ReceiveJson<OAuthResponse>();

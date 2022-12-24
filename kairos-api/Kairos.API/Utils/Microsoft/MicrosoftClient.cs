@@ -15,6 +15,10 @@ public class MicrosoftClient
         _userToken = CryptoUtils.Decrypt(encryptedUserToken);
     }
 
+    /// <summary>
+    /// On fait une requête à l'API Microsoft pour récupérer les informations de l'utilisateur
+    /// </summary>
+    /// <returns>L'utilisateur Microsoft conneté</returns>
     public Task<UserMicrosoft> GetUserAsync()
     {
         return OAuthUser
