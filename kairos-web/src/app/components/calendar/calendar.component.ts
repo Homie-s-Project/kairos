@@ -3,7 +3,7 @@ import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
 import {EventService} from "../../services/event/event.service";
 import {IGroupModel} from "../../models/IGroupModel";
-import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
+import {NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-calendar',
@@ -12,10 +12,16 @@ import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 })
 export class CalendarComponent implements OnInit {
 
+  public previousCalendarMonth?: CalendarType;
+  public currentCalendarMonth?: CalendarType;
+  public nextCalendarMonth?: CalendarType;
+  public currentMonthName?: string;
+  public currentYearName?: string;
+  public isLoadingCalendar: boolean = true;
+  public groups?: IGroupModel[];
   private selectedMonth?: number;
   private selectedYear?: number;
   private selectedDay?: number;
-
   private calendar = calendar({
     months: [
       'January',
@@ -46,21 +52,9 @@ export class CalendarComponent implements OnInit {
       'Dec'
     ],
   });
-
   private todayday = new Date().getUTCDate();
   private todayMonth = new Date().getUTCMonth();
   private todayYear = new Date().getFullYear();
-
-  public previousCalendarMonth?: CalendarType;
-  public currentCalendarMonth?: CalendarType;
-  public nextCalendarMonth?: CalendarType;
-
-  public currentMonthName?: string;
-  public currentYearName?: string;
-
-  public isLoadingCalendar: boolean = true;
-
-  public groups?: IGroupModel[];
 
   constructor(public nav: NavbarService,
               private eventService: EventService,
@@ -213,5 +207,26 @@ export class CalendarComponent implements OnInit {
 
   isSelectedDay(date: number, daysOfWeek: number[]) {
     return this.selectedDay === date && daysOfWeek.includes(date);
+  }
+
+  hasEvent(date: number, day: number[]) {
+    if (this.isOtherMonth(date, day)) {
+      return false;
+    }
+
+    if (this.groups) {
+      return this.groups.some(group => {
+        if (group.events) {
+          return group.events.some(event => {
+            let eventDateFormat = new Date(event.eventDate);
+            return eventDateFormat.getDate() === date && eventDateFormat.getMonth() === this.selectedMonth && eventDateFormat.getFullYear() === this.selectedYear;
+          });
+        }
+
+        return false;
+      });
+    }
+
+    return false;
   }
 }

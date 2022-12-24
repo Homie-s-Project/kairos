@@ -83,6 +83,17 @@
         background-color: #162741;
         color: #fff;
       }
+
+      &.event:after {
+        content: '\A';
+        z-index: 2;
+        border-radius: 50%;
+        background: #000000;
+        width: 7px;
+        height: 7px;
+        display:inline-block;
+        position: absolute;
+      }
     }
   }
 }
