@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
-import {ActivatedRoute, Router} from "@angular/router";
 import {EventService} from "../../services/event/event.service";
 import {IGroupModel} from "../../models/IGroupModel";
+import {ActivatedRoute, NavigationEnd, Router} from "@angular/router";
 
 @Component({
   selector: 'app-calendar',
@@ -64,17 +64,22 @@ export class CalendarComponent implements OnInit {
 
   constructor(public nav: NavbarService,
               private eventService: EventService,
-              private router: Router,
-              private route: ActivatedRoute) {
+              private router: Router) {
     this.nav.showBackButton();
+    router.events.subscribe((val) => {
+
+      // Refresh le calendrier seulement si c'est un changement de navigation
+      if (val instanceof NavigationEnd) {
+        this.eventService.getEvent().subscribe((groups) => {
+          this.groups = groups;
+          this.isLoadingCalendar = false;
+        });
+      }
+    });
   }
 
   ngOnInit(): void {
     this.updateCalendar(new Date().getMonth(), new Date().getFullYear());
-    this.eventService.getEvent().subscribe((groups) => {
-      this.groups = groups;
-      this.isLoadingCalendar = false;
-    });
   };
 
   prevMonthCalendar() {

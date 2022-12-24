@@ -12,35 +12,42 @@ import {EventCalendarComponent} from "./components/event-calendar/event-calendar
 
 const routes: Routes = [
   {
-    path: 'timer',
-    component: TimerComponent
+    path: '',
+    redirectTo: '/timer',
+    pathMatch: 'full',
   },
   {
-    path: 'landing',
-    component: LandingComponent
-  },
-  {
-    path: 'statistics',
-    component: StatisticsComponent
-  },
-  {
-    path: 'calendar',
+    path: '',
+    canActivateChild: [IsLoggedGuard],
     children: [
       {
-        path: '',
-        component: CalendarComponent,
+        path: 'timer',
+        component: TimerComponent
+      },
+      {
+        path: 'statistics',
+        component: StatisticsComponent
+      },
+      {
+        path: 'calendar',
         children: [
           {
-            path: 'add',
-            component: EventCalendarComponent
+            path: '',
+            component: CalendarComponent,
+            children: [
+              {
+                path: 'add',
+                component: EventCalendarComponent
+              }
+            ]
           }
         ]
-      }
+      },
+      {
+        path:'profile',
+        component: ProfileComponent
+      },
     ]
-  },
-  {
-    path: 'profile',
-    component: ProfileComponent
   },
   {
     path: 'landing',
@@ -56,5 +63,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule {
-}
+export class AppRoutingModule { }

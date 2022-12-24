@@ -16,8 +16,8 @@
       </div>
       <div class="label-content">
         <div class="label-input">
-          <form [formGroup]='labelForm' (ngSubmit)='onLabelFormSubmit()'>
-            <input value="" id="newLabel" *ngIf="createLabel">
+          <form [formGroup]='labelForm'>
+            <input formControlName="name" *ngIf="createLabel">
             <div class="label-edit-controller">
             <button *ngIf="createLabel" (click)="onLabelFormSubmit()"><fa-icon [icon]="faCheck"></fa-icon></button>
             <button *ngIf="createLabel" (click)="cancelCreation()"><fa-icon [icon]="faTimes"></fa-icon></button>
@@ -27,12 +27,12 @@
       </div>
       <div class="label-content" *ngIf="allLabels != undefined && allLabels.length > 0 else emptyLabels">
         <div class="label-input" *ngFor="let label of allLabels">
-          <input value="{{label.labelTitle}}" [disabled]="!labelVisible">
+          <input id="edit-input-{{label.labelId}}" [value]="label.labelTitle" [disabled]="labelIdUpdate !== label.labelId && !labelUpdate">
           <div class="label-edit-controller">
-            <button *ngIf="!labelVisible else saveButton" (click)="isLabelEditable()"><fa-icon [icon]="faPencil"></fa-icon></button>
+            <button *ngIf="!labelVisible else saveButton" (click)="isLabelEditable(label.labelId)"><fa-icon [icon]="faPencil"></fa-icon></button>
             <ng-template #saveButton>
-              <button *ngIf="labelVisible" (click)="updateLabel(label.labelId)"><fa-icon [icon]="faCheck"></fa-icon></button>
-              <button *ngIf="labelVisible" (click)='labelDelete(label.labelId)'><fa-icon [icon]="faTrashCan"></fa-icon></button>
+              <button *ngIf="labelVisible && label.labelId === labelIdUpdate" (click)="updateLabel(label.labelId)"><fa-icon [icon]="faCheck"></fa-icon></button>
+              <button *ngIf="labelVisible && label.labelId === labelIdUpdate" (click)="labelDelete(label.labelId)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
             </ng-template>
           </div>
         </div>

@@ -1,39 +1,48 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import{Observable } from 'rxjs';
-import { IGroupModel } from 'src/app/models/IGroupModel';
+import {Observable} from 'rxjs';
+import {IGroupModel} from 'src/app/models/IGroupModel';
+import {AuthService} from "../auth/auth.service";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  groupUrl="api/groups"
-  
-    constructor( private http:HttpClient) { }
-    getGroupById(groupid:string){
-      return this.http.get<IGroupModel>(this.groupUrl+"/"+groupid)
-    }
-  
-    createGroups(group:IGroupModel):Observable<IGroupModel>{
-      let httpheaders=new HttpHeaders()
-      .set('Content-type','application/Json');
-      let options={
-        headers:httpheaders
-      };
-      return this.http.post<IGroupModel>(this.groupUrl,group,options);
-    }
-  
-  
-    groupDelete (groupid:number):Observable<number>{
-      let httpheaders=new HttpHeaders()
-      .set('Content-type','application/Json');
-      let options={
-        headers:httpheaders
-      };
-      return this.http.delete<number>(this.groupUrl+"/"+groupid);
-    }
-  
-    getGroups():Observable<IGroupModel[]>{
-      return this.http.get<IGroupModel[]>(this.groupUrl);
-    }
+
+  constructor(private http: HttpClient,
+              private authService: AuthService) {
+  }
+
+  createGroups(group: IGroupModel): Observable<IGroupModel> {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization": this.authService.getToken()
+    });
+
+    const formData = new FormData();
+    formData.append('name', group.groupName);
+
+    return this.http.post<IGroupModel>('http://localhost:5000/Group/create', formData, {headers})
+  }
+
+
+  groupDelete(groupId: number): Observable<IGroupModel> {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization": this.authService.getToken()
+    });
+
+    return this.http
+      .delete<IGroupModel>('http://localhost:5000/Group/delete/'+groupId, {headers})
+  }
+
+  getGroups(): Observable<IGroupModel[]> {
+    const headers = new HttpHeaders({
+      "Content-Type": "application/json",
+      "Authorization": this.authService.getToken()
+    });
+
+    return this.http
+      .get<IGroupModel[]>('http://localhost:5000/Group/personal', {headers})
+  }
 }

@@ -2,17 +2,20 @@
   <h2>Add an event</h2>
 
   <form [formGroup]="eventForm" class="calendar-form">
-    <div class="calendar-form-control">
-      <label>Group</label>
-      <select formControlName="group">
-        <option *ngFor="let group of groups" [value]="group.groupId" [selected]="group.groupIsPrivate">{{group.groupName}}</option>
-      </select>
-    </div>
-    <div class="calendar-form-control">
-      <label>Label</label>
-      <select formControlName="label">
-        <option *ngFor="let label of labels" [value]="label.labelId">{{label.labelTitle}}</option>
-      </select>
+    <div class="calendar-form-control" style="flex-direction: row; gap: 40px; margin-top: 15px">
+      <div style="display:flex; flex-direction: row; gap: 10px;">
+        <label>Group</label>
+        <select formControlName="group">
+          <option *ngFor="let group of groups" [value]="group.groupId" [selected]="group.groupIsPrivate">{{group.groupName}}</option>
+        </select>
+      </div>
+
+      <div style="display:flex; flex-direction: row; gap: 10px;">
+        <label>Label</label>
+        <select formControlName="label">
+          <option *ngFor="let label of labels" [value]="label.labelId">{{label.labelTitle}}</option>
+        </select>
+      </div>
     </div>
     <div class="calendar-form-control">
       <label>Title</label>

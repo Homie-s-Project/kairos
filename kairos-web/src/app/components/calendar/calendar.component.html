@@ -1,12 +1,13 @@
 <div class="calendar-wrapper calendar-title" style="margin-top: 30px">
   <h1>Calendrier de tâches</h1>
 </div>
+
 <div class="calendar-wrapper kairos-box-shadow" style="margin-top: 20px">
-  <a [routerLink]="'add'">
+  <a class="btn-add" [routerLink]="'add'">
     Add event to calendar
   </a>
 
-  <div class="calendar">
+  <div class="calendar" style="margin-top: 15px">
     <div class="calendar-controls">
       <button (click)="prevMonthCalendar()">Previous</button>
       <button (click)="currentMonthCalendar()">{{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}</button>
@@ -53,8 +54,11 @@
       <div *ngFor="let event of group.events">
         <h3>{{event.eventTitle}}
           <span style="padding: 0 4px; color: #33576c">|</span>
-          {{event.eventDate | date: 'dd.MM.yyyy' }}</h3>
+          {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
         <p>{{event.eventDescription}}</p>
+        <div class="label-group" *ngIf="event.labels">
+          <span class="label" *ngFor="let label of event.labels">{{label.labelTitle}}</span>
+        </div>
       </div>
     </div>
   </div>

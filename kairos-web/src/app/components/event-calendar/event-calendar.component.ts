@@ -3,6 +3,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {IGroupModel} from "../../models/IGroupModel";
 import {EventService} from "../../services/event/event.service";
 import {ILabelModel} from "../../models/ILabelModel";
+import {GroupService} from "../../services/group/group.service";
+import {LabelService} from "../../services/label/label.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-event-calendar',
@@ -22,42 +25,26 @@ export class EventCalendarComponent implements OnInit {
     date: new FormControl('', [Validators.required]),
   });
 
-  constructor(private eventService: EventService) {
-    this.groups = [
-      {
-        groupId: 1,
-        groupName: "Group #1",
-        groupIsPrivate: true,
-      }
-      , {
-        groupId: 2,
-        groupName: "Group #2",
-        groupIsPrivate: false,
-      },
-      {
-        groupId: 3,
-        groupName: "Group #3",
-        groupIsPrivate: false,
-      }
-    ];
+  constructor(private eventService: EventService,
+              private groupService: GroupService,
+              private labelService: LabelService,
+              private router: Router) {
 
-    this.labels = [
-      {
-        labelId: 1,
-        labelTitle: "Label #1",
-      },
-      {
-        labelId: 2,
-        labelTitle: "Label #2",
-      }
-    ];
+    this.groupService.getGroups().subscribe(groups => {
+      this.groups = groups;
+    });
+
+    this.labelService.getLabels().subscribe(labels => {
+      this.labels = labels;
+    });
   }
 
   ngOnInit(): void {
   }
 
   addEvent() {
-    console.log(this.eventForm.value);
-    this.eventService.createEvent(this.eventForm.value).subscribe();
+    this.eventService.createEvent(this.eventForm.value).subscribe(() => {
+      this.router.navigate(['/calendar']);
+    });
   }
 }
