@@ -1,4 +1,5 @@
 import {ILabelModel} from "./ILabelModel";
+import {IGroupModel} from "./IGroupModel";
 
 export interface IEventModel{
   eventId: number;
@@ -7,4 +8,5 @@ export interface IEventModel{
   eventDescription: string;
   eventCreatedDate: string;
   labels?: ILabelModel[];
+  group: IGroupModel;
 }

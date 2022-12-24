@@ -6,7 +6,7 @@ export interface IGroupModel{
   groupId: number;
   groupName: string;
   groupIsPrivate: boolean;
-  event?: IEventModel;
+  events?: IEventModel[];
   labels?: ILabelModel[];
   users?: IUserModel[];
 }

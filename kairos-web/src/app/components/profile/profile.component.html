@@ -5,7 +5,6 @@
     <div class="profile-content">
       <h4 class="profile-label">Prenom:</h4><p>{{currentUser?.firstName}}</p>
       <h4 class="profile-label">Nom:</h4><p>{{currentUser?.lastName}}</p>
-      <h4 class="profile-label">Date de naissance:</h4><p>{{undefined}}</p>
       <h4 class="profile-label">Mail:</h4><p>{{currentUser?.email}}</p>
     </div>
   </div>
@@ -13,37 +12,43 @@
     <div class="kairos-box-shadow label-container">
       <div class="label-title-content">
         <h2 class="label-title">Label</h2>
-        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+        <button (click)="newLabel()"><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
       <div class="label-content">
-        <div class="label-input" *ngFor="let label of labels">
-          <input value="{{label.name}}" disabled="true">
+        <div class="label-input">
+          <form [formGroup]='labelForm'>
+            <input formControlName="name" *ngIf="createLabel">
+            <div class="label-edit-controller">
+            <button *ngIf="createLabel" (click)="onLabelFormSubmit()"><fa-icon [icon]="faCheck"></fa-icon></button>
+            <button *ngIf="createLabel" (click)="cancelCreation()"><fa-icon [icon]="faTimes"></fa-icon></button>
+          </div>
+        </form>
+        </div>
+      </div>
+      <div class="label-content" *ngIf="allLabels != undefined && allLabels.length > 0 else emptyLabels">
+        <div class="label-input" *ngFor="let label of allLabels">
+          <input id="edit-input-{{label.labelId}}" [value]="label.labelTitle" [disabled]="labelIdUpdate !== label.labelId && !labelUpdate">
           <div class="label-edit-controller">
-            <button><fa-icon [icon]="faPencil"></fa-icon></button>
-            <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
+            <button *ngIf="!labelVisible else saveButton" (click)="isLabelEditable(label.labelId)"><fa-icon [icon]="faPencil"></fa-icon></button>
+            <ng-template #saveButton>
+              <button *ngIf="labelVisible && label.labelId === labelIdUpdate" (click)="updateLabel(label.labelId)"><fa-icon [icon]="faCheck"></fa-icon></button>
+              <button *ngIf="labelVisible && label.labelId === labelIdUpdate" (click)="labelDelete(label.labelId)"><fa-icon [icon]="faTrashCan"></fa-icon></button>
+            </ng-template>
           </div>
         </div>
       </div>
+      <ng-template #emptyLabels>
+          <p *ngIf="!createLabel">Aucun label existants</p>
+      </ng-template>
     </div>
     <div class="kairos-box-shadow group-container">
       <div class="group-title-content">
         <h2>Groupe</h2>
-        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
       </div>
-      <div class="group-content" *ngFor="let group of groups">
+      <div class="group-content">
         <div class="group-name-container">
-        <p class="group-name">{{group.name}}</p>
-        <button><fa-icon [icon]="faPencil"></fa-icon></button>
-        <button><fa-icon [icon]="faSquarePlus"></fa-icon></button>
+        <p class="group-name"> En développement...</p>
         </div>
-        <ul>
-          <li *ngFor="let member of members">
-            <div class="group-member-container">
-              <p>{{member.name}}</p>
-              <button><fa-icon [icon]="faTrashCan"></fa-icon></button>
-            </div>
-          </li>
-        </ul>
       </div>
     </div>
   </div>

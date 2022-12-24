@@ -18,7 +18,34 @@ public class EventController : SecurityController
     {
         _context = context;
     }
+    
+    [HttpGet("me", Name = "Get the events from a user")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GroupDto))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(ErrorMessage))]
+    public IActionResult GetEvents()
+    {
+        
+        var userContext = (User) HttpContext.Items["User"];
+        if (userContext == null)
+        {
+            return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));
+        }
+        
+        var groupEvent = _context.Groups
+            .Include(g => g.Events)
+            .Include("Events.Labels")
+            .Where(g => g.OwnerId == userContext.UserId)
+            .Select(g => new GroupDto(g, true, false))
+            .ToList();
 
+        if (groupEvent.Count == 0)
+        {
+            return NotFound(new ErrorMessage("No group found where we can look after your events.", StatusCodes.Status404NotFound));
+        }
+
+        return Ok(groupEvent);
+    }
+    
     /// <summary>
     /// Return the event of an certain group.
     /// </summary>
@@ -35,7 +62,8 @@ public class EventController : SecurityController
             return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
         }
 
-        bool isParsed = int.TryParse(groupId, out int groupIdParsed);
+        int groupIdParsed;
+        bool isParsed = int.TryParse(groupId, out groupIdParsed);
         if (!isParsed)
         {
             return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
@@ -104,17 +132,16 @@ public class EventController : SecurityController
     {
         if (string.IsNullOrEmpty(groupId))
         {
-            return BadRequest(new ErrorMessage("Event id not specified", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Group id not specified", StatusCodes.Status400BadRequest));
         }
         
         var isGroupIdParsed = Int32.TryParse(groupId, out int groupIdParsed);
         if (!isGroupIdParsed)
         {
-            return BadRequest(new ErrorMessage("Event id is not valid", StatusCodes.Status400BadRequest));
+            return BadRequest(new ErrorMessage("Group id is not valid", StatusCodes.Status400BadRequest));
         }
 
         var userContext = (User) HttpContext.Items["User"];
-
         if (userContext == null)
         {
             return Unauthorized(new ErrorMessage("Can't create a event", StatusCodes.Status401Unauthorized));

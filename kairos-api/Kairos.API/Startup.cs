@@ -230,6 +230,10 @@ namespace Kairos.API
                     context.Events.Add(eventPrivateDev);                    
                     await context.SaveChangesAsync();
                     
+                    Event eventPrivateDev2 = new Event(DateTime.Today, "Dev Private Event #2", "Dev Private Event Description #2");
+                    context.Events.Add(eventPrivateDev2);                    
+                    await context.SaveChangesAsync();
+                    
                     _logger.LogInformation("Création d'un nouvel event privé (id: {})", eventPrivateDev.EventId);
 
                     eventPrivateDev.Labels = new List<Label>();
@@ -242,6 +246,7 @@ namespace Kairos.API
                     _logger.LogInformation("Ajout de {} labels pr l'event privé {} (id: {})", eventPrivateDev.Labels.Count, eventPrivateDev.EventTitle, eventPrivateDev.EventId);
 
                     eventPrivateDev.Group = devGroupPrivate;
+                    eventPrivateDev2.Group = devGroupPrivate;
                     await context.SaveChangesAsync();
                     
                     _logger.LogInformation("Ajout de l'event (id: {}) dans le groupe privé (id: {})", eventPrivateDev.EventId, devGroupPrivate.GroupId);
