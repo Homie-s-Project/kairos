@@ -1,16 +1,19 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
 import calendar from 'calendar-js'
 import {EventService} from "../../services/event/event.service";
 import {IGroupModel} from "../../models/IGroupModel";
 import {NavigationEnd, Router} from "@angular/router";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.scss']
 })
-export class CalendarComponent implements OnInit {
+export class CalendarComponent implements OnInit, OnDestroy {
+
+  private subscription: Subscription[] = [];
 
   public previousCalendarMonth?: CalendarType;
   public currentCalendarMonth?: CalendarType;
@@ -60,16 +63,22 @@ export class CalendarComponent implements OnInit {
               private eventService: EventService,
               private router: Router) {
     this.nav.showBackButton();
-    router.events.subscribe((val) => {
 
-      // Refresh le calendrier seulement si c'est un changement de navigation
-      if (val instanceof NavigationEnd) {
-        this.eventService.getEvent().subscribe((groups) => {
-          this.groups = groups;
-          this.isLoadingCalendar = false;
-        });
-      }
-    });
+    this.subscription.push(
+      router.events.subscribe((val) => {
+        // Refresh le calendrier seulement si c'est un changement de navigation
+        if (val instanceof NavigationEnd && val.url.includes("calendar")) {
+          this.eventService.getEvent().subscribe((groups) => {
+            this.groups = groups;
+            this.isLoadingCalendar = false;
+          });
+        }
+      })
+    )
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach((sub) => sub.unsubscribe());
   }
 
   ngOnInit(): void {

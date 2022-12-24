@@ -6,7 +6,7 @@
       <div style="display:flex; flex-direction: row; gap: 10px;">
         <label>Group</label>
         <select formControlName="group">
-          <option *ngFor="let group of groups" [value]="group.groupId" [selected]="group.groupIsPrivate">{{group.groupName}}</option>
+          <option *ngFor="let group of groups" [value]="group.groupId">{{group.groupName}}</option>
         </select>
       </div>
 
