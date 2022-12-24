@@ -74,7 +74,8 @@
       }
       .group-container {
         padding: 15px;
-        background-color: #A5A7A8;
+        background-color: vars.$under-dev-background;
+        opacity: vars.$under-dev-opacity;
         border-radius: 15px;
 
         button {
