@@ -2,6 +2,7 @@ import {HttpClientModule} from "@angular/common/http"
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 import {NgChartsModule} from 'ng2-charts';
 import {CookieService} from 'ngx-cookie-service';
@@ -22,7 +23,6 @@ import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
 import {ProfileComponent} from "./components/profile/profile.component";
 import {ErrorComponent} from "./components/error/error.component";
 import { EventCalendarComponent } from './components/event-calendar/event-calendar.component';
-import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -51,6 +51,7 @@ import {ReactiveFormsModule} from "@angular/forms";
     ShareButtonModule,
     FontAwesomeModule,
     NgChartsModule,
+    FormsModule,
     ReactiveFormsModule
   ],
   providers: [
