@@ -16,6 +16,10 @@ public class GoogleClient
         _userToken = CryptoUtils.Decrypt(encryptedUserToken);
     }
 
+    /// <summary>
+    /// On fait la requête à l'API Google pour récupérer les informations de l'utilisateur
+    /// </summary>
+    /// <returns>L'utilisateur Google connecté</returns>
     public Task<UserGoogle> GetUserAsync()
     {
         return OAuthUser

@@ -17,6 +17,18 @@
   padding: 4px 6px;
 }
 
+.title-event {
+  display: flex;
+  justify-content: space-between;
+
+ & .icon-event {
+   border: 0;
+   background: none;
+   font-size: 16px;
+   cursor: pointer;
+ }
+}
+
 .label-group {
   display: flex;
   gap: 4px;

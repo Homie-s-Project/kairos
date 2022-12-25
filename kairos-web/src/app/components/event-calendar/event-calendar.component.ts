@@ -12,7 +12,7 @@ import {Router} from "@angular/router";
   templateUrl: './event-calendar.component.html',
   styleUrls: ['./event-calendar.component.scss']
 })
-export class EventCalendarComponent implements OnInit {
+export class EventCalendarComponent {
 
   groups?: IGroupModel[];
   labels?: ILabelModel[];
@@ -37,9 +37,6 @@ export class EventCalendarComponent implements OnInit {
     this.labelService.getLabels().subscribe(labels => {
       this.labels = labels;
     });
-  }
-
-  ngOnInit(): void {
   }
 
   addEvent() {

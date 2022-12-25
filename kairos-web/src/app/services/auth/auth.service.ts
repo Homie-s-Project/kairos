@@ -1,10 +1,11 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { CookieService } from 'ngx-cookie-service';
-import { Subscription } from 'rxjs';
-import { UserModel } from 'src/app/models/user.model';
-import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
+import {HttpClient, HttpHeaders, HttpResponse} from '@angular/common/http';
+import {Injectable, OnInit} from '@angular/core';
+import {CookieService} from 'ngx-cookie-service';
+import {Subscription} from 'rxjs';
+import {UserModel} from 'src/app/models/user.model';
+import {ModalDialogService} from '../modal-dialog/modal-dialog.service';
+import {Observable} from "rxjs";
+import {Router} from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class AuthService {
   }
 
   // Contrôle du Token JWT
-  isLoggedIn = (): Promise<boolean> => {
+  isLoggedIn(): Promise<boolean> {
     return new Promise((resolve, reject) => {
       if (this.token) {
         // Création du header
@@ -50,20 +51,18 @@ export class AuthService {
   }
 
   // Récupèration de l'user selon le Token JWT
-  getProfile = () => {
-    // Création du header
+  getProfile(): Observable<HttpResponse<UserModel>> {
     const header = new HttpHeaders ({
       "Content-Type": "application/json",
       "Authorization": `${this.getToken()}`
     });
-  
-    return this.http
-      .get<UserModel>('http://localhost:5000/User/me', {headers: header, observe: 'response'})
+
+    return this.http.get<UserModel>('http://localhost:5000/User/me', {headers: header, observe: 'response'});
   }
 
   // Retourne Bearer Token
-  getToken = ():string => {
-    return `Bearer ${this.token}`;
+  getToken() :string {
+      return `Bearer ${this.token}`;
   }
 
   openModalLogout = () => {
@@ -79,7 +78,7 @@ export class AuthService {
   }
 
   // Supprime le JWT des cookies
-  logout = () => {
+  logout(): void {
     this.cookie.delete('jwt');
     this.router.navigate(['/landing'])
   }

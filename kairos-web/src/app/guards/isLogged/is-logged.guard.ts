@@ -14,7 +14,7 @@ export class IsLoggedGuard implements CanActivateChild {
     private router: Router) { }
 
   canActivateChild = (
-    route: ActivatedRouteSnapshot, 
+    route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> => {
     return from(this.auth.isLoggedIn()).pipe(
       catchError(error => {

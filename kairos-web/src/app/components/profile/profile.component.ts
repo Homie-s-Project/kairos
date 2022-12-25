@@ -109,6 +109,7 @@ export class ProfileComponent {
     if (!this.labelUpdate) {
       this.labelservice.createLabels(label).subscribe(label => {
         this.labelDatasaved = true;
+        this.createLabel = false;
         this.getLabels();
         this.labelForm.reset();
       });
@@ -130,7 +131,6 @@ export class ProfileComponent {
 
   labelDelete(labelid: number) {
     this.labelservice.labelDelete(labelid).subscribe(resp => {
-      console.log(resp);
       this.updateLabels(resp.labelId);
     })
   }
