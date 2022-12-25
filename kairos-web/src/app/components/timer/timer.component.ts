@@ -50,7 +50,11 @@ export class TimerComponent implements OnInit, OnDestroy {
       this.labels = resp;
     })
     
-    this.subscription = this.labelForm.get('label')?.valueChanges
+    this.subscription.push(
+    this.labelForm.get('label')?.valueChanges.subscribe(l => {
+        this.onLabelChange(l)
+      })
+    );
       .subscribe(l => {
         this.onLabelChange(l)
       }
