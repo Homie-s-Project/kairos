@@ -25,6 +25,7 @@ import {ErrorComponent} from "./components/error/error.component";
 import {EventCalendarComponent} from './components/event-calendar/event-calendar.component';
 import {ModalDialogComponent} from './components/dialog/modal-dialog/modal-dialog.component';
 import { AlertDialogComponent } from './components/dialog/alert-dialog/alert-dialog.component';
+import { CompanionComponent } from './components/companion/companion.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { AlertDialogComponent } from './components/dialog/alert-dialog/alert-dia
     EventCalendarComponent,
     ModalDialogComponent,
     AlertDialogComponent,
+    CompanionComponent,
   ],
   imports: [
     BrowserModule,
