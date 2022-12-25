@@ -1,10 +1,14 @@
 import { Injectable } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AlertDialogService } from '../alert-dialog/alert-dialog.service';
+import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimerService {
   base: any;
+  private subscription: Subscription = new Subscription();
   minuteStr: string;
   secondStr: string;
   minute: number = 0;
@@ -13,7 +17,7 @@ export class TimerService {
   isStarted: boolean = false;
   isCollapsed: boolean = false;
 
-  constructor() {
+  constructor(private modalDialog: ModalDialogService, private alertDialog: AlertDialogService) {
     this.getValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
@@ -46,7 +50,7 @@ export class TimerService {
 
   startCountdown = () => {
     if (this.minute == 0 && this.second == 0) {
-      throw new Error("Valeur du temps à 0");
+      throw new Error("Valeur du temps à 0, Veuillez en saisir une");
     }
 
     this.base = setInterval(this.timerCountdown, 1000);
@@ -69,6 +73,22 @@ export class TimerService {
     this.saveValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
+  }
+
+  openModalCancelTimer = ():boolean => {
+    var result = false;
+    this.modalDialog.displayModal('Voulez-vous vous annuler votre Studies ?')
+    this.modalDialog.modalValue.subscribe((data => {
+        if (data) {
+          this.stopCountdown();
+          result = data; 
+        } else {
+          this.subscription.unsubscribe();
+        }
+      })
+    );
+  
+    return result;
   }
 
   stopCountdown = () => {
@@ -119,6 +139,4 @@ export class TimerService {
 
     return (i == null) ? false : true;
   }
-
-  // Heartbeat call
 }

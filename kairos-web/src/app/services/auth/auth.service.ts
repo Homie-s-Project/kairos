@@ -1,15 +1,22 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
+import { Subscription } from 'rxjs';
 import { UserModel } from 'src/app/models/user.model';
+import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private token: string;
+  private subscription: Subscription = new Subscription();
 
-  constructor(private http: HttpClient, private cookie: CookieService) {
+  constructor(private http: HttpClient, 
+    private cookie: CookieService, 
+    private router: Router,
+    private modalDialog: ModalDialogService) {
     this.token = this.cookie.get('jwt');
   }
 
@@ -59,8 +66,21 @@ export class AuthService {
     return `Bearer ${this.token}`;
   }
 
+  openModalLogout = () => {
+    this.modalDialog.displayModal('Voulez-vous vous déconnecter ?')
+    this.subscription = this.modalDialog.modalValue.subscribe((data => {
+        if (data) {
+          this.logout();
+        } else {
+          this.subscription.unsubscribe();
+        }
+      })
+    );
+  }
+
   // Supprime le JWT des cookies
   logout = () => {
     this.cookie.delete('jwt');
+    this.router.navigate(['/landing'])
   }
 }

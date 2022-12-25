@@ -1,5 +1,7 @@
+<app-modal-dialog *ngIf="modalDialog.isDisplayed" [titleModal]="modalDialog.title"></app-modal-dialog>
 <app-navbar></app-navbar>
 <app-tiny-timer class="kairos-box-shadow" *ngIf="timer.isTinyVisible && timer.isStarted"></app-tiny-timer>
+<app-alert-dialog id="alert-box" class="kairos-box-shadow" *ngIf="alertDialog.isDisplayed" [alertModel]="alertDialog.alertModel"></app-alert-dialog>
 <div id="app-container">
     <router-outlet></router-outlet>
 </div>

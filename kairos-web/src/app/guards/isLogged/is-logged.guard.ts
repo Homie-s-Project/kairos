@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivateChild, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { catchError, from, map, of, Observable } from 'rxjs';
+import { AlertDialogService } from 'src/app/services/alert-dialog/alert-dialog.service';
 import { AuthService } from 'src/app/services/auth/auth.service';
 
 @Injectable({
@@ -8,7 +9,9 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 })
 
 export class IsLoggedGuard implements CanActivateChild {
-  constructor(private auth: AuthService, private router: Router) { }
+  constructor(private auth: AuthService,
+    private alertDialog: AlertDialogService, 
+    private router: Router) { }
 
   canActivateChild = (
     route: ActivatedRouteSnapshot, 
@@ -24,6 +27,7 @@ export class IsLoggedGuard implements CanActivateChild {
         if (isLoggedIn) {
           return true;
         } else {
+          this.alertDialog.displayAlert({alertMessage: 'Veillez-vous connecter', alertType: 'alert'})
           this.router.navigate(['/landing']);
           return false;
         }
