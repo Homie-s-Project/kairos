@@ -65,7 +65,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.renderer.removeClass(document.getElementById('app-container'), 'kairos-timer');
     this.timer.isTinyVisible = true;
-    this.subscription?.unsubscribe();
+    this.subscription.forEach((sub) => sub.unsubscribe());
   }
 
   onLabelChange(l: any) {
