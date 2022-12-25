@@ -21,20 +21,21 @@
       <h6 *ngIf="!isHoursStudiedLoaded">Chargement...</h6>
       <div class="chart-container">
         <canvas id="weekly-chart" height="300"
-                baseChart #weeklyChart
+                baseChart
                 [type]="'line'"
                 [data]="weeklyLineChartData"
                 [options]="weeklyLineChartOptions"
                 [legend]="weeklyLineChartLegend">
         </canvas>
       </div>
+      <h6 style="margin-top: 10px" *ngIf="weeklyLineChartData.datasets[0].data.length === 0">Aucun donnée à analyser.</h6>
     </div>
     <div class="kairos-box-shadow stat-grid-div session-time" [ngClass]="{'isLoading': !isHoursPerLabelLoaded}">
       <h2 class="session-time-title">Temps de travail par session</h2>
       <h6 *ngIf="!isHoursPerLabelLoaded">Chargement...</h6>
       <div class="chart-container">
         <canvas id="session-time-bar" height="300"
-                baseChart #sessionTimeBar
+                baseChart
                 [type]="'bar'"
                 [data]="timeBarChartData"
                 [options]="timeBarChartOptions"
@@ -42,13 +43,14 @@
                 [legend]="timeBarChartLegend">
         </canvas>
       </div>
+      <h6 style="margin-top: 10px" *ngIf="timeBarChartData.datasets[0].data.length === 0">Aucun donnée à analyser.</h6>
     </div>
     <div class="kairos-box-shadow stat-grid-div session-type">
       <h2 class="session-type-title">En développement</h2>
       <h5 style="text-align: center">Types de sessions de travail</h5>
       <div class="chart-container">
         <canvas id="session-type-doughnut"
-                baseChart #sessionTypeDoughnut
+                baseChart
                 [type]="'doughnut'"
                 [labels]="typeDoughnutChartLabels"
                 [datasets]="typeDoughnutChartDatasets"
