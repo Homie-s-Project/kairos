@@ -133,9 +133,10 @@ export class StatisticsComponent implements OnInit {
           this.weeklyLineChartData.labels = hoursStudied.dayOfWeek;
           this.weeklyLineChartData.datasets[0].data = hoursStudied.hours;
 
-          this.weeklyChart.nativeElement.__ngContext__.directives[0].chart.update()
-
-          this.isHoursStudiedLoaded = true;
+          setTimeout(() => {
+            this.weeklyChart.nativeElement.__ngContext__.directives[0].chart.update()
+            this.isHoursStudiedLoaded = true;
+          }, 1000);
         }
       }
     );
@@ -149,8 +150,10 @@ export class StatisticsComponent implements OnInit {
           this.timeBarChartData.labels = hoursPerLabel.label;
           this.timeBarChartData.datasets[0].data = hoursPerLabel.hours;
 
-          this.sessionTimeBar.nativeElement.__ngContext__.directives[0].chart.update()
-          this.isHoursPerLabelLoaded = true;
+          setTimeout(() => {
+            this.sessionTimeBar.nativeElement.__ngContext__.directives[0].chart.update()
+            this.isHoursPerLabelLoaded = true;
+          }, 1000);
         }
       }
     );
