@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { AlertDialogService } from '../alert-dialog/alert-dialog.service';
 import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
@@ -6,9 +8,11 @@ import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 @Injectable({
   providedIn: 'root'
 })
-export class TimerService {
+export class TimerService implements OnDestroy {
   base: any;
-  private subscription: Subscription = new Subscription();
+  intervalHeartbeat: any;
+  private subscription: Subscription[] = [];
+  labelId: string = "";
   minuteStr: string;
   secondStr: string;
   minute: number = 0;
@@ -17,7 +21,10 @@ export class TimerService {
   isStarted: boolean = false;
   isCollapsed: boolean = false;
 
-  constructor(private modalDialog: ModalDialogService, private alertDialog: AlertDialogService) {
+  constructor(private modalDialog: ModalDialogService, 
+    private alertDialog: AlertDialogService, 
+    private http: HttpClient, 
+    private auth: AuthService) {
     this.getValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
@@ -27,6 +34,10 @@ export class TimerService {
     } else {
       this.isTinyVisible = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach((sub: Subscription) => sub.unsubscribe())
   }
 
   // Timer logic
@@ -53,7 +64,16 @@ export class TimerService {
       throw new Error("Valeur du temps à 0, Veuillez en saisir une");
     }
 
-    this.base = setInterval(this.timerCountdown, 1000);
+    this.postStartStudies((this.minute + this.second).toString(), this.labelId).subscribe({
+      error: (error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      },
+      next: () => {
+        this.base = setInterval(this.timerCountdown, 1000);
+        this.intervalHeartbeat = setInterval(this.heartbeatCall, 60000)
+      }
+    })
+
   }
 
   timerCountdown = () => {
@@ -62,8 +82,9 @@ export class TimerService {
     if (this.second < 0) {
       this.minute--;
 
-      if (this.minute <= 0 && this.second <= 0) {
+      if (this.minute < 0 && this.second <= 0) {
         this.stopCountdown();
+        this.alertDialog.displayAlert({alertMessage: 'Studies terminée ! Bon travail !', alertType: 'valid'});
         return;
       }
 
@@ -75,25 +96,43 @@ export class TimerService {
     this.secondStr = this.updateTime(this.second);
   }
 
+  heartbeatCall = () => {
+    const sub = this.postHeartbeatStudies().subscribe({
+      error: (error: HttpErrorResponse) => {
+
+        this.alertDialog.displayAlert({alertMessage: error.error.message, alertType: 'alert'})
+        this.stopCountdown();
+      }
+    })
+  }
+
   openModalCancelTimer = ():boolean => {
     var result = false;
     this.modalDialog.displayModal('Voulez-vous vous annuler votre Studies ?')
-    this.modalDialog.modalValue.subscribe((data => {
+    var modalSubscription = (this.modalDialog.modalValue.subscribe((data => {
         if (data) {
           this.stopCountdown();
           result = data; 
         } else {
-          this.subscription.unsubscribe();
+          modalSubscription.unsubscribe();
         }
       })
-    );
+    ));
   
     return result;
   }
 
   stopCountdown = () => {
-    clearInterval(this.base);
-    this.resetValues()
+    const sub = this.postStopStudies().subscribe({
+      error: (error: HttpErrorResponse) => {
+        sub.unsubscribe();
+      },
+      next: () => {
+        clearInterval(this.base);
+        clearInterval(this.intervalHeartbeat);
+        this.resetValues();
+      }
+    })
   }
 
   saveValues = () => {
@@ -138,5 +177,40 @@ export class TimerService {
     var i = localStorage.getItem(key)
 
     return (i == null) ? false : true;
+  }
+
+  // API Call
+  // Envoie des données afin de démarrer la study
+  postStartStudies = (timerValue: string, labelsId: string) => {
+    // Création du header
+    const headers = new HttpHeaders ({
+      "Authorization": this.auth.getToken()
+    });
+
+    const formData = new FormData();
+    formData.append('timer', timerValue);
+    formData.append('labelsId', labelsId);
+
+    return this.http.post('http://localhost:5000/studies/start', formData, {headers});
+  }
+
+  // Appel POST confirmant l'activité étant toujours en cours
+  postHeartbeatStudies = () => {
+    // Création du header
+    const headers = new HttpHeaders ({
+      "Authorization": this.auth.getToken()
+    });
+
+    return this.http.post('http://localhost:5000/studies/heartbeat', {}, {headers});
+  }
+
+  // Appel informant l'arrêt / annulation de la study
+  postStopStudies = () => {
+    // Création du header
+    const headers = new HttpHeaders ({
+      "Authorization": this.auth.getToken()
+    });
+
+    return this.http.post('http://localhost:5000/studies/stop', {}, {headers});
   }
 }

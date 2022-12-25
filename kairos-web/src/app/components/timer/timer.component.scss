@@ -66,8 +66,14 @@
                 }
             }
             .control-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 width: 100%;
                 height: 35px;
+                .select-label{
+                    width: 100%;
+                }
                 button{
                     margin: 15px
                 }
