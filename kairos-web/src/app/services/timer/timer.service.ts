@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
@@ -10,7 +10,9 @@ import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 })
 export class TimerService {
   base: any;
+  intervalHeartbeat: any;
   private subscription: Subscription = new Subscription();
+  labelId: string = "";
   minuteStr: string;
   secondStr: string;
   minute: number = 0;
@@ -58,12 +60,16 @@ export class TimerService {
       throw new Error("Valeur du temps à 0, Veuillez en saisir une");
     }
 
-    this.postStartStudies((this.minute + this.second).toString(), "")
-      .subscribe(response => {
-        console.log(response)
-      })
+    this.postStartStudies((this.minute + this.second).toString(), this.labelId).subscribe({
+      error: (error: HttpErrorResponse) => {
+        throw new Error(error.error.message);
+      },
+      next: () => {
+        this.base = setInterval(this.timerCountdown, 1000);
+        this.intervalHeartbeat = setInterval(this.heartbeatCall, 60000)
+      }
+    })
 
-    this.base = setInterval(this.timerCountdown, 1000);
   }
 
   timerCountdown = () => {
@@ -72,8 +78,9 @@ export class TimerService {
     if (this.second < 0) {
       this.minute--;
 
-      if (this.minute <= 0 && this.second <= 0) {
+      if (this.minute < 0 && this.second <= 0) {
         this.stopCountdown();
+        this.alertDialog.displayAlert({alertMessage: 'Studies terminée ! Bon travail !', alertType: 'valid'});
         return;
       }
 
@@ -85,10 +92,20 @@ export class TimerService {
     this.secondStr = this.updateTime(this.second);
   }
 
+  heartbeatCall = () => {
+    const sub = this.postHeartbeatStudies().subscribe({
+      error: (error: HttpErrorResponse) => {
+        this.subscription.unsubscribe();
+        this.alertDialog.displayAlert({alertMessage: error.error.message, alertType: 'alert'})
+        this.stopCountdown();
+      }
+    })
+  }
+
   openModalCancelTimer = ():boolean => {
     var result = false;
     this.modalDialog.displayModal('Voulez-vous vous annuler votre Studies ?')
-    this.modalDialog.modalValue.subscribe((data => {
+    this.subscription = this.modalDialog.modalValue.subscribe((data => {
         if (data) {
           this.stopCountdown();
           result = data; 
@@ -102,8 +119,16 @@ export class TimerService {
   }
 
   stopCountdown = () => {
-    clearInterval(this.base);
-    this.resetValues()
+    const sub = this.postStopStudies().subscribe({
+      error: (error: HttpErrorResponse) => {
+        sub.unsubscribe();
+      },
+      next: () => {
+        clearInterval(this.base);
+        clearInterval(this.intervalHeartbeat);
+        this.resetValues();
+      }
+    })
   }
 
   saveValues = () => {
@@ -151,18 +176,37 @@ export class TimerService {
   }
 
   // API Call
+  // Envoie des données afin de démarrer la study
   postStartStudies = (timerValue: string, labelsId: string) => {
     // Création du header
     const headers = new HttpHeaders ({
-      "Content-Type": "application/json",
-      "Authorization": `${this.auth.getToken()}`
-    })
+      "Authorization": this.auth.getToken()
+    });
 
-    const data = {
-      timer: timerValue,
-      labelsId: labelsId
-    }
+    const formData = new FormData();
+    formData.append('timer', timerValue);
+    formData.append('labelsId', labelsId);
 
-    return this.http.post('http://localhost:5000/studies/start', data, {headers})
+    return this.http.post('http://localhost:5000/studies/start', formData, {headers});
+  }
+
+  // Appel POST confirmant l'activité étant toujours en cours
+  postHeartbeatStudies = () => {
+    // Création du header
+    const headers = new HttpHeaders ({
+      "Authorization": this.auth.getToken()
+    });
+
+    return this.http.post('http://localhost:5000/studies/heartbeat', {}, {headers});
+  }
+
+  // Appel informant l'arrêt / annulation de la study
+  postStopStudies = () => {
+    // Création du header
+    const headers = new HttpHeaders ({
+      "Authorization": this.auth.getToken()
+    });
+
+    return this.http.post('http://localhost:5000/studies/stop', {}, {headers});
   }
 }

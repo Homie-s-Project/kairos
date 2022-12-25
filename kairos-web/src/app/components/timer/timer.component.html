@@ -13,6 +13,15 @@
                 </div>
             </div>
             <div class="control-container">
+                <form [formGroup]="labelForm">
+                    <select formControlName="label" class="label-select" *ngIf="labels?.length">
+                        <option [value]="''" selected>Aucun</option>
+                        <option *ngFor="let label of labels" 
+                            [value]="label.labelId">
+                            {{label.labelTitle}}
+                        </option>
+                    </select>
+                </form>
                 <button class="kairos-button" *ngIf="!timer.isStarted; else cancelButton" (click)="startTimer()">Démarrer</button>
                 <ng-template #cancelButton>
                     <button class="kairos-button" (click)="stop()">Annuler</button>

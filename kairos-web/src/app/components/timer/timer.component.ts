@@ -1,7 +1,11 @@
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { Subscription } from 'rxjs';
+import { ILabelModel } from 'src/app/models/ILabelModel';
 import { AlertDialogService } from 'src/app/services/alert-dialog/alert-dialog.service';
+import { LabelService } from 'src/app/services/label/label.service';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 import { TimerService } from 'src/app/services/timer/timer.service';
 
@@ -21,7 +25,15 @@ const collapseAnimation = trigger('collapse', [
   ]
 })
 export class TimerComponent implements OnInit, OnDestroy {
+  private subscription?: Subscription = new Subscription();
+  labels?: ILabelModel[];
+
+  labelForm: FormGroup<any> = new FormGroup<any>({
+    label: new FormControl('', [Validators.required])
+  })
+
   animeState: string = "";
+
   faCircleChevronUp = faCircleChevronUp;
   faCircleChevronDown = faCircleChevronDown;
   faCircleChevronLeft = faCircleChevronLeft;
@@ -30,9 +42,19 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   constructor(public nav: NavbarService, 
     public timer: TimerService,
-    public alertDialog: AlertDialogService, 
+    public alertDialog: AlertDialogService,
+    private label: LabelService, 
     private renderer: Renderer2) {
     this.renderer.addClass(document.getElementById('app-container'), 'kairos-timer');
+    this.label.getLabels().subscribe(resp => {
+      this.labels = resp;
+    })
+    
+    this.subscription = this.labelForm.get('label')?.valueChanges
+      .subscribe(l => {
+        this.onLabelChange(l)
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -43,6 +65,11 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.renderer.removeClass(document.getElementById('app-container'), 'kairos-timer');
     this.timer.isTinyVisible = true;
+    this.subscription?.unsubscribe();
+  }
+
+  onLabelChange(l: any) {
+    this.timer.labelId = l.toString();
   }
 
   startTimer = () => {
