@@ -16,24 +16,38 @@ export class AlertDialogComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.alertModel?.alertType === "alert") {
-      this.renderer.addClass(document.getElementById('alert-box'), 'kairos-alert');
-      this.alertIcon = faTriangleExclamation;
-    } else if (this.alertModel?.alertType === "valid") {
-      this.renderer.addClass(document.getElementById('alert-box'), 'kairos-valid');
-      this.alertIcon = faCircleCheck;
-    } else {
-      this.renderer.addClass(document.getElementById('alert-box'), 'kairos-info');
-      this.alertIcon = faCircleInfo;
+    switch (this.alertModel?.alertType) {
+      case "alert": {
+        this.renderer.addClass(document.getElementById('alert-box'), 'kairos-alert');
+        this.alertIcon = faTriangleExclamation;
+        break;
+      }
+      case "valid": {
+        this.renderer.addClass(document.getElementById('alert-box'), 'kairos-valid');
+        this.alertIcon = faCircleCheck;
+        break;
+      }
+      default : {
+        this.renderer.addClass(document.getElementById('alert-box'), 'kairos-info');
+        this.alertIcon = faCircleInfo;
+        break;
+      }
     }
   }
   ngOnDestroy(): void {
-    if (this.alertModel?.alertType === "alert") {
-      this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-alert');
-    } else if (this.alertModel?.alertType === "valid") {
-      this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-valid');
-    } else {
-      this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-info');
+    switch (this.alertModel?.alertType) {
+      case "alert": {
+        this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-alert');
+        break;
+      }
+      case "valid": {
+        this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-valid');
+        break;
+      }
+      default : {
+        this.renderer.removeClass(document.getElementById('alert-box'), 'kairos-info');
+        break;
+      }
     }
   }
 }
