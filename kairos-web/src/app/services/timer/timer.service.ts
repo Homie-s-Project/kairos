@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { AlertDialogService } from '../alert-dialog/alert-dialog.service';
@@ -8,10 +8,10 @@ import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 @Injectable({
   providedIn: 'root'
 })
-export class TimerService {
+export class TimerService implements OnDestroy {
   base: any;
   intervalHeartbeat: any;
-  private subscription: Subscription = new Subscription();
+  private subscription: Subscription[] = [];
   labelId: string = "";
   minuteStr: string;
   secondStr: string;
@@ -34,6 +34,10 @@ export class TimerService {
     } else {
       this.isTinyVisible = false;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.forEach((sub: Subscription) => sub.unsubscribe())
   }
 
   // Timer logic
@@ -95,7 +99,7 @@ export class TimerService {
   heartbeatCall = () => {
     const sub = this.postHeartbeatStudies().subscribe({
       error: (error: HttpErrorResponse) => {
-        this.subscription.unsubscribe();
+
         this.alertDialog.displayAlert({alertMessage: error.error.message, alertType: 'alert'})
         this.stopCountdown();
       }
@@ -105,15 +109,15 @@ export class TimerService {
   openModalCancelTimer = ():boolean => {
     var result = false;
     this.modalDialog.displayModal('Voulez-vous vous annuler votre Studies ?')
-    this.subscription = this.modalDialog.modalValue.subscribe((data => {
+    var modalSubscription = (this.modalDialog.modalValue.subscribe((data => {
         if (data) {
           this.stopCountdown();
           result = data; 
         } else {
-          this.subscription.unsubscribe();
+          modalSubscription.unsubscribe();
         }
       })
-    );
+    ));
   
     return result;
   }

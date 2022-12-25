@@ -51,13 +51,9 @@ export class TimerComponent implements OnInit, OnDestroy {
     })
     
     this.subscription.push(
-    this.labelForm.get('label')?.valueChanges.subscribe(l => {
-        this.onLabelChange(l)
+      this.labelForm.get('label')!.valueChanges.subscribe(l => {
+          this.onLabelChange(l)
       })
-    );
-      .subscribe(l => {
-        this.onLabelChange(l)
-      }
     );
   }
 
@@ -69,7 +65,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.renderer.removeClass(document.getElementById('app-container'), 'kairos-timer');
     this.timer.isTinyVisible = true;
-    this.subscription.forEach((sub) => sub.unsubscribe());
+    this.subscription.forEach((sub: Subscription) => sub.unsubscribe());
   }
 
   onLabelChange(l: any) {
