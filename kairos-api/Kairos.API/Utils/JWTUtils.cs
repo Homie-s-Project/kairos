@@ -40,7 +40,6 @@ public static class JwtUtils
     {
         var secretKey = _config.GetSection("Jwt")["SecretKey"];
         return AES.DecryptString(secretKey, encrypted);
-        ;
     }
 
     /// <summary>
@@ -51,9 +50,11 @@ public static class JwtUtils
     /// <returns>le jwt chiffré</returns>
     public static string GenerateJsonWebToken(User user)
     {
+        // Récupèration de la clé de chiffrement
         var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config.GetSection("Jwt")["Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
 
+        // Création des claims
         var claims = new[]
         {
             new Claim("id", user.UserId.ToString()),
@@ -62,10 +63,12 @@ public static class JwtUtils
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        // Récupèration de la configuration du token
         var configurationSection = _config.GetSection("Jwt");
         var jwtIssuer = configurationSection["Issuer"];
         var jwtAudience = configurationSection["Audience"];
 
+        // Génération du token JWT
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
@@ -75,9 +78,14 @@ public static class JwtUtils
             SigningCredentials = credentials
         };
 
+        // Création du token
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
+        /* Encrytion du token
+         *
+         * Cette partie n'est pas obligatoire, mais permet de rendre le token plus difficile à lire par un utilisateur lambda ou un attaquant
+         */
         var beEncrypted = tokenHandler.WriteToken(token);
         return Encrypt(beEncrypted);
     }
@@ -95,17 +103,24 @@ public static class JwtUtils
             return null;
         }
 
+        // On récupère la clé de chiffrement
         var jwtKey = _config.GetSection("Jwt")["Key"];
+
+        // On génère le token handler et la clé de chiffrement
         var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtKey));
         var tokenHandler = new JwtSecurityTokenHandler();
 
+        // On essaye de déchiffrer le token
         try
         {
             var configurationSection = _config.GetSection("Jwt");
             var validIssuer = configurationSection["Issuer"];
             var validAudience = configurationSection["Audience"];
 
+            // On decrypte le token suite à l'encryption
             var decrpytedToken = Decrypt(token);
+
+            // On vérifie que le token est valide
             tokenHandler.ValidateToken(decrpytedToken, new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -116,6 +131,7 @@ public static class JwtUtils
                 IssuerSigningKey = securityKey,
             }, out SecurityToken validatedToken);
 
+            // Si le token est valide on récupère l'id de l'utilisateur
             var jwtToken = (JwtSecurityToken) validatedToken;
             var userId = int.Parse(jwtToken.Claims.First(x => x.Type == "id").Value);
 

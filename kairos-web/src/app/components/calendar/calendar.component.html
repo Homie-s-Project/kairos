@@ -1,15 +1,74 @@
-<div class="calendar-container">
-    <div class="calendar-title">
-        <h1>Calendrier de tâches</h1>
+<div class="calendar-wrapper calendar-title" style="margin-top: 30px">
+  <h1>Calendrier de tâches</h1>
+</div>
+
+<div class="calendar-wrapper kairos-box-shadow" style="margin-top: 20px">
+  <a class="btn-add" [routerLink]="'add'">
+    Add event to calendar
+  </a>
+
+  <div class="calendar" style="margin-top: 15px">
+    <div class="calendar-controls">
+      <button (click)="prevMonthCalendar()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+      </button>
+      <button (click)="currentMonthCalendar()">{{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}</button>
+      <button (click)="nextMonthCalendar()">
+        <fa-icon [icon]="faArrowRight"></fa-icon>
+      </button>
     </div>
-    <div class="event-content">
-        <app-event-list></app-event-list>
-        <div [class.hidden]="!rightContent.isActivated" class="kairos-box-shadow event-edit">
-            <div class="edit-controller">
-                <button class="edit-buttons" [routerLink]="['/calendar']"><fa-icon [icon]="faPencil"></fa-icon></button>
-                <button class="edit-buttons" [routerLink]="['/calendar']"><fa-icon [icon]="faXmark"></fa-icon></button>
-            </div>
-            <router-outlet #rightContent="outlet"></router-outlet>
+
+    <table *ngIf="currentCalendarMonth" class="calendar-table">
+      <thead class="calendar-weekday">
+        <td *ngFor="let weekday of currentCalendarMonth.weekdays">
+          {{ weekday }}
+        </td>
+      </thead>
+      <tbody class="calendar-date">
+        <tr *ngFor="let day of currentCalendarMonth.calendar">
+          <ng-container *ngFor="let date of day">
+            <td [ngClass]="{'today': isToday(date), 'not': isOtherMonth(date, day), 'selected': isSelectedDay(date, day), 'event': hasEvent(date, day)}" (click)="selectDay(date, day)">
+              <span>{{ date }}</span>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<router-outlet></router-outlet>
+
+<div *ngIf="groups" class="calendar-wrapper kairos-box-shadow" style="margin-top: 30px;display: grid;gap: 30px">
+
+  <ng-container *ngIf="groups.length === 0">
+    No groups found in your profile
+  </ng-container>
+
+  <div *ngFor="let group of groups">
+    <div>
+      <h2>{{group.groupName}}</h2>
+
+    </div>
+    <hr />
+    <div style="display: grid;gap: 15px">
+      <div *ngIf="!group.events || group.events.length === 0">
+        No events found in this group
+      </div>
+      <div *ngFor="let event of group.events">
+        <div class="title-event">
+          <h3>{{event.eventTitle}}
+            <span style="padding: 0 4px; color: #33576c">|</span>
+            {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
+          <button class="icon-event" (click)="deleteEvent(event.eventId)">
+            <fa-icon [icon]="faTrashCan"></fa-icon>
+          </button>
         </div>
+        <h5>{{event.eventDescription}}</h5>
+        <div class="label-group" *ngIf="event.labels">
+          <span class="label" *ngFor="let label of event.labels">{{label.labelTitle}}</span>
+        </div>
+      </div>
     </div>
+  </div>
 </div>

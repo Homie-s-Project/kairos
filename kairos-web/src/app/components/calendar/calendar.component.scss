@@ -1,27 +1,111 @@
 @use '/src/styles/variables.scss' as vars;
 
-.calendar-container {
-    padding: 30px 120px 30px 120px;
-    .event-content {
-        display: flex;
-        flex-grow: 1;
-        .event-edit {
-            display: flex;
-            flex-direction: column;
-            max-width: 420px;
-            min-width: 420px;
-            padding: 30px;
-            position: relative;
-            border-radius: 15px;
-            background-color: vars.$first-color;
-            .edit-controller {
-                display: flex;
-                justify-content: space-between;
-                .edit-buttons {
-                    border-style: none;
-                    background-color: none;
-                }
-            }
-        }
+.calendar-wrapper {
+  margin: 0 auto;
+  width: min(100%, 800px);
+  padding: 20px;
+  border-radius: 30px;
+  background: vars.$first-color;
+}
+
+.btn-add {
+  background-color: #162741;
+  border: 0;
+  border-radius: 3px;
+  color: white;
+  text-decoration: none;
+  padding: 4px 6px;
+}
+
+.title-event {
+  display: flex;
+  justify-content: space-between;
+
+ & .icon-event {
+   border: 0;
+   background: none;
+   font-size: 16px;
+   cursor: pointer;
+ }
+}
+
+.label-group {
+  display: flex;
+  gap: 4px;
+
+  & .label {
+    font-size: 11px;
+    border: 1px solid #162741;
+    border-radius: 15px;
+    padding: 3px;
+  }
+}
+
+
+.calendar {
+  background: vars.$first-color;
+
+  border: 1px solid #162741;
+
+  & .calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #162741;
+
+    & button {
+      background-color: #162741;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
     }
+  }
+
+  & .calendar-table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1rem;
+
+    & th {
+      text-align: center;
+      padding: 10px;
+      background-color: #162741;
+      color: #fff;
+    }
+
+    & td {
+      text-align: center;
+      padding: 10px;
+      border: 1px solid #162741;
+      cursor: pointer;
+      width: calc(100% / 7);
+
+      &.not {
+        background: #c3d2d7;
+      }
+
+      &.today {
+        background-color: #33576c;
+        color: #fff;
+      }
+
+      &.selected:not(.not) {
+        background-color: #162741;
+        color: #fff;
+      }
+
+      &.event:after {
+        content: '\A';
+        z-index: 2;
+        border-radius: 50%;
+        background: #000000;
+        width: 7px;
+        height: 7px;
+        display:inline-block;
+        position: absolute;
+      }
+    }
+  }
 }

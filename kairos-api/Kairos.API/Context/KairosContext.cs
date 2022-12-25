@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using Kairos.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,7 @@ public class KairosContext : DbContext
     {
     }
 
+    // Lors de la configuration du contexte, cette méthode est appelée pour définir les options de base de données pour ce contexte.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         if (!options.IsConfigured)

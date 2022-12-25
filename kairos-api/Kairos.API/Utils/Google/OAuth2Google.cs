@@ -22,6 +22,11 @@ public class OAuth2Google
 
         public const string AuthorizeEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
 
+        /// <summary>
+        /// On crée une url pour rediriger l'utilisateur vers la page de connexion de Google
+        /// </summary>
+        /// <param name="opts">Les options de connexion</param>
+        /// <returns>l'url</returns>
         public static string GetAuthorizeUrl(AuthorizeOptions opts)
         {
             var url = AuthorizeEndpoint
@@ -34,6 +39,13 @@ public class OAuth2Google
             return url;
         }
 
+        /// <summary>
+        /// On récupère le token d'accès à partir du code de connexion
+        /// </summary>
+        /// <param name="code">Code reçu après la connexion</param>
+        /// <param name="clientId">Le clientId de notre application</param>
+        /// <param name="clientSecret">Le clientSecret de notre application</param>
+        /// <param name="redirectUri">Où souhaite le rediriger</param>
         public static Task<OAuthResponse> GetAccessTokenAsync(string code, string clientId, string clientSecret,
             string redirectUri)
         {

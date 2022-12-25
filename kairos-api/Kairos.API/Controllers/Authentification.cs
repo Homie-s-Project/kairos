@@ -51,6 +51,7 @@ public class Authentification : BaseController
         _env = env;
         _config = config;
 
+        // Récupération des paramètres de configuration pour Microsoft
         var configurationSectionMicrosoft = _config.GetSection("Authentication:Microsoft");
         _microsoftClientId = configurationSectionMicrosoft["ClientId"];
         _microsoftClientSecret = configurationSectionMicrosoft["ClientSecret"];
@@ -58,6 +59,7 @@ public class Authentification : BaseController
         _microsoftRedirectUri = configurationSectionMicrosoft["RedirectUri"];
         _microsoftRedirectFront = configurationSectionMicrosoft["RedirectFront"];
 
+        // Récupération des paramètres de configuration pour Google
         var configurationSectionGoogle = _config.GetSection("Authentication:Google");
         _googleClientId = configurationSectionGoogle["ClientId"];
         _googleClientSecret = configurationSectionGoogle["ClientSecret"];
@@ -73,11 +75,12 @@ public class Authentification : BaseController
     [AllowAnonymous]
     public async Task<RedirectResult> LoginMicrosoft()
     {
-        // Génération d'un string unique
+        // Génération d'un string unique qui sera utilisé pour la redirection et éviter les attaques CSRF
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         string generateState = new string(Enumerable.Repeat(chars, 20)
             .Select(s => s[Random.Next(s.Length)]).ToArray());
 
+        // On génère un lien de redirection vers le système d'authentification de Microsoft
         var opts = new OAuth2Microsoft.AuthorizeOptions
         {
             ClientId = _microsoftClientId,
@@ -92,8 +95,10 @@ public class Authentification : BaseController
         var cacheEntryOption = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
+        // On ajoute l'entrée dans le cache
         _memoryCache.Set(generateState, DateTime.Now, cacheEntryOption);
 
+        // On redirige vers le système d'authentification de Microsoft
         return Redirect(OAuth2Microsoft.OAuthHelper.GetAuthorizeUrl(opts));
     }
 
@@ -110,6 +115,7 @@ public class Authentification : BaseController
         string generateState = new string(Enumerable.Repeat(chars, 20)
             .Select(s => s[Random.Next(s.Length)]).ToArray());
 
+        // On génère un lien de redirection vers le système d'authentification de Google
         var opts = new OAuth2Google.AuthorizeOptions
         {
             ClientId = _googleClientId,
@@ -123,8 +129,10 @@ public class Authentification : BaseController
         var cacheEntryOption = new MemoryCacheEntryOptions()
             .SetSlidingExpiration(TimeSpan.FromMinutes(5));
 
+        // On ajoute l'entrée dans le cache
         _memoryCache.Set(generateState, DateTime.Now, cacheEntryOption);
 
+        // On redirige vers le système d'authentification de Google
         return Redirect(OAuth2Google.OAuthHelper.GetAuthorizeUrl(opts));
     }
 
@@ -144,31 +152,37 @@ public class Authentification : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> CallBackMicrosoft(string code, string state, string error, string errorDescription)
     {
+        // On vérifie que on reçois bien un code de retour de la connexion
         if (code == null)
         {
             // Si il n'y a aucun  code et qu'il y a une erreur
             if (error != null && errorDescription != null)
             {
+                // Si l'enviroment est en développement on affiche l'erreur dans la console
                 if (_env.IsDevelopment())
                 {
                     _logger.LogWarning("Error when trying connecting user.\n\n" + error + ": " + errorDescription);
                 }
 
+                // On retourne une erreur 400 pour informer l'utilisateur que la connexion à échoué
                 return BadRequest(new ErrorMessage("Error: '" + error + "', Please contact the admin.", StatusCodes.Status500InternalServerError));
             }
 
+            // Si aucun code n'est retourné et qu'il n'y a pas d'erreur on retourne une erreur 404 pour informer l'utilisateur que aucun code n'a été retourné
             return NotFound(new ErrorMessage("No code parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // Si aucun "state" n'est retourné
         if (state == null)
         {
+            // Si le state qu'on a générer et ajouté dans la mémoir cache n'est pas retourné par microsoft alors on retourne une erreur 404 pour informer l'utilisateur que la connexion à échoué
             return NotFound(new ErrorMessage("No state parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // On check si la connexion n'a demande de connexion n'a pas été faite il y a plus de 5 mintues grâce au state.
         if (!_memoryCache.TryGetValue(state, out DateTime outState))
         {
+            // Si la connexion à été faite il y a plus de 5 minutes on retourne une erreur 401 pour informer l'utilisateur que la connexion à échoué
             return Unauthorized(new ErrorMessage("Your connection is too old, please try again.", StatusCodes.Status401Unauthorized));
         }
 
@@ -182,27 +196,33 @@ public class Authentification : BaseController
         }
         catch
         {
+            // Si la demande échoue on retourne une erreur 401 pour informer l'utilisateur que la connexion à échoué
             return Unauthorized(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         if (token == null)
         {
+            // Si on ne reçoit aucun token on retourne une erreur 401 pour informer l'utilisateur que la connexion à échoué
             return BadRequest(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         var accessToken = token.AccessToken;
         var encryptedAccessToken = CryptoUtils.Encrypt(accessToken);
 
+        // On récupère les informations de l'utilisateur
         var client = await new MicrosoftClient(encryptedAccessToken).GetUserAsync();
 
+        // On crée un utilisateur
         var newUser = new User(client.Id, client.GivenName, client.Surname, new DateTime(), client.Mail,
             DateTime.UtcNow);
 
         var tokenString = "";
 
+        // On vérifie si l'utilisateur existe déjà
         var findUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
         if (findUser == null)
         {
+            // S'il n'existe pas on l'ajoute dans la base de donnée
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
@@ -219,7 +239,7 @@ public class Authentification : BaseController
         }
         else
         {
-            // On update le user
+            // S'il existe on le met à jour
             findUser.FirstName = newUser.FirstName;
             findUser.LastName = newUser.LastName;
             findUser.LastUpdatedAt = DateTime.UtcNow;
@@ -262,6 +282,7 @@ public class Authentification : BaseController
         // Ajout du jwt dans les cookies de l'utilisateur
         Response.Cookies.Append("jwt", tokenString);
 
+        // Si l'environement est sur développement on affiche le token dans la console, pour le développement
         if (_env.IsDevelopment())
         {
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
@@ -286,6 +307,7 @@ public class Authentification : BaseController
     [AllowAnonymous]
     public async Task<IActionResult> CallBackGoogle(string code, string state, string error)
     {
+        // Si aucun code
         if (code == null)
         {
             // Si il n'y a aucun  code et qu'il y a une erreur
@@ -296,15 +318,18 @@ public class Authentification : BaseController
                     _logger.LogWarning("Error when trying connecting user.\n\n" + error);
                 }
 
+                // On retourne une erreur 500 si une erreur à été reçu
                 return BadRequest(new ErrorMessage("Error: '" + error + "', Please contact the admin.", StatusCodes.Status500InternalServerError));
             }
 
+            // On retourne une erreur 404 si aucun code n'a été reçu
             return NotFound(new ErrorMessage("No code parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
         // Si aucun "state" n'est retourné
         if (state == null)
         {
+            // Si le state générer n'est pas renvoyé par google alors on retourne une erreur 404
             return NotFound(new ErrorMessage("No state parameter to connect to your account found.", StatusCodes.Status404NotFound));
         }
 
@@ -323,19 +348,23 @@ public class Authentification : BaseController
         }
         catch
         {
+            // Si il y a une erreur on retourne une erreur 500
             return Unauthorized(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         if (token == null)
         {
+            // Si aucune réponse n'est reçu on retourne une erreur 401
             return BadRequest(new ErrorMessage("Can't get your token, please try again.", StatusCodes.Status401Unauthorized));
         }
 
         var accessToken = token.AccessToken;
         var encryptedAccessToken = CryptoUtils.Encrypt(accessToken);
 
+        // On fait la demande des informations de l'utilisateur à Google
         var client = await new GoogleClient(encryptedAccessToken).GetUserAsync();
 
+        // On récupère les informations de l'utilisateur sur son compte google.
         var googleId = client.ResourceName.Replace("people/", "");
         var googleName = client.Names.First();
         var googleEmail = client.EmailAddresses.First();
@@ -348,12 +377,14 @@ public class Authentification : BaseController
             googleName.FamilyName = "-";
         }
 
+        // On crée un utilisateur
         var newUser = new User(googleId, googleName.FamilyName, googleName.GivenName,
             googleBirthday, googleEmail.Value,
             DateTime.UtcNow);
 
         var tokenString = "";
 
+        // On check si l'utilisateur existe déjà
         var findUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
         if (findUser == null)
         {
@@ -422,6 +453,7 @@ public class Authentification : BaseController
             _logger.LogInformation("New JWT token generated: {TokenString}", tokenString);
         }
 
+        // On redirige l'utilisateur vers la page d'accueil
         return Redirect(_googleRedirectFront);
     }
 }

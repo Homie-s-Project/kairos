@@ -16,6 +16,11 @@
         display: flex;
         justify-content: space-between;
         flex-direction: column;
+
+        & p {
+          color: vars.$fourth-color;
+          opacity: .8;
+        }
       }
     }
     .profile-bottom-part {
@@ -51,6 +56,7 @@
           .label-input {
             display: flex;
             flex-direction: row;
+            border-width: 0.5em;
             justify-content: space-between;
             width: auto;
             input {
@@ -73,7 +79,8 @@
       }
       .group-container {
         padding: 15px;
-        background-color: vars.$first-color;
+        background-color: vars.$under-dev-background;
+        opacity: vars.$under-dev-opacity;
         border-radius: 15px;
 
         button {
@@ -83,6 +90,9 @@
         }
         .group-content{
           width: 100%;
+          .group-form {
+            width: 100%;
+          }
           .group-name-container{
             display: flex;
             justify-content: space-between ;
@@ -90,6 +100,13 @@
             width: 100%;
             gap: 20px;
           }
+        }
+        .group-form{
+          display: flex;
+            justify-content: space-between ;
+            flex-direction: row;
+            width: 100%;
+            gap: 20px;
         }
         ul{
           width: 100%;

@@ -1,9 +1,8 @@
-## Routes
+# Routes
 
 Dans cette section, vous retrouvez toutes les routes.
 
-### Authentification
-
+## Authentification
 
 | HTTP Method | Path                     | Description                                                                                                                                                                            |
 | ----------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -12,32 +11,39 @@ Dans cette section, vous retrouvez toutes les routes.
 | GET         | /auth/callback/microsoft | *Cette endpoint est utilisé par Microsoft pour ne retourner le "code" qui nous permettra ensuite de faire une requête à leur service pour récupérer les informations de l'utilisateur. |
 | GET         | /auth/callback/google    | *Cette endpoint est utilisé par Google pour ne retourner le "code" qui nous permettra ensuite de faire une requête à leur service pour récupérer les informations de l'utilisateur.    |
 
-### Group
+## Group
 
 | HTTP Method | Path            | Description                                                                                                                                                 |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET         | /group/me       | Cette route permet de retourner tous les groupes ou l'utilisateur en fait partie.                                                                           |
 | GET         | /group/personal | Cette route permet de retourner tous les groupes personnels que l'utilisateur possède, c'est-à-dire tous les groupes privés avec lui en tant que fondateur. |
 | POST         | /group/create?groupName=`<nom du groupe>` | Cette route permet de créer un group. |
+| DELETE         | /group/delete/`{id groupe}` | Cette route permet de supprimer un group. |
 
 ## Event
 
 | HTTP Method | Path            | Description                                                                                                                                                 |
 | ----------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | GET         | /event/`{groupId}`       | Cette route permet d'avoir l'event d'un group. |
-| CREATE         | /create/       | Cette route permet de crée un event. |
-| DELETE         | /delete/`{eventId}`       | Cette route permet de pouvoir supprimer un event, seleument si elle nous appartient. |
-| PUT         | /update/`{eventId}`       | Cette route permet de pouvoir modifier un event, seleument si elle nous appartient. |
+| GET         | /event/me      | Cette route permet de récupérer les événements de l'utilisateur connecté. |
+| CREATE         | /create/**       | Cette route permet de crée un event. |
+| DELETE         | /delete/`{eventId}`**       | Cette route permet de pouvoir supprimer un event, seleument si elle nous appartient. |
+| PUT         | /update/`{eventId}`**       | Cette route permet de pouvoir modifier un event, seleument si elle nous appartient. |
 
+** Il faut se référer à Swagger, pour utiliser les formData avec la bonne formulation.
 
 ### Label
 
 | HTTP Method | Path                                     | Description                                                                |
 | ----------- | ---------------------------------------- | -------------------------------------------------------------------------- |
 | GET         | /label/me                                | Cette route permet de récupérer tous les labels que l'utilisateur à créer. |
-| POST        | /label/create?labelName=`<nom du label>` | Cette route permet de créer un label.                                      |
+| POST        | /label/create** | Cette route permet de créer un label.                                      |
+| DELETE        | /label/delete/`{labelId}` | Cette route permet de supprimer un label.                                      |
+| PUT        | /label/update/`{labelId}`** | Cette route permet de supprimer un label.                                      |
 | GET        | /label/event/`{eventId}` | Cette route permet de recevoir les labels utilisés par un event en particulier.  |
 | GET        | /label/group/`{groupId}` | Cette route permet de recevoir les labels utilisés par un group en particulier.  |
+
+** Il faut se référer à Swagger, pour utiliser les formData avec la bonne formulation.
 
 ### Studies
 
@@ -56,5 +62,3 @@ Dans cette section, vous retrouvez toutes les routes.
 | HTTP Method | Path     | Description                                                                |
 | ----------- | -------- | -------------------------------------------------------------------------- |
 | GET         | /user/me | Cette route permet de renvoyer les informations de l'utilisateur connecté. |
-
-

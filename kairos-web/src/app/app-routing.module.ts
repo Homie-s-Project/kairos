@@ -8,6 +8,7 @@ import { CalendarComponent } from './components/calendar/calendar.component';
 import { ErrorComponent } from './components/error/error.component';
 import { EventEditComponent } from './components/event-edit/event-edit.component';
 import {ProfileComponent} from "./components/profile/profile.component";
+import {EventCalendarComponent} from "./components/event-calendar/event-calendar.component";
 
 const routes: Routes = [
   {
@@ -29,10 +30,17 @@ const routes: Routes = [
       },
       {
         path: 'calendar',
-        component: CalendarComponent,
-        children : [
-          { path: ':eventId',
-          component: EventEditComponent } 
+        children: [
+          {
+            path: '',
+            component: CalendarComponent,
+            children: [
+              {
+                path: 'add',
+                component: EventCalendarComponent
+              }
+            ]
+          }
         ]
       },
       {

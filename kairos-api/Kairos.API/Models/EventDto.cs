@@ -6,15 +6,6 @@ namespace Kairos.API.Models;
 
 public class EventDto
 {
-    public EventDto(int eventId, DateTime eventDate, string eventTitle, string eventDescription, DateTime eventCreatedDate, List<LabelDto> labels)
-    {
-        EventId = eventId;
-        EventDate = eventDate;
-        EventTitle = eventTitle;
-        EventDescription = eventDescription;
-        EventCreatedDate = eventCreatedDate;
-        Labels = labels;
-    }
 
     public EventDto(Event eventDb)
     {
@@ -27,6 +18,11 @@ public class EventDto
         if (eventDb.Labels != null)
         {
             Labels = eventDb.Labels.Select(l => new LabelDto(l, false)).ToList();
+        }
+
+        if (eventDb.Group != null)
+        {
+            Group = new GroupDto(eventDb.Group);
         }
     } 
     
@@ -41,6 +37,11 @@ public class EventDto
         if (loadMore)
         {
             Labels = eventDb.Labels.Select(l => new LabelDto(l, false)).ToList();
+
+            if (eventDb.Group != null)
+            {
+                Group = new GroupDto(eventDb.Group);
+            }
         }
     } 
 
@@ -49,5 +50,6 @@ public class EventDto
     public string EventTitle { get; set; }
     public string EventDescription { get; set; }
     public DateTime EventCreatedDate { get; set; }
+    public GroupDto Group { get; set; }
     public List<LabelDto> Labels { get; set; }
 }

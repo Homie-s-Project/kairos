@@ -18,20 +18,25 @@ public class JwtMiddleware
 
     public async Task Invoke(HttpContext context, KairosContext kairosContext)
     {
-        const string BEARER = "Bearer";
+        const string bearer = "Bearer";
 
+        // On récupère le token dans le header de la requête
         string token = context.Request.Headers.Authorization;
 
-        if (token != null && token.Contains(BEARER))
+        // Si le token n'est pas null et qu'il commence par "Bearer "
+        if (token != null && token.Contains(bearer))
         {
-            token = token.Remove(0, BEARER.Length + 1);
+            // On récupère le token sans le "Bearer "
+            token = token.Remove(0, bearer.Length + 1);
         }
 
         // Récupère l'id de l'utilisateur
         var informationsJwt = JwtUtils.ValidateCurrentToken(token);
 
+        // Si le token est valide
         if (informationsJwt != null)
         {
+            // On récupère l'utilisateur dans le token.
             var userId = informationsJwt.Value;
             context.Items["User"] = kairosContext.Users.First(u => u.UserId == userId);
         }

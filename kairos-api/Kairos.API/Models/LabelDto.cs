@@ -26,9 +26,20 @@ public class LabelDto
 
         if (loadMore)
         {
-            Groups = label.Groups.Select(g => new GroupDto(g)).ToList();
-            Events = label.Events.Select(e => new EventDto(e, false)).ToList();
-            Studies = label.Studies.Select(s => new StudiesDto(s, false)).ToList();
+            if (label.Groups != null)
+            {
+                Groups = label.Groups.Select(g => new GroupDto(g)).ToList();
+            }
+            
+            if (label.Events != null)
+            {
+                Events = label.Events.Select(e => new EventDto(e, false)).ToList();
+            }
+            
+            if (label.Studies != null)
+            {
+                Studies = label.Studies.Select(s => new StudiesDto(s, false)).ToList();
+            }
         }
     }
 
