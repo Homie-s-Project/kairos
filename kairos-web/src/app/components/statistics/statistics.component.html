@@ -1,14 +1,26 @@
 <div class="statistics-container">
     <div class="statistics-title">
-        <h1>Tableau de bord <span class="statistics-date">{{stat.getCurrentWeek()}}</span></h1>
-        <p class="work-rate-text">{{ workRateTxt }}<fa-icon class="chart-icon" [icon]="faArrowTrend"></fa-icon></p>
+        <h1>Tableau de bord <span class="statistics-date"></span></h1>
+        <div class="work-rate-text">
+          <p *ngIf="!isRateLoaded">
+            <span class="work-rate-text">Chargement du taux de travail...</span>
+          </p>
+          <p *ngIf="currentRate > 0 && isRateLoaded" class="chart-icon-up">
+            {{ currentRate }}%
+            <fa-icon [icon]="faArrowTrend"></fa-icon>
+          </p>
+          <p *ngIf="currentRate <= 0 && isRateLoaded" class="chart-icon-down">
+            {{ currentRate }}%
+            <fa-icon *ngIf="currentRate <= 0" [icon]="faArrowTrendDown"></fa-icon>
+        </p>
+        </div>
     </div>
     <div class="statistics-content">
-        <div class="kairos-box-shadow stat-grid-div weekly-statistics">
+        <div class="kairos-box-shadow stat-grid-div weekly-statistics" [ngClass]="{'isLoading': !isHoursStudiedLoaded}">
             <h2 class="weekly-title">Durée des sessions</h2>
             <div class="chart-container">
                 <canvas id="weekly-chart" height="300"
-                baseChart
+                baseChart #weeklyChart
                 [type]="'line'"
                 [data]="weeklyLineChartData"
                 [options]="weeklyLineChartOptions"
@@ -16,11 +28,11 @@
                 </canvas>
             </div>
         </div>
-        <div class="kairos-box-shadow stat-grid-div session-time">
+        <div class="kairos-box-shadow stat-grid-div session-time" [ngClass]="{'isLoading': !isHoursPerLabelLoaded}">
             <h2 class="session-time-title">Temps de travail par session</h2>
             <div class="chart-container">
                 <canvas id="session-time-bar" height="300"
-                baseChart
+                baseChart #sessionTimeBar
                 [type]="'bar'"
                 [data]="timeBarChartData"
                 [options]="timeBarChartOptions"
@@ -30,10 +42,11 @@
             </div>
         </div>
         <div class="kairos-box-shadow stat-grid-div session-type">
-            <h2 class="session-type-title">Types de sessions de travail</h2>
+            <h2 class="session-type-title">En développement</h2>
+            <h5 style="text-align: center">Types de sessions de travail</h5>
             <div class="chart-container">
                 <canvas id="session-type-doughnut"
-                baseChart 
+                baseChart #sessionTypeDoughnut
                 [type]="'doughnut'"
                 [labels]="typeDoughnutChartLabels"
                 [datasets]="typeDoughnutChartDatasets"

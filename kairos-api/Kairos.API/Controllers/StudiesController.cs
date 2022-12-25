@@ -361,6 +361,11 @@ public class StudiesController : SecurityController
                  s.Group.OwnerId == userContext.UserId) &&
                 s.StudiesCreatedDate >= DateTime.Now.AddDays(-6))
             .ToList();
+        
+        if (studiesLastWeeks.Count == 0)
+        {
+            return NotFound(new ErrorMessage("Studies not found", StatusCodes.Status404NotFound));
+        }
 
         // On crée un tableau de 7 cases pour les 7 derniers jours de la semaine
         Dictionary<string, float> data = new Dictionary<string, float>();
@@ -369,7 +374,18 @@ public class StudiesController : SecurityController
             bool isParsed = int.TryParse(s.StudiesTime, out int studiedTime);
             if (isParsed)
             {
-                data.Add(s.StudiesCreatedDate.DayOfWeek.ToString(), (float) studiedTime / 3_600);
+                {
+                    var keyDay = s.StudiesCreatedDate.DayOfWeek.ToString();
+                    if (data.ContainsKey(keyDay))
+                    {
+                        data[keyDay] += (float) studiedTime / 3_600;
+                    }
+                    else
+                    {
+                        data.Add(keyDay, (float) studiedTime / 3_600);
+
+                    }
+                }
             }
         });
 
@@ -478,6 +494,17 @@ public class StudiesController : SecurityController
         var studiesLastWeeksTime = studiesLastWeeks.Sum(s => int.Parse(s.StudiesTime));
         var studiesBeforeLastWeekTime = studiesBeforeLastWeek.Sum(s => int.Parse(s.StudiesTime));
 
+        // Si l'utilisateur n'a pas de sessions de travail, on retourne 0 pour éviter une division par 0
+        if (studiesBeforeLastWeekTime == 0)
+        {
+            if (studiesLastWeeksTime != 0)
+            {
+                return Ok((int) ((float) studiesLastWeeksTime / 100));
+            }
+            
+            return Ok(0);
+        }
+        
         // On calcul le taux de travail de l'utilisateur
         int rate = (studiesLastWeeksTime * 100) / studiesBeforeLastWeekTime;
         rate -= 100;
