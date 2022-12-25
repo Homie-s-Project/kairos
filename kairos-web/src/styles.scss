@@ -50,6 +50,21 @@ html {
     overflow: hidden;
 }
 
+.kairos-alert {
+    color: vars.$first-color;
+    background-color: vars.$down-rate-color;
+}
+
+.kairos-valid {
+    color: vars.$first-color;
+    background-color: vars.$up-rate-color;
+}
+
+.kairos-info {
+    color: vars.$fourth-color;
+    background-color: vars.$first-color;
+}
+
 .centered {
     display: flex;
     justify-content: center;

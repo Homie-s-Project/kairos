@@ -22,7 +22,9 @@ import {EventEditComponent} from './components/event-edit/event-edit.component';
 import {TinyTimerComponent} from './components/tiny-timer/tiny-timer.component';
 import {ProfileComponent} from "./components/profile/profile.component";
 import {ErrorComponent} from "./components/error/error.component";
-import { EventCalendarComponent } from './components/event-calendar/event-calendar.component';
+import {EventCalendarComponent} from './components/event-calendar/event-calendar.component';
+import {ModalDialogComponent} from './components/dialog/modal-dialog/modal-dialog.component';
+import { AlertDialogComponent } from './components/dialog/alert-dialog/alert-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +43,8 @@ import { EventCalendarComponent } from './components/event-calendar/event-calend
     NavbarComponent,
     ProfileComponent,
     EventCalendarComponent,
-    ProfileComponent
+    ModalDialogComponent,
+    AlertDialogComponent,
   ],
   imports: [
     BrowserModule,

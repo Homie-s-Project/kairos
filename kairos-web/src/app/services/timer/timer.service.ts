@@ -1,12 +1,16 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AuthService } from '../auth/auth.service';
+import { Subscription } from 'rxjs';
+import { AlertDialogService } from '../alert-dialog/alert-dialog.service';
+import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TimerService {
   base: any;
+  private subscription: Subscription = new Subscription();
   minuteStr: string;
   secondStr: string;
   minute: number = 0;
@@ -15,7 +19,10 @@ export class TimerService {
   isStarted: boolean = false;
   isCollapsed: boolean = false;
 
-  constructor(private http: HttpClient, private auth: AuthService) {
+  constructor(private modalDialog: ModalDialogService, 
+    private alertDialog: AlertDialogService, 
+    private http: HttpClient, 
+    private auth: AuthService) {
     this.getValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
@@ -48,7 +55,7 @@ export class TimerService {
 
   startCountdown = () => {
     if (this.minute == 0 && this.second == 0) {
-      throw new Error("Valeur du temps à 0");
+      throw new Error("Valeur du temps à 0, Veuillez en saisir une");
     }
 
     this.postStartStudies((this.minute + this.second).toString(), "")
@@ -76,6 +83,22 @@ export class TimerService {
     this.saveValues();
     this.minuteStr = this.updateTime(this.minute);
     this.secondStr = this.updateTime(this.second);
+  }
+
+  openModalCancelTimer = ():boolean => {
+    var result = false;
+    this.modalDialog.displayModal('Voulez-vous vous annuler votre Studies ?')
+    this.modalDialog.modalValue.subscribe((data => {
+        if (data) {
+          this.stopCountdown();
+          result = data; 
+        } else {
+          this.subscription.unsubscribe();
+        }
+      })
+    );
+  
+    return result;
   }
 
   stopCountdown = () => {
