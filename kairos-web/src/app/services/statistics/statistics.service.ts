@@ -1,5 +1,17 @@
-import { normalizePassiveListenerOptions } from '@angular/cdk/platform';
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
+import {Observable} from "rxjs";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
+import {AuthService} from "../auth/auth.service";
+
+export interface IHoursStudiedWeekModel {
+  dayOfWeek: string[];
+  hours: number[];
+}
+
+export interface IHoursStudiedWeekLabelModel {
+  label: string[];
+  hours: number[];
+}
 
 @Injectable({
   providedIn: 'root'
@@ -8,27 +20,30 @@ export class StatisticsService {
   firstDay: Date = new Date();
   lastDay: Date = new Date();
 
-  constructor() { }
+  constructor(private http: HttpClient,
+              private authService: AuthService) { }
 
-  getCurrentWeek = ():string => {
-    const d = new Date();
-    var day = d.getDay(), 
-      diff = d.getDate() - day + (day == 0 ? -6:1);
-    this.lastDay = new Date(d.setDate(diff + 6));
-    this.firstDay = new Date(d.setDate(diff));
+  getCurrentRate(): Observable<number>{
+    let headers = new HttpHeaders({
+      'Authorization': this.authService.getToken()
+    });
 
-    return `(semaine du ${this.formatDate(this.firstDay)} au ${this.formatDate(this.lastDay)})`;
+    return this.http.get<number>('http://localhost:5000/studies/lastWeek/rate', {headers});
   }
 
-  formatDate = (date: Date) => {
-    return [
-      this.padTo2Digits(date.getDate()),
-      this.padTo2Digits(date.getMonth() + 1),
-      date.getFullYear()
-    ].join('.');
+  getHoursStudied(): Observable<IHoursStudiedWeekModel>{
+    let headers = new HttpHeaders({
+      'Authorization': this.authService.getToken()
+    });
+
+    return this.http.get<IHoursStudiedWeekModel>('http://localhost:5000/studies/lastWeek/hoursStudied', {headers});
   }
 
-  padTo2Digits = (num: number): string => {
-    return num.toString().padStart(2, '0');
+  getHoursPerLabel(): Observable<IHoursStudiedWeekLabelModel>{
+    let headers = new HttpHeaders({
+      'Authorization': this.authService.getToken()
+    });
+
+    return this.http.get<IHoursStudiedWeekLabelModel>('http://localhost:5000/studies/lastWeek/hoursPerLabel', {headers});
   }
 }
