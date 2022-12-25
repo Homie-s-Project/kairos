@@ -183,13 +183,16 @@ public class StudiesController : SecurityController
         // On supprime l'ancienne session
         _memoryCache.Remove(userContext.UserId);
 
+        // Si la session a été actualisé il y a moins de 2 {MinutesMinimumHeatbeat} minutes minutes
         if (liveStudy.LastRefresh.AddMinutes(MinutesMinimumHeatbeat) < DateTime.UtcNow)
         {
             // On la sauvegarde dans la base de données avec le temps du dernier battement
-            var study = new Studies(Guid.NewGuid().ToString(),
-                ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(
-                    CultureInfo.InvariantCulture),
-                liveStudy.StartTime, GetPersonalGroup());
+            var study = new Studies(
+                Guid.NewGuid().ToString(),
+                ((int) (liveStudy.LastRefresh - liveStudy.StartTime).TotalSeconds).ToString(CultureInfo.InvariantCulture),
+                liveStudy.StartTime,
+                GetPersonalGroup()
+                );
 
             study.Labels = new List<Label>();
             liveStudy.Labels.ForEach(label =>
@@ -208,9 +211,12 @@ public class StudiesController : SecurityController
         else
         {
             // On la sauvegarde dans la base de données avec le temps actuel
-            var study = new Studies(Guid.NewGuid().ToString(),
+            var study = new Studies(
+                Guid.NewGuid().ToString(),
                 ((int) (DateTime.UtcNow - liveStudy.LastRefresh).TotalSeconds).ToString(CultureInfo.InvariantCulture),
-                liveStudy.StartTime, GetPersonalGroup());
+                liveStudy.StartTime, 
+                GetPersonalGroup()
+                );
 
             study.Labels = new List<Label>();
             liveStudy.Labels.ForEach(label =>

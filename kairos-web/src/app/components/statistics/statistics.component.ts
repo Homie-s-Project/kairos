@@ -140,7 +140,7 @@ export class StatisticsComponent implements AfterViewInit {
           this.modalDialogService.displayModal(error.error.message)
         },
         next: (hoursPerLabel: IHoursStudiedWeekLabelModel) => {
-          this.timeBarChartData.labels = hoursPerLabel.label;
+          this.timeBarChartData.labels = hoursPerLabel.labels;
           this.timeBarChartData.datasets[0].data = hoursPerLabel.hours;
 
           this.refreshChart();

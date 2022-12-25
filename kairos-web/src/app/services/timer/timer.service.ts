@@ -9,9 +9,11 @@ import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
   providedIn: 'root'
 })
 export class TimerService implements OnDestroy {
+
+  private subscription: Subscription[] = [];
+
   base: any;
   intervalHeartbeat: any;
-  private subscription: Subscription[] = [];
   labelId: string = "";
   minuteStr: string;
   secondStr: string;
@@ -21,9 +23,9 @@ export class TimerService implements OnDestroy {
   isStarted: boolean = false;
   isCollapsed: boolean = false;
 
-  constructor(private modalDialog: ModalDialogService, 
-    private alertDialog: AlertDialogService, 
-    private http: HttpClient, 
+  constructor(private modalDialog: ModalDialogService,
+    private alertDialog: AlertDialogService,
+    private http: HttpClient,
     private auth: AuthService) {
     this.getValues();
     this.minuteStr = this.updateTime(this.minute);
@@ -112,13 +114,13 @@ export class TimerService implements OnDestroy {
     var modalSubscription = (this.modalDialog.modalValue.subscribe((data => {
         if (data) {
           this.stopCountdown();
-          result = data; 
+          result = data;
         } else {
           modalSubscription.unsubscribe();
         }
       })
     ));
-  
+
     return result;
   }
 

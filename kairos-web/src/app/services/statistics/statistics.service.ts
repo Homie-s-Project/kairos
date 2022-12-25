@@ -9,7 +9,7 @@ export interface IHoursStudiedWeekModel {
 }
 
 export interface IHoursStudiedWeekLabelModel {
-  label: string[];
+  labels: string[];
   hours: number[];
 }
 
