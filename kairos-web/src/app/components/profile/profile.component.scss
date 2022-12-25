@@ -16,6 +16,11 @@
         display: flex;
         justify-content: space-between;
         flex-direction: column;
+
+        & p {
+          color: vars.$fourth-color;
+          opacity: .8;
+        }
       }
     }
     .profile-bottom-part {

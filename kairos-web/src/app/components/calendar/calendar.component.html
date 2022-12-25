@@ -9,9 +9,13 @@
 
   <div class="calendar" style="margin-top: 15px">
     <div class="calendar-controls">
-      <button (click)="prevMonthCalendar()">Previous</button>
+      <button (click)="prevMonthCalendar()">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+      </button>
       <button (click)="currentMonthCalendar()">{{currentMonthName || 'No month selected'}} {{currentYearName || 'No year selected'}}</button>
-      <button (click)="nextMonthCalendar()">Next</button>
+      <button (click)="nextMonthCalendar()">
+        <fa-icon [icon]="faArrowRight"></fa-icon>
+      </button>
     </div>
 
     <table *ngIf="currentCalendarMonth" class="calendar-table">
@@ -52,10 +56,15 @@
         No events found in this group
       </div>
       <div *ngFor="let event of group.events">
-        <h3>{{event.eventTitle}}
-          <span style="padding: 0 4px; color: #33576c">|</span>
-          {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
-        <p>{{event.eventDescription}}</p>
+        <div class="title-event">
+          <h3>{{event.eventTitle}}
+            <span style="padding: 0 4px; color: #33576c">|</span>
+            {{event.eventDate | date: 'dd.MM.yyyy hh:mm' }}</h3>
+          <button class="icon-event" (click)="deleteEvent(event.eventId)">
+            <fa-icon [icon]="faTrashCan"></fa-icon>
+          </button>
+        </div>
+        <h5>{{event.eventDescription}}</h5>
         <div class="label-group" *ngIf="event.labels">
           <span class="label" *ngFor="let label of event.labels">{{label.labelTitle}}</span>
         </div>
