@@ -25,7 +25,7 @@ const collapseAnimation = trigger('collapse', [
   ]
 })
 export class TimerComponent implements OnInit, OnDestroy {
-  private subscription?: Subscription = new Subscription();
+  private subscription: Subscription[] = [];
   labels?: ILabelModel[];
 
   labelForm: FormGroup<any> = new FormGroup<any>({
