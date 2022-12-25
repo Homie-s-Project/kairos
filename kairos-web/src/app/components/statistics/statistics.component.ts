@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, QueryList, ViewChildren} from '@angular/core';
 import {ChartConfiguration, ChartOptions} from 'chart.js';
 import {faArrowTrendDown, faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
 import {NavbarService} from 'src/app/services/navbar/navbar.service';
@@ -7,22 +7,18 @@ import {
   IHoursStudiedWeekModel,
   StatisticsService
 } from 'src/app/services/statistics/statistics.service';
-import {BaseChartDirective} from "ng2-charts";
 import {HttpErrorResponse} from "@angular/common/http";
 import {ModalDialogService} from "../../services/modal-dialog/modal-dialog.service";
+import {BaseChartDirective} from "ng2-charts";
 
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent implements OnInit {
+export class StatisticsComponent implements AfterViewInit {
 
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
-  @ViewChild('weeklyChart') weeklyChart?: any;
-  @ViewChild('sessionTimeBar') sessionTimeBar?: any;
-  @ViewChild('sessionTypeDoughnut') sessionTypeDoughnut?: any;
+  @ViewChildren(BaseChartDirective) chart?: QueryList<BaseChartDirective>;
 
   faArrowTrend = faArrowTrendUp;
   faArrowTrendDown = faArrowTrendDown;
@@ -119,7 +115,7 @@ export class StatisticsComponent implements OnInit {
     this.nav.showBackButton();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.statisticsService.getCurrentRate().subscribe((rate: number) => {
       this.currentRate = rate;
       this.isRateLoaded = true;
@@ -133,10 +129,8 @@ export class StatisticsComponent implements OnInit {
           this.weeklyLineChartData.labels = hoursStudied.dayOfWeek;
           this.weeklyLineChartData.datasets[0].data = hoursStudied.hours;
 
-          setTimeout(() => {
-            this.weeklyChart.nativeElement.__ngContext__.directives[0].chart.update()
-            this.isHoursStudiedLoaded = true;
-          }, 1000);
+          this.refreshChart();
+          this.isHoursStudiedLoaded = true;
         }
       }
     );
@@ -146,17 +140,19 @@ export class StatisticsComponent implements OnInit {
           this.modalDialogService.displayModal(error.error.message)
         },
         next: (hoursPerLabel: IHoursStudiedWeekLabelModel) => {
-          console.log(hoursPerLabel)
           this.timeBarChartData.labels = hoursPerLabel.label;
           this.timeBarChartData.datasets[0].data = hoursPerLabel.hours;
 
-          setTimeout(() => {
-            this.sessionTimeBar.nativeElement.__ngContext__.directives[0].chart.update()
-            this.isHoursPerLabelLoaded = true;
-          }, 1000);
+          this.refreshChart();
+          this.isHoursPerLabelLoaded = true;
         }
       }
     );
+  }
 
+  refreshChart() {
+    this.chart?.toArray().forEach(chart => {
+      chart.chart?.update();
+    });
   }
 }
