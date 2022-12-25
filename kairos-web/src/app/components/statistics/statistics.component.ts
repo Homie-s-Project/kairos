@@ -1,19 +1,33 @@
-import { Component} from '@angular/core';
-import { ChartConfiguration, ChartOptions, ChartType } from 'chart.js';
-import { faArrowTrendUp, faArrowTrendDown } from '@fortawesome/free-solid-svg-icons';
-import { NavbarService } from 'src/app/services/navbar/navbar.service';
-import { StatisticsService } from 'src/app/services/statistics/statistics.service';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ChartConfiguration, ChartOptions} from 'chart.js';
+import {faArrowTrendDown, faArrowTrendUp} from '@fortawesome/free-solid-svg-icons';
+import {NavbarService} from 'src/app/services/navbar/navbar.service';
+import {
+  IHoursStudiedWeekLabelModel,
+  IHoursStudiedWeekModel,
+  StatisticsService
+} from 'src/app/services/statistics/statistics.service';
+import {BaseChartDirective} from "ng2-charts";
+import {HttpErrorResponse} from "@angular/common/http";
+import {ModalDialogService} from "../../services/modal-dialog/modal-dialog.service";
 
 @Component({
   selector: 'app-statistics',
   templateUrl: './statistics.component.html',
   styleUrls: ['./statistics.component.scss']
 })
-export class StatisticsComponent {
-  workRateTxt: string = "Augmentation de 5% ";
+export class StatisticsComponent implements OnInit {
+
+  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
+
+  @ViewChild('weeklyChart') weeklyChart?: any;
+  @ViewChild('sessionTimeBar') sessionTimeBar?: any;
+  @ViewChild('sessionTypeDoughnut') sessionTypeDoughnut?: any;
+
   faArrowTrend = faArrowTrendUp;
   faArrowTrendDown = faArrowTrendDown;
 
+  public currentRate: number = 0;
 
   // Weekly session line chart
   public weeklyLineChartData: ChartConfiguration<'line'>['data'] = {
@@ -38,6 +52,7 @@ export class StatisticsComponent {
       },
     ],
   };
+
   public weeklyLineChartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false
@@ -94,7 +109,54 @@ export class StatisticsComponent {
   public timeBarChartLegend = true;
   public timeBarChartPlugins = [];
 
-  constructor(public nav: NavbarService, public stat: StatisticsService) { 
+  public isRateLoaded: boolean = false;
+  public isHoursStudiedLoaded: boolean = false;
+  public isHoursPerLabelLoaded: boolean = false;
+
+  constructor(public nav: NavbarService,
+              private statisticsService: StatisticsService,
+              private modalDialogService: ModalDialogService) {
     this.nav.showBackButton();
+  }
+
+  ngOnInit(): void {
+    this.statisticsService.getCurrentRate().subscribe((rate: number) => {
+      this.currentRate = rate;
+      this.isRateLoaded = true;
+    });
+
+    this.statisticsService.getHoursStudied().subscribe({
+        error: (error: HttpErrorResponse) => {
+          this.modalDialogService.displayModal(error.error.message)
+        },
+        next: (hoursStudied: IHoursStudiedWeekModel) => {
+          this.weeklyLineChartData.labels = hoursStudied.dayOfWeek;
+          this.weeklyLineChartData.datasets[0].data = hoursStudied.hours;
+
+          setTimeout(() => {
+            this.weeklyChart.nativeElement.__ngContext__.directives[0].chart.update()
+            this.isHoursStudiedLoaded = true;
+          }, 1000);
+        }
+      }
+    );
+
+    this.statisticsService.getHoursPerLabel().subscribe({
+        error: (error: HttpErrorResponse) => {
+          this.modalDialogService.displayModal(error.error.message)
+        },
+        next: (hoursPerLabel: IHoursStudiedWeekLabelModel) => {
+          console.log(hoursPerLabel)
+          this.timeBarChartData.labels = hoursPerLabel.label;
+          this.timeBarChartData.datasets[0].data = hoursPerLabel.hours;
+
+          setTimeout(() => {
+            this.sessionTimeBar.nativeElement.__ngContext__.directives[0].chart.update()
+            this.isHoursPerLabelLoaded = true;
+          }, 1000);
+        }
+      }
+    );
+
   }
 }
