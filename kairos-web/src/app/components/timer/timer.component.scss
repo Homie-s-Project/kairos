@@ -1,6 +1,7 @@
 @use '/src/styles/variables.scss' as vars;
 
 #timer-container {
+    width: min(450px, 100%);
     display: flex;
     flex-direction: column;
     align-items: center;

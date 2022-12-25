@@ -1,0 +1,19 @@
+@use '/src/styles/variables.scss' as vars;
+
+:host {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36%;
+    height: 100px;
+    padding: 30px;
+    border-radius: 0 0 15px 15px;
+    .alert-title {
+        font-size: 21px;
+        text-decoration: underline;
+        fa-icon {
+            margin-right: 10px;
+            font-size: 39px;
+        }
+    }
+}

@@ -1,6 +1,7 @@
 import { animate, AUTO_STYLE, state, style, transition, trigger } from '@angular/animations';
 import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import { faCircleChevronUp, faCircleChevronDown, faCircleChevronLeft, faCircleChevronRight, faEllipsis } from '@fortawesome/free-solid-svg-icons';
+import { AlertDialogService } from 'src/app/services/alert-dialog/alert-dialog.service';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 import { TimerService } from 'src/app/services/timer/timer.service';
 
@@ -9,7 +10,7 @@ const collapseAnimation = trigger('collapse', [
   state('true', style({ height: '0', visibility: 'hidden' })),
   transition('false => true', animate('500ms ease-out')),
   transition('true => false', animate('500ms ease-out'))
-])
+]);
 
 @Component({
   selector: 'app-timer',
@@ -27,7 +28,10 @@ export class TimerComponent implements OnInit, OnDestroy {
   faCircleChevronRight = faCircleChevronRight;
   faEllipsis = faEllipsis;
 
-  constructor(public nav: NavbarService, public timer: TimerService, private renderer: Renderer2) {
+  constructor(public nav: NavbarService, 
+    public timer: TimerService,
+    public alertDialog: AlertDialogService, 
+    private renderer: Renderer2) {
     this.renderer.addClass(document.getElementById('app-container'), 'kairos-timer');
   }
 
@@ -56,7 +60,7 @@ export class TimerComponent implements OnInit, OnDestroy {
     try {
       this.timer.startCountdown();
     } catch (error) {
-      console.log((error as DOMException).message)
+      this.alertDialog.displayAlert({alertMessage: (error as DOMException).message, alertType: 'info'})
       return;
     }
 
@@ -72,20 +76,20 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   stop = () => {
-    this.timer.isCollapsed = false;
-    this.timer.isStarted = false;
-
     // Get circle countdown element
     const circle = document.getElementById('circle-countdown');
 
     // Call stop timer
-    this.timer.stopCountdown()
-
-    // Stop Animation (commenté mais à garder bug encore présent)
-    // if (circle != null) {
-    //   circle.classList.remove('circle-anim-countdown');
-    //   circle.style.animationPlayState = "paused";
-    // }
+    if (this.timer.openModalCancelTimer()) {
+      this.timer.isCollapsed = false;
+      this.timer.isStarted = false;
+  
+      // Stop Animation (commenté mais à garder bug encore présent)
+      // if (circle != null) {
+      //   circle.classList.remove('circle-anim-countdown');
+      //   circle.style.animationPlayState = "paused";
+      // }
+    }
   }
 
   expend = () => {
