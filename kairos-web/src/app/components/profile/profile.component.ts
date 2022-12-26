@@ -133,6 +133,8 @@ export class ProfileComponent {
     this.labelservice.labelDelete(labelid).subscribe(resp => {
       this.updateLabels(resp.labelId);
     })
+
+    this.labelVisible = false;
   }
 
   updateLabels(deleteId: number) {
