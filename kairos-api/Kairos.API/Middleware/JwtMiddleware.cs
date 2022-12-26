@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Kairos.API.Context;
@@ -24,7 +25,7 @@ public class JwtMiddleware
         string token = context.Request.Headers.Authorization;
 
         // Si le token n'est pas null et qu'il commence par "Bearer "
-        if (token != null && token.Contains(bearer))
+        if ((token != null || !string.IsNullOrEmpty(token)) && token.Contains(bearer))
         {
             // On récupère le token sans le "Bearer "
             token = token.Remove(0, bearer.Length + 1);

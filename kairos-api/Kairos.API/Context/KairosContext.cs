@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Kairos.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,20 @@ public class KairosContext : DbContext
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
                 .Build();
-            
-            options.UseNpgsql(configuration.GetConnectionString("KairosDb"));
+
+            string isRunningInDockerVariable = Environment.GetEnvironmentVariable("RUN_IN_DOCKER");
+            bool isParsed = Boolean.TryParse(isRunningInDockerVariable, out bool isRunningInDocker);
+
+            if (!string.IsNullOrEmpty(isRunningInDockerVariable) && isParsed && isRunningInDocker)
+            {
+                Console.WriteLine("Running in Docker");
+                options.UseNpgsql(configuration.GetConnectionString("KairosDb"));
+            }
+            else
+            {
+                Console.WriteLine("Running locally");
+                options.UseNpgsql(configuration.GetConnectionString("KairosDbNoDocker"));
+            }
         }
     }
 

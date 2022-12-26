@@ -50,6 +50,7 @@ services:
       - DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
       - DOTNET_WATCH_SUPPRESS_EMOJIS=1  
       - ASPNETCORE_ENVIRONMENT=Development
+      - RUN_IN_DOCKER=true
     volumes:
       - ./kairos-api:/app
     command: dotnet watch run --project Kairos.API
