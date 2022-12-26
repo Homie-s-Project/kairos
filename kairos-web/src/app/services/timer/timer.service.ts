@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { Subscription } from 'rxjs';
 import { AlertDialogService } from '../alert-dialog/alert-dialog.service';
 import { ModalDialogService } from '../modal-dialog/modal-dialog.service';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -193,7 +194,7 @@ export class TimerService implements OnDestroy {
     formData.append('timer', timerValue);
     formData.append('labelsId', labelsId);
 
-    return this.http.post('http://localhost:5000/studies/start', formData, {headers});
+    return this.http.post(`${environment.apiUrl}/studies/start`, formData, {headers});
   }
 
   // Appel POST confirmant l'activité étant toujours en cours
@@ -203,7 +204,7 @@ export class TimerService implements OnDestroy {
       "Authorization": this.auth.getToken()
     });
 
-    return this.http.post('http://localhost:5000/studies/heartbeat', {}, {headers});
+    return this.http.post(`${environment.apiUrl}/studies/heartbeat`, {}, {headers});
   }
 
   // Appel informant l'arrêt / annulation de la study
@@ -213,6 +214,6 @@ export class TimerService implements OnDestroy {
       "Authorization": this.auth.getToken()
     });
 
-    return this.http.post('http://localhost:5000/studies/stop', {}, {headers});
+    return this.http.post(`${environment.apiUrl}/studies/stop`, {}, {headers});
   }
 }

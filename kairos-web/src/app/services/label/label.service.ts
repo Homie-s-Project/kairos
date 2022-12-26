@@ -3,6 +3,7 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {ILabelModel} from 'src/app/models/ILabelModel';
 import {AuthService} from '../auth/auth.service';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class LabelService {
     const formLabel = new FormData();
     formLabel.append('labelName', label);
 
-    return this.http.post<ILabelModel>(`http://localhost:5000/Label/create`, formLabel, {headers});
+    return this.http.post<ILabelModel>(`${environment.apiUrl}/Label/create`, formLabel, {headers});
   }
 
   updateLabel(labelId: number, labelName: string) {
@@ -30,7 +31,7 @@ export class LabelService {
     const formLabel = new FormData();
     formLabel.append('labelName', labelName);
 
-    return this.http.put(`http://localhost:5000/Label/update/${labelId}`, formLabel, {headers});
+    return this.http.put(`${environment.apiUrl}/Label/update/${labelId}`, formLabel, {headers});
   }
 
 
@@ -38,7 +39,7 @@ export class LabelService {
     const headers = new HttpHeaders({
       "Authorization": `${this.auth.getToken()}`
     });
-    return this.http.delete<ILabelModel>(`http://localhost:5000/Label/delete/${labelid}`, {headers});
+    return this.http.delete<ILabelModel>(`${environment.apiUrl}/Label/delete/${labelid}`, {headers});
   }
 
   getLabels = () => {
@@ -49,6 +50,6 @@ export class LabelService {
     });
 
     return this.http
-      .get<ILabelModel[]>('http://localhost:5000/Label/me', {headers})
+      .get<ILabelModel[]>(`${environment.apiUrl}/Label/me`, {headers})
   }
 }

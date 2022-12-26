@@ -4,6 +4,7 @@ import {Observable} from "rxjs";
 import {IGroupModel} from "../../models/IGroupModel";
 import {IEventModel} from "../../models/IEventModel";
 import {AuthService} from "../auth/auth.service";
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class EventService {
       "Authorization": this.authService.getToken()
     });
 
-    return this.http.get<IGroupModel[]>('http://localhost:5000/Event/me', {headers: header});
+    return this.http.get<IGroupModel[]>(`${environment.apiUrl}/Event/me`, {headers: header});
   }
 
   deleteEvent(eventId: number): Observable<IEventModel> {
@@ -25,7 +26,7 @@ export class EventService {
       "Authorization": this.authService.getToken()
     });
 
-    return this.http.delete<IEventModel>('http://localhost:5000/Event/delete/' + eventId, {headers});
+    return this.http.delete<IEventModel>(`${environment.apiUrl}Event/delete/` + eventId, {headers});
   }
 
   createEvent(event: IEventForm) : Observable<IEventModel> {
@@ -40,7 +41,7 @@ export class EventService {
     formData.append('description', event.description);
     formData.append('sessionDate', event.date.toString());
 
-    return this.http.post<IEventModel>('http://localhost:5000/Event/create', formData, {headers});
+    return this.http.post<IEventModel>(`${environment.apiUrl}/Event/create`, formData, {headers});
   };
 }
 

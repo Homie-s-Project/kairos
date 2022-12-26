@@ -6,6 +6,7 @@ import {UserModel} from 'src/app/models/user.model';
 import {ModalDialogService} from '../modal-dialog/modal-dialog.service';
 import {Observable} from "rxjs";
 import {Router} from '@angular/router';
+import {environment} from "../../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +15,8 @@ export class AuthService {
   private token: string;
   private subscription: Subscription = new Subscription();
 
-  constructor(private http: HttpClient, 
-    private cookie: CookieService, 
+  constructor(private http: HttpClient,
+    private cookie: CookieService,
     private router: Router,
     private modalDialog: ModalDialogService) {
     this.token = this.cookie.get('jwt');
@@ -32,7 +33,7 @@ export class AuthService {
         });
 
         this.http
-          .get('http://localhost:5000/User/me', {
+          .get(`${environment.apiUrl}/User/me`, {
             headers: header,
             observe: 'response',
           })
@@ -57,7 +58,7 @@ export class AuthService {
       "Authorization": `${this.getToken()}`
     });
 
-    return this.http.get<UserModel>('http://localhost:5000/User/me', {headers: header, observe: 'response'});
+    return this.http.get<UserModel>(`${environment.apiUrl}/User/me`, {headers: header, observe: 'response'});
   }
 
   // Retourne Bearer Token

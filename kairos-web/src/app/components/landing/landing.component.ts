@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { faGoogle, faMicrosoft } from '@fortawesome/free-brands-svg-icons';
 import { NavbarService } from 'src/app/services/navbar/navbar.service';
 import { TimerService } from 'src/app/services/timer/timer.service';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-landing',
@@ -13,10 +14,11 @@ export class LandingComponent implements OnInit, OnDestroy {
   faGoogle = faGoogle;
   faMicrosoft = faMicrosoft;
 
-
   title: string = 'KAIROS';
   subTitle: string = 'Prenez contrôle de votre temps';
   subTitleDico: string[];
+
+  linkLogin: string = environment.apiUrl;
 
   constructor(public nav: NavbarService, public timer: TimerService, private renderer: Renderer2, private _router: Router) {
     this.timer.stopCountdown();
@@ -36,7 +38,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       textDiv.style.animationPlayState = "running";
       textDiv.classList.remove("hide");
     }
-  
+
     if(buttonDiv) {
       buttonDiv.style.animationPlayState = "running";
       buttonDiv.classList.remove("hide");
