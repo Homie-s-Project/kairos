@@ -34,6 +34,7 @@ services:
   kairos-api:
     image: kairos-api:prod
     container_name: kairos-api
+    restart: unless-stopped
     depends_on:
       - kairos-db
     build:
@@ -45,11 +46,15 @@ services:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:5000
     command:  dotnet run --project Kairos.API
+    networks:
+      - kairos-network
       
   kairos-web:
     image: kairos-web:prod
     container_name: kairos-web
     restart: unless-stopped
+    depends_on:
+      - kairos-api
     build:
       context: kairos-web
       dockerfile: ./Dockerfile
@@ -57,6 +62,24 @@ services:
       NODE_ENV: production
     ports:
       - 4200:4200
+    networks:
+      - kairos-network
+
+  kairos-reverse-proxy:
+    container_name: kairos-reverse-proxy
+    restart: unless-stopped
+    build: 
+      context: kairos-reverse-proxy
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./kairos-reverse-proxy/nginx.conf:/etc/nginx/conf.d/nginx.conf
+    depends_on:
+      - kairos-web
+      - kairos-api
+    ports:
+      - 80:80
+    networks:
+      - kairos-network
 
 volumes:
   pgdata:
@@ -64,3 +87,5 @@ volumes:
   pglog:
   pgadmin-data:
 
+networks:
+  kairos-network:
