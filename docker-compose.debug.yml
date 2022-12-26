@@ -39,7 +39,6 @@ services:
   kairos-api:
     image: kairos-api:dev
     container_name: kairos-api
-    restart: unless-stopped
     depends_on:
       - kairos-db
     build:
