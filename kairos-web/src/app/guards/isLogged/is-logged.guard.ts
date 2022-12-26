@@ -10,7 +10,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 
 export class IsLoggedGuard implements CanActivateChild {
   constructor(private auth: AuthService,
-    private alertDialog: AlertDialogService, 
+    private alertDialog: AlertDialogService,
     private router: Router) { }
 
   canActivateChild = (
@@ -27,7 +27,7 @@ export class IsLoggedGuard implements CanActivateChild {
         if (isLoggedIn) {
           return true;
         } else {
-          this.alertDialog.displayAlert({alertMessage: 'Veillez-vous connecter', alertType: 'alert'})
+          this.alertDialog.displayAlert({alertMessage: 'Veuilliez-vous connecter', alertType: 'alert'})
           this.router.navigate(['/landing']);
           return false;
         }
