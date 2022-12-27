@@ -88,9 +88,19 @@ namespace Kairos.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);*/
             });
+
+            string isRunningInDockerVariable = Environment.GetEnvironmentVariable("RUN_IN_DOCKER");
+            bool isParsed = Boolean.TryParse(isRunningInDockerVariable, out bool isRunningInDocker);
+
+            if (!string.IsNullOrEmpty(isRunningInDockerVariable) && isParsed && isRunningInDocker)
+            {
+                services.AddDbContext<KairosContext>(opts => opts.UseNpgsql(Configuration.GetConnectionString("KairosDb")));
+            }
+            else
+            {
+                services.AddDbContext<KairosContext>(opts => opts.UseNpgsql(Configuration.GetConnectionString("KairosDbNoDocker")));
+            }
             
-            var connectionString = Configuration.GetConnectionString("KairosDb");
-            services.AddDbContext<KairosContext>(opts => opts.UseNpgsql(connectionString));
 
             // Ajout la gestion d'un cache en mémoire
             services.AddMemoryCache();
